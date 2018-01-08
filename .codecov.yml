@@ -1,1 +1,9 @@
+codecov:
+  token:
+
+coverage:
+  status:
+    project: off
+    patch: off
+
 comment: false
