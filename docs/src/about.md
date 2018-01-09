@@ -47,28 +47,8 @@ layout. To build the docs, run `make.jl`:
 $ julia --color=yes docs/make.jl
 ```
 
-## Running the benchmarks
-
-This package contains a suite of benchmarks that is handled through
-[PkgBenchmark](https://github.com/JuliaCI/PkgBenchmark.jl). To run the benchmarks,
-execute the following commands in Julia's REPL:
-
-```julia
-julia> using IntervalMatrices, PkgBenchmark
-julia> benchmarkpkg("IntervalMatrices")
-```
-
-To save the results to a custom directory, use:
-
-```julia
-julia> benchmarkpkg("IntervalMatrices", resultsdir="/Users/forets/Projects")
-```
-
-For further options see the inline help of `benchmarkpkg`.
-
 ## Credits
 
 These persons have contributed to `IntervalMatrices.jl` (in alphabetic order):
 
 - [Marcelo Forets](http://marcelo-forets.fr)
-- [Alexandre Rocca](http://www-verimag.imag.fr/~rocca/)
