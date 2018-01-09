@@ -1,15 +1,3 @@
-# struct IntervalMatrixExponential{T, IT} <: AbstractIntervalMatrix{IT}
-struct IntervalMatrixExponential{T, IT}
-    A::IntervalMatrix{T, IT}
-end
-IntervalMatrixExponential{T, IT <: AbstractInterval{T}}(x::IntervalMatrix{T, IT}) =
-    IntervalMatrixExponential{T, IT}(x)
-
-import Base.size
-
-size(M::IntervalMatrixExponential) = size(M.A)
-size(M::IntervalMatrixExponential, i) = size(M.A, i)
-
 """
     quadratic_expansion(A::IntervalMatrix, t, p)
 
@@ -67,13 +55,13 @@ function quadratic_expansion(A::IntervalMatrix, t)
 end
 
 """
-    expm_overapproximation(M::IntervalMatrixExponential{T, <: AbstractInterval{T}}, t, p) where {T}
+    expm_overapproximation(M::IntervalMatrix{T, <: AbstractInterval{T}}, t, p) where {T}
 
 Overapproximation of the exponential of an interval matrix.
 
 ### Input
 
-- `M` -- exponential of an interval matrix
+- `A` -- interval matrix
 - `t` -- non-negative time value
 - `p` -- order of the appproximation
 
@@ -82,36 +70,36 @@ Overapproximation of the exponential of an interval matrix.
 See Theorem 1 in *Reachability Analysis of Linear Systems with Uncertain
 Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
-function expm_overapproximation(M::IntervalMatrixExponential{T, <: AbstractInterval{T}}, t, p) where {T}
-    n = size(M, 1)
+function expm_overapproximation(A::IntervalMatrix{T, <: AbstractInterval{T}}, t, p) where {T}
+    n = size(A, 1)
     Id = IntervalMatrix(fill(zero(T)±zero(T), (n , n)))
     for i in 1:n
         Id[i, i] = one(T)±zero(T)
     end
     Γ = IntervalMatrix(fill(zero(T)±one(T), (n , n)))
-    nA = norm(M.A, Inf)
+    nA = norm(A, Inf)
     c = nA * t / (p + 2)
     @assert c < 1
     E = Γ * ((nA*t)^(p+1) * (1/factorial(p + 1) * 1/(1-c)))
 
     S = IntervalMatrix(fill(zero(T)±zero(T), (n , n)))
-    Ai = M.A * M.A * M.A
+    Ai = A * A * A
     for i in 3:p
         S = S + Ai * (t^i/factorial(i))
-        Ai = Ai * M.A
+        Ai = Ai * A
     end
-    W = quadratic_expansion(M.A, t)
+    W = quadratic_expansion(A, t)
     return Id + W + S + E
 end
 
 """
-    expm_underapproximation(M::IntervalMatrixExponential{T, <: AbstractInterval{T}}, t, p) where {T}
+    expm_underapproximation(M::IntervalMatrix{T, <: AbstractInterval{T}}, t, p) where {T}
 
 Overapproximation of the exponential of an interval matrix.
 
 ### Input
 
-- `M` -- exponential of an interval matrix
+- `A` -- interval matrix
 - `t` -- non-negative time value
 - `p` -- order of the appproximation
 
@@ -120,15 +108,15 @@ Overapproximation of the exponential of an interval matrix.
 See Theorem 2 in *Reachability Analysis of Linear Systems with Uncertain
 Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
-function expm_underapproximation(M::IntervalMatrixExponential{T, <: AbstractInterval{T}}, t, p) where {T}
-    n = size(M, 1)
+function expm_underapproximation(A::IntervalMatrix{T, <: AbstractInterval{T}}, t, p) where {T}
+    n = size(A, 1)
     Id = IntervalMatrix(fill(zero(T)±zero(T), (n , n)))
     for i in 1:n
         Id[i, i] = one(T)±zero(T)
     end
 
     Y = zeros(n, n)
-    LA = left(M.A)
+    LA = left(A)
     Ai = LA * LA * LA
     for i in 3:p
         Y = Y + Ai * (t^i/factorial(i))
@@ -136,7 +124,7 @@ function expm_underapproximation(M::IntervalMatrixExponential{T, <: AbstractInte
     end
 
     Z = zeros(n, n)
-    RA = right(M.A)
+    RA = right(A)
     Ai = RA * RA * RA
     for i in 3:p
         Z = Z + Ai * (t^i/factorial(i))
@@ -150,6 +138,6 @@ function expm_underapproximation(M::IntervalMatrixExponential{T, <: AbstractInte
         end
     end
 
-    W = quadratic_expansion(M.A, t)
+    W = quadratic_expansion(A, t)
     return Id + W + B
 end
