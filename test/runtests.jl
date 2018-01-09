@@ -22,8 +22,15 @@ end
     @test B isa IntervalMatrix
 end
 
+@testset "Interval matrix methods" begin
+    m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
+    n = norm(m)
+    l = left(m)
+    r = right(m)
+end
+
 @testset "Interval matrix exponential" begin
     m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
-    me = IntervalMatrixExponential(m, 2)
-    @test me isa IntervalMatrixExponential
+    a_over = expm_overapproximation(m, 1.0, 4)
+    a_under = expm_underapproximation(m, 1.0, 4)
 end

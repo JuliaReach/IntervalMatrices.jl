@@ -18,8 +18,7 @@ include("exponential.jl")
 # ======
 
 export AbstractIntervalMatrix,
-       IntervalMatrix,
-       IntervalMatrixExponential
+       IntervalMatrix
 
 # ========
 # Methods

@@ -1,5 +1,30 @@
+"""
+    AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}
+
+Abstract supertype for interval matrix types.
+"""
 abstract type AbstractIntervalMatrix{IT} <: AbstractMatrix{IT} end
 
+"""
+    IntervalMatrix{T, IT <: AbstractInterval{T}} <: AbstractIntervalMatrix{IT}
+
+Interval matrix, this type is parametrized in the number field and the type of
+interval set.
+
+### Fields
+
+- `mat` -- matrix whose entries are intervals
+
+### Examples
+
+```jldoctest
+julia> A = IntervalMatrix([-0.9±0.1 0±0; 0±0 -0.9±0.1])
+
+2×2 IntervalMatrices.IntervalMatrix{Float64,IntervalSets.ClosedInterval{Float64}}:
+ -1.0..-0.8  0.0..0.0
+ 0.0..0.0    -1.0..-0.8
+```
+"""
 struct IntervalMatrix{T, IT <: AbstractInterval{T}} <: AbstractIntervalMatrix{IT}
     mat::AbstractMatrix{IT}
 end
@@ -17,6 +42,13 @@ setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 
 """
     norm(A::IntervalMatrix, p::Real=Inf)
+
+The matrix norm of an interval matrix.
+
+### Input
+
+- `A` -- interval matrix
+- `p` -- (optional, default: `Inf`): the class of `p`-norm
 """
 function Base.LinAlg.norm(A::IntervalMatrix, p::Real=Inf)
     if p == Inf
@@ -28,6 +60,13 @@ end
 
 """
     left(A::IntervalMatrix)
+
+The left part of this interval matrix, which corresponds to the `left` of
+each interval element in the matrix.
+
+### Input
+
+- `A` -- interval matrix
 """
 function left(A::IntervalMatrix)
     n = size(A, 1)
@@ -36,6 +75,13 @@ end
 
 """
     right(A::IntervalMatrix)
+
+The right part of this interval matrix, which corresponds to the `right` of
+each interval element in the matrix.
+
+### Input
+
+- `A` -- interval matrix
 """
 function right(A::IntervalMatrix)
     n = size(A, 1)

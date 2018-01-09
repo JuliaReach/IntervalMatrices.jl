@@ -1,6 +1,6 @@
 # =========================
 # Multiplication operations
-# ==========================
+# =========================
 import Base.*
 
 function *(λ::Number, x::ClosedInterval)
