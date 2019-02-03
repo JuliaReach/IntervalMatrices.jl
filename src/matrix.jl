@@ -19,8 +19,7 @@ interval set.
 
 ```jldoctest
 julia> A = IntervalMatrix([-0.9±0.1 0±0; 0±0 -0.9±0.1])
-
-2×2 IntervalMatrices.IntervalMatrix{Float64,IntervalSets.ClosedInterval{Float64}}:
+2×2 IntervalMatrix{Float64,Interval{:closed,:closed,Float64}}:
  -1.0..-0.8  0.0..0.0
  0.0..0.0    -1.0..-0.8
 ```
@@ -28,7 +27,6 @@ julia> A = IntervalMatrix([-0.9±0.1 0±0; 0±0 -0.9±0.1])
 struct IntervalMatrix{T, IT <: AbstractInterval{T}} <: AbstractIntervalMatrix{IT}
     mat::AbstractMatrix{IT}
 end
-IntervalMatrix{T, IT <: AbstractInterval{T}}(x::AbstractMatrix{IT}) = IntervalMatrix{T, IT}(x)
 
 import Base:size, IndexStyle, getindex, setindex!, +, *
 
@@ -50,9 +48,9 @@ The matrix norm of an interval matrix.
 - `A` -- interval matrix
 - `p` -- (optional, default: `Inf`): the class of `p`-norm
 """
-function Base.LinAlg.norm(A::IntervalMatrix, p::Real=Inf)
+function LinearAlgebra.norm(A::IntervalMatrix, p::Real=Inf)
     if p == Inf
-        return norm(max.(abs.(left(A)), abs.(right(A))), Inf)
+        return LinearAlgebra.norm(max.(abs.(left(A)), abs.(right(A))), Inf)
     else
         error("the interval matrix norm for this value of p=$p is not implemented")
     end
