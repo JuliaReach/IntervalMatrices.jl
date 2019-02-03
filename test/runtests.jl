@@ -1,4 +1,4 @@
-using IntervalMatrices, Base.Test
+using IntervalMatrices, Test, LinearAlgebra
 
 @testset "Interval arithmetic" begin
     a = -1.5 ± 0.5

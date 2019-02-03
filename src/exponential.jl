@@ -1,7 +1,8 @@
 """
     quadratic_expansion(A::IntervalMatrix, t, p)
 
-Exactly compute the quadratic formula ``At + 1/2A^2 * t^2`` using interval arithmetics.
+Exactly compute the quadratic formula ``At + \\frac{1}{2}A^2t^2`` using interval
+arithmetics.
 
 ### Input
 
@@ -14,7 +15,7 @@ See Lemma 1 in *Reachability Analysis of Linear Systems with Uncertain Parameter
 and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
 function quadratic_expansion(A::IntervalMatrix, t)
-    n = Base.LinAlg.checksquare(A)
+    n = LinearAlgebra.checksquare(A)
 
     @inline function κ(aii, t)
         if -1/t ∈ aii
