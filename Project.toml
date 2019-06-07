@@ -1,0 +1,13 @@
+name = "IntervalMatrices"
+uuid = "b4f0291d-fe17-52bc-9479-3d1a343d9043"
+version = "0.1.0"
+
+[deps]
+IntervalSets = "8197267c-284f-5f27-9208-e0e47529a953"
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+
+[compat]
+julia = "≥ 1.0.0"
+IntervalSets = "≥ 0.3.1"
+Reexport = "≥ 0.2.0"
