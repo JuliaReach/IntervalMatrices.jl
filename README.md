@@ -18,7 +18,7 @@ matrices that have uncertain parameters.
 
 ### Dependencies
 
-This package requires Julia v0.6 or later. Refer to the official documentation
+This package requires Julia v1.0 or later. Refer to the official documentation
 on how to install it for your system.
 
 ### Installation
