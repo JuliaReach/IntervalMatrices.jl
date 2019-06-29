@@ -6,7 +6,8 @@ Abstract supertype for interval matrix types.
 abstract type AbstractIntervalMatrix{IT} <: AbstractMatrix{IT} end
 
 """
-    IntervalMatrix{T, IT <: AbstractInterval{T}} <: AbstractIntervalMatrix{IT}
+    IntervalMatrix{T, IT<:AbstractInterval{T}, M<:AbstractMatrix{IT}} <:
+        AbstractIntervalMatrix{IT}
 
 Interval matrix, this type is parametrized in the number field and the type of
 interval set.
@@ -24,8 +25,9 @@ julia> A = IntervalMatrix([-0.9±0.1 0±0; 0±0 -0.9±0.1])
  0.0..0.0    -1.0..-0.8
 ```
 """
-struct IntervalMatrix{T, IT <: AbstractInterval{T}} <: AbstractIntervalMatrix{IT}
-    mat::AbstractMatrix{IT}
+struct IntervalMatrix{T, IT<:AbstractInterval{T}, M<:AbstractMatrix{IT}} <:
+        AbstractIntervalMatrix{IT}
+    mat::M
 end
 
 import Base:size, IndexStyle, getindex, setindex!, +, *
