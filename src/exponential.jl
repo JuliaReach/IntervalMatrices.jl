@@ -78,7 +78,7 @@ function expm_overapproximation(A::IntervalMatrix{T, <: AbstractInterval{T}}, t,
         Id[i, i] = one(T)±zero(T)
     end
     Γ = IntervalMatrix(fill(zero(T)±one(T), (n , n)))
-    nA = norm(A, Inf)
+    nA = opnorm(A, Inf)
     c = nA * t / (p + 2)
     @assert c < 1
     E = Γ * ((nA*t)^(p+1) * (1/factorial(p + 1) * 1/(1-c)))

@@ -1,3 +1,5 @@
+export opnorm
+
 """
     AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}
 
@@ -41,7 +43,7 @@ setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 *(M1::IntervalMatrix, M2::IntervalMatrix) = IntervalMatrix(M1.mat * M2.mat)
 
 """
-    norm(A::IntervalMatrix, p::Real=Inf)
+    opnorm(A::IntervalMatrix, p::Real=Inf)
 
 The matrix norm of an interval matrix.
 
@@ -49,10 +51,20 @@ The matrix norm of an interval matrix.
 
 - `A` -- interval matrix
 - `p` -- (optional, default: `Inf`): the class of `p`-norm
+
+### Notes
+
+The matrix ``p``-norm of an interval matrix ``A`` is defined as
+
+```math
+    ‖A‖_p := ‖\\max(|\\text{left}(A)|, |\\text{right}(A)|)‖_p
+```
+
+where ``\\max`` and ``|·|`` are taken elementwise.
 """
-function LinearAlgebra.norm(A::IntervalMatrix, p::Real=Inf)
-    if p == Inf
-        return LinearAlgebra.norm(max.(abs.(left(A)), abs.(right(A))), Inf)
+function LinearAlgebra.opnorm(A::IntervalMatrix, p::Real=Inf)
+    if p == Inf || p == 1
+        return LinearAlgebra.opnorm(max.(abs.(left(A)), abs.(right(A))), p)
     else
         error("the interval matrix norm for this value of p=$p is not implemented")
     end
