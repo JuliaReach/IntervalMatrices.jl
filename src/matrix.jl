@@ -1,3 +1,5 @@
+export opnorm
+
 """
     AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}
 
