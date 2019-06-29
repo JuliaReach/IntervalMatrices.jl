@@ -49,10 +49,20 @@ The matrix norm of an interval matrix.
 
 - `A` -- interval matrix
 - `p` -- (optional, default: `Inf`): the class of `p`-norm
+
+### Notes
+
+The matrix ``p``-norm of an interval matrix ``A`` is defined as
+
+```math
+    ‖A‖_p := ‖\\max(|\\text{left}(A)|, |\\text{right}(A)|)‖_p
+```
+
+where ``\\max`` and ``|·|`` are taken elementwise.
 """
 function LinearAlgebra.norm(A::IntervalMatrix, p::Real=Inf)
-    if p == Inf
-        return LinearAlgebra.norm(max.(abs.(left(A)), abs.(right(A))), Inf)
+    if p == Inf || p == 1
+        return LinearAlgebra.opnorm(max.(abs.(left(A)), abs.(right(A))), p)
     else
         error("the interval matrix norm for this value of p=$p is not implemented")
     end
