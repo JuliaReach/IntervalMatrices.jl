@@ -72,25 +72,32 @@ See Theorem 1 in *Reachability Analysis of Linear Systems with Uncertain
 Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
 function expm_overapproximation(A::IntervalMatrix{T, <: AbstractInterval{T}}, t, p) where {T}
-    n = size(A, 1)
-    Id = IntervalMatrix(fill(zero(T)±zero(T), (n , n)))
-    for i in 1:n
-        Id[i, i] = one(T)±zero(T)
-    end
-    Γ = IntervalMatrix(fill(zero(T)±one(T), (n , n)))
     nA = opnorm(A, Inf)
     c = nA * t / (p + 2)
     @assert c < 1
+
+    n = size(A, 1)
+    Γ = IntervalMatrix(fill(zero(T)±one(T), (n , n)))
     E = Γ * ((nA*t)^(p+1) * (1/factorial(p + 1) * 1/(1-c)))
 
     S = IntervalMatrix(fill(zero(T)±zero(T), (n , n)))
-    Ai = A * A * A
+    Ai = A * A
+    fact_num = t^2
+    fact_denom = 2
     for i in 3:p
-        S = S + Ai * (t^i/factorial(i))
+        fact_num *= t
+        fact_denom *= i
         Ai = Ai * A
+        S = S + Ai * (fact_num / fact_denom)
     end
     W = quadratic_expansion(A, t)
-    return Id + W + S + E
+    res = W + S + E
+
+    # add identity matrix implicitly
+    for i in 1:n
+        res[i, i] += one(T)
+    end
+    return res
 end
 
 """
@@ -111,34 +118,38 @@ Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
 function expm_underapproximation(A::IntervalMatrix{T, <: AbstractInterval{T}}, t, p) where {T}
     n = size(A, 1)
-    Id = IntervalMatrix(fill(zero(T)±zero(T), (n , n)))
-    for i in 1:n
-        Id[i, i] = one(T)±zero(T)
-    end
 
     Y = zeros(n, n)
     LA = left(A)
-    Ai = LA * LA * LA
-    for i in 3:p
-        Y = Y + Ai * (t^i/factorial(i))
-        Ai = Ai * LA
-    end
-
+    Ail = LA * LA
     Z = zeros(n, n)
     RA = right(A)
-    Ai = RA * RA * RA
+    Air = RA * RA
+    fact_num = t^2
+    fact_denom = 2
     for i in 3:p
-        Z = Z + Ai * (t^i/factorial(i))
-        Ai = Ai * RA
+        fact_num *= t
+        fact_denom *= i
+        fact = fact_num / fact_denom
+        Ail = Ail * LA
+        Y = Y + Ail * fact
+        Air = Air * RA
+        Z = Z + Air * fact
     end
 
-    B = IntervalMatrix(fill(zero(T)±zero(T), (n , n)))
-    for i in 1:n
-        for j in 1:n
+    B = IntervalMatrix(Matrix{Interval{:closed, :closed, Float64}}(undef, n , n))
+    for j in 1:n
+        for i in 1:n
             B[i, j] = ClosedInterval(min(Y[i, j], Z[i, j]), max(Y[i, j], Z[i, j]))
         end
     end
 
     W = quadratic_expansion(A, t)
-    return Id + W + B
+    res = W + B
+
+    # add identity matrix implicitly
+    for i in 1:n
+        res[i, i] += one(T)
+    end
+    return res
 end
