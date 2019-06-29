@@ -1,5 +1,5 @@
 name = "IntervalMatrices"
-uuid = "b4f0291d-fe17-52bc-9479-3d1a343d9043"
+uuid = "5c1f47dc-42dd-5697-8aaa-4d102d140ba9"
 version = "0.1.0"
 
 [deps]
