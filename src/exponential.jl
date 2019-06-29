@@ -17,38 +17,36 @@ and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 function quadratic_expansion(A::IntervalMatrix, t)
     n = LinearAlgebra.checksquare(A)
 
+    t2d2 = t^2/2
     @inline function κ(aii, t)
         if -1/t ∈ aii
             return -1/2
         else
-            return min(aii.left*t+aii.left^2*t^2/2, aii.right*t+aii.right^2*t^2/2)
+            return min(aii.left*t+aii.left^2*t2d2, aii.right*t+aii.right^2*t2d2)
         end
     end
 
     W = similar(A)
 
-    for i in 1:n
-        for j in 1:n
+    @inbounds for j in 1:n
+        for i in 1:n
+            S = 0
             if i ≠ j
-                W[i, j] = A[i, j] * (t + (A[i, i] + A[j, j])*(t^2/2.))
-                S = 0
                 for k in 1:n
                     if k ≠ i && k ≠ j
                         S = S + A[i, k] * A[k, j]
                     end
                 end
-                W[i, j] = W[i, j] + S * (t^2/2.)
+                W[i, j] = A[i, j] * (t + (A[i, i] + A[j, j]) * t2d2) + S * t2d2
             else
-                u = A[i, i].left * t + A[i, i].left^2 * t^2/2
-                v = A[i, i].right * t + A[i, i].right^2 * t^2/2
-                W[i, i] = ClosedInterval(κ(A[i, i], t), max(u, v))
-                S = 0
                 for k in 1:n
                     if k ≠ i
-                        S = S + A[i, k] * A[k, i]
+                        S = S + A[i, k] * A[k, j]
                     end
                 end
-                W[i, i] = W[i, i] + S * (t^2/2.)
+                u = A[i, i].left * t + A[i, i].left^2 * t2d2
+                v = A[i, i].right * t + A[i, i].right^2 * t2d2
+                W[i, i] = ClosedInterval(κ(A[i, i], t), max(u, v)) + S * t2d2
             end
         end
     end
