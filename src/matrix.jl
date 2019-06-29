@@ -41,7 +41,7 @@ setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 *(M1::IntervalMatrix, M2::IntervalMatrix) = IntervalMatrix(M1.mat * M2.mat)
 
 """
-    norm(A::IntervalMatrix, p::Real=Inf)
+    opnorm(A::IntervalMatrix, p::Real=Inf)
 
 The matrix norm of an interval matrix.
 
@@ -60,7 +60,7 @@ The matrix ``p``-norm of an interval matrix ``A`` is defined as
 
 where ``\\max`` and ``|·|`` are taken elementwise.
 """
-function LinearAlgebra.norm(A::IntervalMatrix, p::Real=Inf)
+function LinearAlgebra.opnorm(A::IntervalMatrix, p::Real=Inf)
     if p == Inf || p == 1
         return LinearAlgebra.opnorm(max.(abs.(left(A)), abs.(right(A))), p)
     else

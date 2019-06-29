@@ -24,8 +24,8 @@ end
 
 @testset "Interval matrix methods" begin
     m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.8..4.2 0.0..0.9])
-    @test norm(m) == norm(m, Inf) ≈ 5.2
-    @test norm(m, 1) ≈ 5.3
+    @test opnorm(m) == opnorm(m, Inf) ≈ 5.2
+    @test opnorm(m, 1) ≈ 5.3
     l = left(m)
     r = right(m)
 end
