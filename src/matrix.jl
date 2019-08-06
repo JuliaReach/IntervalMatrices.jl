@@ -1,3 +1,5 @@
+import Base: split
+
 """
     AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}
 
@@ -96,4 +98,36 @@ each interval element in the matrix.
 function right(A::IntervalMatrix)
     n = size(A, 1)
     return hcat([[A[i, j].right for j in 1:n] for i in 1:n]...)'
+end
+
+"""
+    split(A::IntervalMatrix{T}) where {T}
+
+Split an interval matrix ``A`` into two conventional matrices ``C`` and ``S``
+such that ``A = C + [-S, S]``.
+
+### Input
+
+- `A` -- interval matrix
+
+### Output
+
+A pair `(C, S)` such that the entries of `C` are the central points and the
+entries of `S` are the (nonnegative) radii of the intervals in `A`.
+"""
+function split(A::IntervalMatrix{T}) where {T}
+    m, n = size(A)
+    C = Matrix{T}(undef, m, n)
+    S = Matrix{T}(undef, m, n)
+
+    @inbounds for j in 1:n
+        for i in 1:m
+            itv = A[i, j]
+            radius = (itv.right - itv.left) / T(2)
+            C[i, j] = itv.left + radius
+            S[i, j] = radius
+        end
+    end
+
+    return C, S
 end
