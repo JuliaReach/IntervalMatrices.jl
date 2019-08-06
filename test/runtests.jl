@@ -35,3 +35,10 @@ end
     a_over = expm_overapproximation(m, 1.0, 4)
     a_under = expm_underapproximation(m, 1.0, 4)
 end
+
+@testset "Interval matrix split" begin
+    m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
+    c, s = split(m)
+    @test c ≈ [-0.1 -4.; 4. -0.1]
+    @test s ≈ [1. 0.1; 0.1 1.]
+end
