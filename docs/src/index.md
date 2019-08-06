@@ -16,6 +16,10 @@ matrices that have uncertain parameters.
 
 ## Library Outline
 
+```@docs
+IntervalMatrices
+```
+
 ```@contents
 Pages = [
     "lib/types.md",

@@ -1,5 +1,7 @@
 using Documenter, IntervalMatrices
 
+DocMeta.setdocmeta!(IntervalMatrices, :DocTestSetup, :(using IntervalMatrices); recursive=true)
+
 makedocs(
     sitename = "IntervalMatrices.jl",
     modules = [IntervalMatrices],
