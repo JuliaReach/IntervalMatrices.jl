@@ -25,14 +25,14 @@ include("matrix.jl")
 # =======================================================
 include("exponential.jl")
 
+# ========
+# Exports
+# ========
 export AbstractIntervalMatrix,
-       IntervalMatrix,
-       norm
+       IntervalMatrix
 
-# ========
-# Methods
-# ========
-export left,
+export opnorm,
+       left,
        right,
        quadratic_expansion,
        expm_overapproximation,
