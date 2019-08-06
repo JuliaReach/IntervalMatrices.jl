@@ -7,6 +7,10 @@ matrices that have uncertain parameters.
 module IntervalMatrices
 
 using LinearAlgebra
+
+import Random
+using Random: AbstractRNG, GLOBAL_RNG, seed!
+
 using Reexport
 @reexport using IntervalSets
 

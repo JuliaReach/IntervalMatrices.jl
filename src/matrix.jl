@@ -1,5 +1,6 @@
 import Base: split,
              ∈
+import Random: rand
 
 """
     AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}
@@ -146,4 +147,31 @@ function ∈(M::AbstractMatrix, A::AbstractIntervalMatrix)
         end
     end
     return true
+end
+
+"""
+    rand(A::IntervalMatrix{T}; rng::AbstractRNG=GLOBAL_RNG) where {T}
+
+Sample a concrete matrix ``B`` from an interval matrix ``A`` such that every
+entry in ``B`` belongs to the corresponding interval in ``A``.
+
+### Input
+
+- `A`   -- interval matrix
+- `rng` -- (optional, default: `GLOBAL_RNG`) random-number generator
+
+### Output
+
+A concrete matrix.
+"""
+function rand(A::IntervalMatrix{T}; rng::AbstractRNG=GLOBAL_RNG) where {T}
+    m, n = size(A)
+    B = Matrix{T}(undef, m, n)
+    @inbounds for j in 1:n
+        for i in 1:m
+            itv = A[i, j]
+            B[i, j] = (itv.right - itv.left) * rand(rng) + itv.left
+        end
+    end
+    return B
 end
