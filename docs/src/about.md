@@ -18,9 +18,9 @@ to this package.
 ### Branches
 
 Each pull request (PR) should be pushed in a new branch with the name of the author
-followed by a descriptive name, e.g. `t/mforets/my_feature`. If the branch is
+followed by a descriptive name, e.g. `mforets/my_feature`. If the branch is
 associated to a previous discussion in one issue, we use the name of the issue for easier
-lookup, e.g. `t/mforets/7`.
+lookup, e.g. `mforets/7`.
 
 ### Unit testing and continuous integration (CI)
 
@@ -28,7 +28,7 @@ This project is synchronized with Travis CI, such that each PR gets tested
 before merging (and the build is automatically triggered after each new commit).
 
 For the maintainability of this project, we try to understand and fix the failing
-doctests if they exist. We develop in Julia v0.6.0, but for experimentation
+doctests if they exist. We develop in Julia v1.0, but for experimentation
 we also build on the nightly branch.
 
 To run the unit tests locally, you should do:
@@ -52,3 +52,4 @@ $ julia --color=yes docs/make.jl
 These persons have contributed to `IntervalMatrices.jl` (in alphabetic order):
 
 - [Marcelo Forets](http://marcelo-forets.fr)
+- [Christian Schilling](https://schillic.github.io/)
