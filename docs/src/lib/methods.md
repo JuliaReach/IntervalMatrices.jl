@@ -15,6 +15,7 @@ end
 ```
 
 ```@docs
+opnorm
 left
 right
 quadratic_expansion
