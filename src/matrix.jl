@@ -22,7 +22,7 @@ interval set.
 
 ```jldoctest
 julia> A = IntervalMatrix([-0.9±0.1 0±0; 0±0 -0.9±0.1])
-2×2 IntervalMatrix{Float64,Interval{:closed,:closed,Float64}}:
+2×2 IntervalMatrix{Float64,Interval{:closed,:closed,Float64},Array{Interval{:closed,:closed,Float64},2}}:
  -1.0..-0.8  0.0..0.0
  0.0..0.0    -1.0..-0.8
 ```
