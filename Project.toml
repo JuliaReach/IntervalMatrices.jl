@@ -4,8 +4,9 @@ version = "0.1.0"
 
 [deps]
 IntervalSets = "8197267c-284f-5f27-9208-e0e47529a953"
-Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 
 [compat]
 julia = "≥ 1.0.0"

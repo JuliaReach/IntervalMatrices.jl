@@ -50,3 +50,10 @@ end
     @test a1 ∈ m
     @test a2 ∉ m
 end
+
+@testset "Interval matrix rand" begin
+    m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
+    for i in 1:3
+        @test rand(m) ∈ m
+    end
+end
