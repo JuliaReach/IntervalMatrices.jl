@@ -10,7 +10,7 @@ using IntervalMatrices, Test, LinearAlgebra
 end
 
 @testset "Interval matrix arithmetic" begin
-    a = 1.0..1.3; b = 2.0..3.4; c = -0.5 ± 0.5; d = 0 ± 0.1
+    a = 1.0..1.3; b = 2.0..3.4; c = -0.5 ± 0.5; d = 0.0 ± 0.1
     A = IntervalMatrix([a b; c d])
 
     # can add, TODO: add test
@@ -20,6 +20,11 @@ end
     # can multiply, TODO: add test
     B = A * A
     @test B isa IntervalMatrix
+
+    # multiply interval and interval matrix
+    x = 0.0..2.0
+    @test x * A == A * x ==
+          IntervalMatrix([0.0..2.6 0.0..6.8; -2.0..0.0 -0.2..0.2])
 end
 
 @testset "Interval matrix methods" begin

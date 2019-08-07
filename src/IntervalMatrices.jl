@@ -24,6 +24,11 @@ include("arithmetic.jl")
 # ================================
 include("matrix.jl")
 
+# =================================
+# Arithmetic for interval matrices
+# =================================
+include("matrix_arithmetic.jl")
+
 # =======================================================
 # Methods to handle the exponential of an interval matrix
 # =======================================================

@@ -34,15 +34,12 @@ struct IntervalMatrix{T, IT<:AbstractInterval{T}, M<:AbstractMatrix{IT}} <:
     mat::M
 end
 
-import Base:size, IndexStyle, getindex, setindex!, +, *
+import Base:size, IndexStyle, getindex, setindex!
 
 IndexStyle(::Type{<:IntervalMatrix}) = IndexLinear()
 size(M::IntervalMatrix) = size(M.mat)
 getindex(M::IntervalMatrix, i::Int) = getindex(M.mat, i)
 setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
-
-+(M1::IntervalMatrix, M2::IntervalMatrix) = IntervalMatrix(M1.mat + M2.mat)
-*(M1::IntervalMatrix, M2::IntervalMatrix) = IntervalMatrix(M1.mat * M2.mat)
 
 """
     opnorm(A::IntervalMatrix, p::Real=Inf)
