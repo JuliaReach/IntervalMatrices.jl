@@ -1,4 +1,5 @@
-import Base: split
+import Base: split,
+             ∈
 
 """
     AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}
@@ -130,4 +131,19 @@ function split(A::IntervalMatrix{T}) where {T}
     end
 
     return C, S
+end
+
+function ∈(M::AbstractMatrix, A::AbstractIntervalMatrix)
+    @assert size(M) == size(A) "incompatible matrix sizes (M: $(size(M)), A: " *
+                               "$(size(A)))"
+
+    m, n = size(A)
+    @inbounds for j in 1:n
+        for i in 1:m
+            if M[i, j] ∉ A[i, j]
+                return false
+            end
+        end
+    end
+    return true
 end

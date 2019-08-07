@@ -22,4 +22,5 @@ quadratic_expansion
 expm_overapproximation
 expm_underapproximation
 split
+∈
 ```

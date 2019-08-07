@@ -42,3 +42,11 @@ end
     @test c ≈ [-0.1 -4.; 4. -0.1]
     @test s ≈ [1. 0.1; 0.1 1.]
 end
+
+@testset "Interval matrix membership" begin
+    m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
+    a1 = [0. -4.;  4. 0.]
+    a2 = [0. -3.; 4. 0.]
+    @test a1 ∈ m
+    @test a2 ∉ m
+end
