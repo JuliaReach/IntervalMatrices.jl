@@ -9,9 +9,6 @@ Depth = 3
 
 ```@meta
 CurrentModule = IntervalMatrices
-DocTestSetup = quote
-    using IntervalMatrices
-end
 ```
 
 ## Abstract interval operators

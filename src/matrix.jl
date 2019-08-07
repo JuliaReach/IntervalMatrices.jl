@@ -134,6 +134,25 @@ function split(A::IntervalMatrix{T}) where {T}
     return C, S
 end
 
+"""
+    ∈(M::AbstractMatrix, A::AbstractIntervalMatrix)
+
+Check whether a concrete matrix is an instance of an interval matrix.
+
+### Input
+
+- `M` -- concrete matrix
+- `A` -- interval matrix
+
+### Output
+
+`true` iff `M` is an instance of `A`
+
+### Algorithm
+
+We check for each entry in `M` whether it belongs to the corresponding interval
+in `A`.
+"""
 function ∈(M::AbstractMatrix, A::AbstractIntervalMatrix)
     @assert size(M) == size(A) "incompatible matrix sizes (M: $(size(M)), A: " *
                                "$(size(A)))"
