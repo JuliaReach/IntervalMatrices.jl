@@ -62,7 +62,7 @@ Overapproximation of the exponential of an interval matrix.
 
 - `A` -- interval matrix
 - `t` -- non-negative time value
-- `p` -- order of the appproximation
+- `p` -- order of the approximation
 
 ### Algorithm
 
@@ -70,13 +70,9 @@ See Theorem 1 in *Reachability Analysis of Linear Systems with Uncertain
 Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
 function expm_overapproximation(A::IntervalMatrix{T, <: AbstractInterval{T}}, t, p) where {T}
-    nA = opnorm(A, Inf)
-    c = nA * t / (p + 2)
-    @assert c < 1
-
     n = size(A, 1)
-    Γ = IntervalMatrix(fill(zero(T)±one(T), (n , n)))
-    E = Γ * ((nA*t)^(p+1) * (1/factorial(p + 1) * 1/(1-c)))
+
+    E = _expm_remainder(A, t, p; n=n)
 
     S = IntervalMatrix(fill(zero(T)±zero(T), (n , n)))
     Ai = A * A
@@ -98,6 +94,14 @@ function expm_overapproximation(A::IntervalMatrix{T, <: AbstractInterval{T}}, t,
     return res
 end
 
+function _expm_remainder(A::IntervalMatrix{T}, t, p; n=size(A, 1)) where {T}
+    nA = opnorm(A, Inf)
+    c = nA * t / (p + 2)
+    @assert c < 1
+    Γ = IntervalMatrix(fill(zero(T)±one(T), (n , n)))
+    return Γ * ((nA*t)^(p+1) * (1/factorial(p + 1) * 1/(1-c)))
+end
+
 """
     expm_underapproximation(M::IntervalMatrix{T, <: AbstractInterval{T}}, t, p) where {T}
 
@@ -107,7 +111,7 @@ Overapproximation of the exponential of an interval matrix.
 
 - `A` -- interval matrix
 - `t` -- non-negative time value
-- `p` -- order of the appproximation
+- `p` -- order of the approximation
 
 ### Algorithm
 
