@@ -1,9 +1,5 @@
 # IntervalMatrices.jl
 
-```@meta
-DocTestFilters = [r"[0-9\.]+ seconds \(.*\)"]
-```
-
 `IntervalMatrices` is a [Julia](http://julialang.org) package to work with
 matrices that have uncertain parameters.
 
