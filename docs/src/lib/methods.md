@@ -22,3 +22,9 @@ rand
 split
 ∈
 ```
+
+## Hulls
+
+```@docs
+correction_hull
+```
