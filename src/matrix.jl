@@ -13,7 +13,7 @@ abstract type AbstractIntervalMatrix{IT} <: AbstractMatrix{IT} end
     IntervalMatrix{T, IT<:Interval{T}, MT<:AbstractMatrix{IT}} <: AbstractIntervalMatrix{IT}
 
 An interval matrix i.e. a matrix whose coefficients are intervals. This type is
-parametrized in the number field, the type of interval.
+parametrized in the number field, the interval type, and the matrix type.
 
 ### Fields
 
