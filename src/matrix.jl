@@ -97,14 +97,7 @@ element-wise infimum of `A`.
 A scalar matrix whose coefficients are the infima of each element in `A`.
 """
 function left(A::IntervalMatrix{T}) where {T}
-    m, n = size(A)
-    L = Matrix{T}(undef, m, n)
-    for j in 1:m
-        for i in 1:n
-            @inbounds L[i, j] = inf(A[i, j])
-        end
-    end
-    return L
+    return map(inf, A)
 end
 
 """
@@ -122,14 +115,7 @@ element-wise supremum of `A`.
 A scalar matrix whose coefficients are the suprema of each element in `A`.
 """
 function right(A::IntervalMatrix{T}) where {T}
-    m, n = size(A)
-    R = Matrix{T}(undef, m, n)
-    for j in 1:m
-        for i in 1:n
-            @inbounds R[i, j] = sup(A[i, j])
-        end
-    end
-    return R
+    return map(sup, A)
 end
 
 """
