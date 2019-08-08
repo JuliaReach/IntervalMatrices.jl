@@ -10,7 +10,7 @@ import Base: +, *
 +(M::IntervalMatrix, x::Interval) = IntervalMatrix(x .+ M.mat)
 
 +(x::Number, M::IntervalMatrix) = Interval(x) + M
-+(M::IntervalMatrix, x::Number) = +(Interval(x), M)
++(M::IntervalMatrix, x::Number) = Interval(x) + M
 
 # =========================
 # Multiplication operations
