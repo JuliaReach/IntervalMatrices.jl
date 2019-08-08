@@ -262,3 +262,29 @@ function sample(A::IntervalMatrix{T}; rng::AbstractRNG=GLOBAL_RNG) where {T}
     end
     return B
 end
+
+"""
+    map(f, A::IntervalMatrix)
+
+Apply a function to every entry in an interval matrix.
+
+### Input
+
+- `f` -- function
+- `A` -- interval matrix
+
+### Output
+
+A new interval matrix `M` such that `M[i, j] == f(A[i, j])` where `i` and `j`
+are row respectively column indices.
+"""
+function map(f, A::IntervalMatrix)
+    m, n = size(A)
+    M = similar(A.mat)
+    for j in 1:n
+        for i in 1:m
+            @inbounds M[i, j] = f(A[i, j])
+        end
+    end
+    return IntervalMatrix(M)
+end
