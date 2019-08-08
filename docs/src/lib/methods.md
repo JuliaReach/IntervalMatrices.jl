@@ -19,6 +19,7 @@ quadratic_expansion
 expm_overapproximation
 expm_underapproximation
 rand
+sample
 split
 ∈
 ```

@@ -24,7 +24,7 @@ with Uncertain Parameters and Inputs. CDC 2007.
 function correction_hull(A::IntervalMatrix{T}, t, p) where {T}
     # initialize interval matrix with zero intervals
     m, n = size(A)
-    Mzero = Matrix{ClosedInterval{T}}(undef, m, n)
+    Mzero = Matrix{Interval{T}}(undef, m, n)
     z = Interval(zero(T), zero(T))
     @inbounds for j in 1:n
         for i in 1:m

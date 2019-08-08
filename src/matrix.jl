@@ -10,11 +10,10 @@ Abstract supertype for interval matrix types.
 abstract type AbstractIntervalMatrix{IT} <: AbstractMatrix{IT} end
 
 """
-    IntervalMatrix{T, IT<:AbstractInterval{T}, M<:AbstractMatrix{IT}} <:
-        AbstractIntervalMatrix{IT}
+    IntervalMatrix{T, IT<:Interval{T}, MT<:AbstractMatrix{IT}} <: AbstractIntervalMatrix{IT}
 
-Interval matrix, this type is parametrized in the number field and the type of
-interval set.
+An interval matrix i.e. a matrix whose coefficients are intervals. This type is
+parametrized in the number field, the type of interval.
 
 ### Fields
 
@@ -24,14 +23,18 @@ interval set.
 
 ```jldoctest
 julia> A = IntervalMatrix([-0.9±0.1 0±0; 0±0 -0.9±0.1])
-2×2 IntervalMatrix{Float64,Interval{:closed,:closed,Float64},Array{Interval{:closed,:closed,Float64},2}}:
- -1.0..-0.8  0.0..0.0
- 0.0..0.0    -1.0..-0.8
+2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+ [-1, -0.799999]   [0, 0]
+  [0, 0]          [-1, -0.799999]
 ```
 """
-struct IntervalMatrix{T, IT<:AbstractInterval{T}, M<:AbstractMatrix{IT}} <:
-        AbstractIntervalMatrix{IT}
-    mat::M
+struct IntervalMatrix{T, IT<:Interval{T}, MT<:AbstractMatrix{IT}} <: AbstractIntervalMatrix{IT}
+    mat::MT
+
+    # default constructor with domain constraint for radius
+    function IntervalMatrix{T, IT, MT}(M::MT) where {T, IT<:Interval{T}, MT<:AbstractMatrix{IT}}
+        return new{T, IT, MT}(M)
+    end
 end
 
 import Base:size, IndexStyle, getindex, setindex!
@@ -41,6 +44,16 @@ size(M::IntervalMatrix) = size(M.mat)
 getindex(M::IntervalMatrix, i::Int) = getindex(M.mat, i)
 setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 
+# convenience constructor without type parameter
+function IntervalMatrix(M::MT) where {T, IT<:Interval{T}, MT<:AbstractMatrix{IT}}
+    return IntervalMatrix{T, IT, MT}(M)
+end
+
+# convenience constructor for undef initializer
+function IntervalMatrix{T, IT, MT}(::UndefInitializer, m::Int, n::Int) where {T, IT<:Interval{T}, MT<:AbstractMatrix{IT}}
+    return IntervalMatrix(MT(undef, m, n))
+end
+
 """
     opnorm(A::IntervalMatrix, p::Real=Inf)
 
@@ -49,7 +62,7 @@ The matrix norm of an interval matrix.
 ### Input
 
 - `A` -- interval matrix
-- `p` -- (optional, default: `Inf`): the class of `p`-norm
+- `p` -- (optional, default: `Inf`) the class of `p`-norm
 
 ### Notes
 
@@ -70,39 +83,59 @@ function LinearAlgebra.opnorm(A::IntervalMatrix, p::Real=Inf)
 end
 
 """
-    left(A::IntervalMatrix)
+    left(A::IntervalMatrix{T}) where {T}
 
-The left part of this interval matrix, which corresponds to the `left` of
-each interval element in the matrix.
+Return the left part of this interval matrix, which corresponds to taking the
+element-wise infimum of `A`.
 
 ### Input
 
 - `A` -- interval matrix
+
+### Output
+
+A scalar matrix whose coefficients are the infima of each element in `A`.
 """
-function left(A::IntervalMatrix)
-    n = size(A, 1)
-    return hcat([[A[i, j].left for j in 1:n] for i in 1:n]...)'
+function left(A::IntervalMatrix{T}) where {T}
+    m, n = size(A)
+    L = Matrix{T}(undef, m, n)
+    for j in 1:m
+        for i in 1:n
+            @inbounds L[i, j] = inf(A[i, j])
+        end
+    end
+    return L
 end
 
 """
-    right(A::IntervalMatrix)
+    right(A::IntervalMatrix{T}) where {T}
 
-The right part of this interval matrix, which corresponds to the `right` of
-each interval element in the matrix.
+Return the right part of this interval matrix, which corresponds to taking the
+element-wise supremum of `A`.
 
 ### Input
 
 - `A` -- interval matrix
+
+### Output
+
+A scalar matrix whose coefficients are the suprema of each element in `A`.
 """
-function right(A::IntervalMatrix)
-    n = size(A, 1)
-    return hcat([[A[i, j].right for j in 1:n] for i in 1:n]...)'
+function right(A::IntervalMatrix{T}) where {T}
+    m, n = size(A)
+    R = Matrix{T}(undef, m, n)
+    for j in 1:m
+        for i in 1:n
+            @inbounds R[i, j] = sup(A[i, j])
+        end
+    end
+    return R
 end
 
 """
     split(A::IntervalMatrix{T}) where {T}
 
-Split an interval matrix ``A`` into two conventional matrices ``C`` and ``S``
+Split an interval matrix ``A`` into two scalar matrices ``C`` and ``S``
 such that ``A = C + [-S, S]``.
 
 ### Input
@@ -122,8 +155,8 @@ function split(A::IntervalMatrix{T}) where {T}
     @inbounds for j in 1:n
         for i in 1:m
             itv = A[i, j]
-            radius = (itv.right - itv.left) / T(2)
-            C[i, j] = itv.left + radius
+            radius = (sup(itv) - inf(itv)) / T(2)
+            C[i, j] = inf(itv) + radius
             S[i, j] = radius
         end
     end
@@ -165,28 +198,66 @@ function ∈(M::AbstractMatrix, A::AbstractIntervalMatrix)
     return true
 end
 
-"""
-    rand(A::IntervalMatrix{T}; rng::AbstractRNG=GLOBAL_RNG) where {T}
+# random interval
+function rand(::Type{Interval}; N::Type{<:Real}=Float64,
+              rng::AbstractRNG=GLOBAL_RNG)::Interval{N}
+    x, y = randn(rng, N), randn(rng, N)
+    return x < y ? Interval(x, y) : Interval(y, x)
+end
 
-Sample a concrete matrix ``B`` from an interval matrix ``A`` such that every
-entry in ``B`` belongs to the corresponding interval in ``A``.
+"""
+    rand(::Type{IntervalMatrix}, m::Int=2, n::Int=2;
+         N=Float64, rng::AbstractRNG=GLOBAL_RNG)
+
+Return a random interval matrix of the given size and numeric type.
 
 ### Input
 
-- `A`   -- interval matrix
-- `rng` -- (optional, default: `GLOBAL_RNG`) random-number generator
+- `IntervalMatrix` -- type, used for dispatch
+- `m`              -- (optional, default: `2`) number of rows
+- `n`              -- (optional, default: `2`) number of columns
+- `rng`            -- (optional, default: `GLOBAL_RNG`) random-number generator
 
 ### Output
 
-A concrete matrix.
+An interval matrix of size ``m × n`` whose coefficients are normally-distributed
+intervals of type `N` with mean `0` and standard deviation `1`.
 """
-function rand(A::IntervalMatrix{T}; rng::AbstractRNG=GLOBAL_RNG) where {T}
+function rand(::Type{IntervalMatrix}, m::Int=2, n::Int=2;
+              N=Float64, rng::AbstractRNG=GLOBAL_RNG)
+    B = Matrix{Interval{N}}(undef, m, n)
+    for j in 1:n
+        for i in 1:m
+            @inbounds B[i, j] = rand(Interval, N=N)
+        end
+    end
+    return IntervalMatrix(B)
+end
+
+"""
+    sample(A::IntervalMatrix{T}; rng::AbstractRNG=GLOBAL_RNG) where {T}
+
+Return a sample of the given random interval matrix.
+
+### Input
+
+- `A` -- interval matrix
+- `m`              -- (optional, default: `2`) number of rows
+- `n`              -- (optional, default: `2`) number of columns
+- `rng`            -- (optional, default: `GLOBAL_RNG`) random-number generator
+
+### Output
+
+An interval matrix of size ``m × n`` whose coefficients are normally-distributed
+intervals of type `N` with mean `0` and standard deviation `1`.
+"""
+function sample(A::IntervalMatrix{T}; rng::AbstractRNG=GLOBAL_RNG) where {T}
     m, n = size(A)
     B = Matrix{T}(undef, m, n)
     @inbounds for j in 1:n
         for i in 1:m
             itv = A[i, j]
-            B[i, j] = (itv.right - itv.left) * rand(rng) + itv.left
+            B[i, j] = (sup(itv) - inf(itv)) * rand(rng) + inf(itv)
         end
     end
     return B
