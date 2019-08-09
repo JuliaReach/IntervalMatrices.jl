@@ -31,11 +31,6 @@ julia> A = IntervalMatrix([-0.9±0.1 0±0; 0±0 -0.9±0.1])
 """
 struct IntervalMatrix{T, IT<:Interval{T}, MT<:AbstractMatrix{IT}} <: AbstractIntervalMatrix{IT}
     mat::MT
-
-    # default constructor with domain constraint for radius
-    function IntervalMatrix{T, IT, MT}(M::MT) where {T, IT<:Interval{T}, MT<:AbstractMatrix{IT}}
-        return new{T, IT, MT}(M)
-    end
 end
 
 import Base:size, IndexStyle, getindex, setindex!
@@ -44,16 +39,6 @@ IndexStyle(::Type{<:IntervalMatrix}) = IndexLinear()
 size(M::IntervalMatrix) = size(M.mat)
 getindex(M::IntervalMatrix, i::Int) = getindex(M.mat, i)
 setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
-
-# convenience constructor without type parameter
-function IntervalMatrix(M::MT) where {T, IT<:Interval{T}, MT<:AbstractMatrix{IT}}
-    return IntervalMatrix{T, IT, MT}(M)
-end
-
-# convenience constructor for undef initializer
-function IntervalMatrix{T, IT, MT}(::UndefInitializer, m::Int, n::Int) where {T, IT<:Interval{T}, MT<:AbstractMatrix{IT}}
-    return IntervalMatrix(MT(undef, m, n))
-end
 
 """
     opnorm(A::IntervalMatrix, p::Real=Inf)
@@ -228,10 +213,10 @@ Return a sample of the given random interval matrix.
 
 ### Input
 
-- `A` -- interval matrix
-- `m`              -- (optional, default: `2`) number of rows
-- `n`              -- (optional, default: `2`) number of columns
-- `rng`            -- (optional, default: `GLOBAL_RNG`) random-number generator
+- `A`   -- interval matrix
+- `m`   -- (optional, default: `2`) number of rows
+- `n`   -- (optional, default: `2`) number of columns
+- `rng` -- (optional, default: `GLOBAL_RNG`) random-number generator
 
 ### Output
 
