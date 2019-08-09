@@ -12,12 +12,7 @@ import Random
 using Random: AbstractRNG, GLOBAL_RNG, seed!
 
 using Reexport
-@reexport using IntervalSets
-
-# ================================
-# Arithmetic for interval sets
-# ================================
-include("arithmetic.jl")
+@reexport using IntervalArithmetic
 
 # ================================
 # Type defining an interval matrix
@@ -27,7 +22,7 @@ include("matrix.jl")
 # =================================
 # Arithmetic for interval matrices
 # =================================
-include("matrix_arithmetic.jl")
+include("arithmetic.jl")
 
 # =======================================================
 # Methods to handle the exponential of an interval matrix
@@ -45,9 +40,9 @@ include("correction_hull.jl")
 export AbstractIntervalMatrix,
        IntervalMatrix
 
-export opnorm,
-       left,
-       right,
+export inf, sup,
+       rand, sample,
+       opnorm,
        quadratic_expansion,
        expm_overapproximation,
        expm_underapproximation

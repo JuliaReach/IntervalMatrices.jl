@@ -1,3 +1,5 @@
+using LinearAlgebra: checksquare
+
 """
     quadratic_expansion(A::IntervalMatrix, t, p)
 
@@ -15,14 +17,16 @@ See Lemma 1 in *Reachability Analysis of Linear Systems with Uncertain Parameter
 and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
 function quadratic_expansion(A::IntervalMatrix, t)
-    n = LinearAlgebra.checksquare(A)
+    n = checksquare(A)
 
     t2d2 = t^2/2
     @inline function κ(aii, t)
         if -1/t ∈ aii
             return -1/2
         else
-            return min(aii.left*t+aii.left^2*t2d2, aii.right*t+aii.right^2*t2d2)
+            a = inf(aii) * t + inf(aii)^2 * t2d2
+            b = sup(aii) * t + sup(aii)^2 * t2d2
+            return min(a, b)
         end
     end
 
@@ -44,9 +48,9 @@ function quadratic_expansion(A::IntervalMatrix, t)
                         S = S + A[i, k] * A[k, j]
                     end
                 end
-                u = A[i, i].left * t + A[i, i].left^2 * t2d2
-                v = A[i, i].right * t + A[i, i].right^2 * t2d2
-                W[i, i] = ClosedInterval(κ(A[i, i], t), max(u, v)) + S * t2d2
+                u = inf(A[i, i]) * t + inf(A[i, i])^2 * t2d2
+                v = sup(A[i, i]) * t + sup(A[i, i])^2 * t2d2
+                W[i, i] = Interval(κ(A[i, i], t), max(u, v)) + S * t2d2
             end
         end
     end
@@ -54,7 +58,7 @@ function quadratic_expansion(A::IntervalMatrix, t)
 end
 
 """
-    expm_overapproximation(M::IntervalMatrix{T, <: AbstractInterval{T}}, t, p) where {T}
+    expm_overapproximation(M::IntervalMatrix{T, Interval{T}}, t, p) where {T}
 
 Overapproximation of the exponential of an interval matrix.
 
@@ -69,12 +73,11 @@ Overapproximation of the exponential of an interval matrix.
 See Theorem 1 in *Reachability Analysis of Linear Systems with Uncertain
 Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
-function expm_overapproximation(A::IntervalMatrix{T, <: AbstractInterval{T}}, t, p) where {T}
-    n = size(A, 1)
+function expm_overapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {T}
+    n = checksquare(A)
 
     E = _expm_remainder(A, t, p; n=n)
-
-    S = IntervalMatrix(fill(zero(T)±zero(T), (n , n)))
+    S = IntervalMatrix(zeros(Interval{T}, n, n))
     Ai = A * A
     fact_num = t^2
     fact_denom = 2
@@ -94,7 +97,7 @@ function expm_overapproximation(A::IntervalMatrix{T, <: AbstractInterval{T}}, t,
     return res
 end
 
-function _expm_remainder(A::IntervalMatrix{T}, t, p; n=size(A, 1)) where {T}
+function _expm_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     nA = opnorm(A, Inf)
     c = nA * t / (p + 2)
     @assert c < 1
@@ -103,7 +106,7 @@ function _expm_remainder(A::IntervalMatrix{T}, t, p; n=size(A, 1)) where {T}
 end
 
 """
-    expm_underapproximation(M::IntervalMatrix{T, <: AbstractInterval{T}}, t, p) where {T}
+    expm_underapproximation(M::IntervalMatrix{T, Interval{T}}, t, p) where {T}
 
 Overapproximation of the exponential of an interval matrix.
 
@@ -118,14 +121,14 @@ Overapproximation of the exponential of an interval matrix.
 See Theorem 2 in *Reachability Analysis of Linear Systems with Uncertain
 Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
-function expm_underapproximation(A::IntervalMatrix{T, <: AbstractInterval{T}}, t, p) where {T}
-    n = size(A, 1)
+function expm_underapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {T}
+    n = checksquare(A)
 
     Y = zeros(n, n)
-    LA = left(A)
+    LA = inf(A)
     Ail = LA * LA
     Z = zeros(n, n)
-    RA = right(A)
+    RA = sup(A)
     Air = RA * RA
     fact_num = t^2
     fact_denom = 2
@@ -139,10 +142,12 @@ function expm_underapproximation(A::IntervalMatrix{T, <: AbstractInterval{T}}, t
         Z = Z + Air * fact
     end
 
-    B = IntervalMatrix(Matrix{Interval{:closed, :closed, Float64}}(undef, n , n))
-    for j in 1:n
+    B = IntervalMatrix(Matrix{Interval{T}}(undef, n , n))
+    @inbounds for j in 1:n
         for i in 1:n
-            B[i, j] = ClosedInterval(min(Y[i, j], Z[i, j]), max(Y[i, j], Z[i, j]))
+            minYZ = min(Y[i, j], Z[i, j])
+            maxYZ = max(Y[i, j], Z[i, j])
+            B[i, j] = Interval(minYZ, maxYZ)
         end
     end
 
@@ -151,7 +156,7 @@ function expm_underapproximation(A::IntervalMatrix{T, <: AbstractInterval{T}}, t
 
     # add identity matrix implicitly
     for i in 1:n
-        res[i, i] += one(T)
+        @inbounds res[i, i] += one(T)
     end
     return res
 end

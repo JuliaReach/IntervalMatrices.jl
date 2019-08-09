@@ -1,34 +1,22 @@
+import Base: +, *
+
+# =========================
+# Addition operations
+# =========================
+
++(M1::IntervalMatrix, M2::IntervalMatrix) = IntervalMatrix(M1.mat + M2.mat)
+
++(x::Interval, M::IntervalMatrix) = IntervalMatrix(x .+ M.mat)
++(M::IntervalMatrix, x::Interval) = IntervalMatrix(x .+ M.mat)
+
++(x::Number, M::IntervalMatrix) = Interval(x) + M
++(M::IntervalMatrix, x::Number) = Interval(x) + M
+
 # =========================
 # Multiplication operations
 # =========================
-import Base.*
 
-function *(λ::Number, x::ClosedInterval)
-    return ClosedInterval(λ*x.left, λ*x.right)
-end
+*(M1::IntervalMatrix, M2::IntervalMatrix) = IntervalMatrix(M1.mat * M2.mat)
 
-function *(x::ClosedInterval, λ::Number)
-    return ClosedInterval(λ*x.left, λ*x.right)
-end
-
-function *(x::ClosedInterval, y::ClosedInterval)
-    z = (x.left * y.left, x.left * y.right, x.right * y.left, x.right * y.right)
-    return ClosedInterval(minimum(z), maximum(z))
-end
-
-# ===================
-# Addition operations
-# ===================
-import Base.+
-
-function +(λ::Number, x::ClosedInterval)
-    return ClosedInterval(λ + x.left, λ + x.right)
-end
-
-function +(x::ClosedInterval, λ::Number)
-    return ClosedInterval(λ + x.left, λ + x.right)
-end
-
-function +(x::ClosedInterval, y::ClosedInterval)
-    return ClosedInterval(x.left + y.left, x.right + y.right)
-end
+*(x::Interval, M::IntervalMatrix) = IntervalMatrix(x .* M.mat)
+*(M::IntervalMatrix, x::Interval) = IntervalMatrix(x .* M.mat)
