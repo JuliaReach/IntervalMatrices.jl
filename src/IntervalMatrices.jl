@@ -40,8 +40,8 @@ include("correction_hull.jl")
 export AbstractIntervalMatrix,
        IntervalMatrix
 
-export rand,
-       sample,
+export inf, sup,
+       rand, sample,
        opnorm,
        quadratic_expansion,
        expm_overapproximation,

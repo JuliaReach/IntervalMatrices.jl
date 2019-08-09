@@ -13,8 +13,8 @@ CurrentModule = IntervalMatrices
 
 ```@docs
 opnorm
-left
-right
+inf
+sup
 quadratic_expansion
 expm_overapproximation
 expm_underapproximation

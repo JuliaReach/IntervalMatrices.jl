@@ -48,7 +48,7 @@ function quadratic_expansion(A::IntervalMatrix, t)
                         S = S + A[i, k] * A[k, j]
                     end
                 end
-                u = inf(A[i, i]) * t + sup(A[i, i])^2 * t2d2
+                u = inf(A[i, i]) * t + inf(A[i, i])^2 * t2d2
                 v = sup(A[i, i]) * t + sup(A[i, i])^2 * t2d2
                 W[i, i] = Interval(κ(A[i, i], t), max(u, v)) + S * t2d2
             end
@@ -58,7 +58,7 @@ function quadratic_expansion(A::IntervalMatrix, t)
 end
 
 """
-    expm_overapproximation(M::IntervalMatrix{T, <: AbstractInterval{T}}, t, p) where {T}
+    expm_overapproximation(M::IntervalMatrix{T, Interval{T}}, t, p) where {T}
 
 Overapproximation of the exponential of an interval matrix.
 
@@ -77,8 +77,7 @@ function expm_overapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {
     n = checksquare(A)
 
     E = _expm_remainder(A, t, p; n=n)
-
-    S = IntervalMatrix(fill(zero(T)±zero(T), (n , n)))
+    S = IntervalMatrix(zeros(Interval{T}, n, n))
     Ai = A * A
     fact_num = t^2
     fact_denom = 2
@@ -107,7 +106,7 @@ function _expm_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
 end
 
 """
-    expm_underapproximation(M::IntervalMatrix{T, <: AbstractInterval{T}}, t, p) where {T}
+    expm_underapproximation(M::IntervalMatrix{T, Interval{T}}, t, p) where {T}
 
 Overapproximation of the exponential of an interval matrix.
 
@@ -126,10 +125,10 @@ function expm_underapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where 
     n = checksquare(A)
 
     Y = zeros(n, n)
-    LA = left(A)
+    LA = inf(A)
     Ail = LA * LA
     Z = zeros(n, n)
-    RA = right(A)
+    RA = sup(A)
     Air = RA * RA
     fact_num = t^2
     fact_denom = 2

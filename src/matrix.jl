@@ -1,6 +1,7 @@
 import Base: split,
              ∈
 import Random: rand
+import IntervalArithmetic: inf, sup
 
 """
     AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}
@@ -69,23 +70,23 @@ The matrix norm of an interval matrix.
 The matrix ``p``-norm of an interval matrix ``A`` is defined as
 
 ```math
-    ‖A‖_p := ‖\\max(|\\text{left}(A)|, |\\text{right}(A)|)‖_p
+    ‖A‖_p := ‖\\max(|\\text{inf}(A)|, |\\text{sup}(A)|)‖_p
 ```
 
 where ``\\max`` and ``|·|`` are taken elementwise.
 """
 function LinearAlgebra.opnorm(A::IntervalMatrix, p::Real=Inf)
     if p == Inf || p == 1
-        return LinearAlgebra.opnorm(max.(abs.(left(A)), abs.(right(A))), p)
+        return LinearAlgebra.opnorm(max.(abs.(inf(A)), abs.(sup(A))), p)
     else
         error("the interval matrix norm for this value of p=$p is not implemented")
     end
 end
 
 """
-    left(A::IntervalMatrix{T}) where {T}
+    inf(A::IntervalMatrix{T}) where {T}
 
-Return the left part of this interval matrix, which corresponds to taking the
+Return the infimum of this interval matrix, which corresponds to taking the
 element-wise infimum of `A`.
 
 ### Input
@@ -96,14 +97,14 @@ element-wise infimum of `A`.
 
 A scalar matrix whose coefficients are the infima of each element in `A`.
 """
-function left(A::IntervalMatrix{T}) where {T}
+function inf(A::IntervalMatrix{T}) where {T}
     return map(inf, A)
 end
 
 """
-    right(A::IntervalMatrix{T}) where {T}
+    sup(A::IntervalMatrix{T}) where {T}
 
-Return the right part of this interval matrix, which corresponds to taking the
+Return the supremum of this interval matrix, which corresponds to taking the
 element-wise supremum of `A`.
 
 ### Input
@@ -114,7 +115,7 @@ element-wise supremum of `A`.
 
 A scalar matrix whose coefficients are the suprema of each element in `A`.
 """
-function right(A::IntervalMatrix{T}) where {T}
+function sup(A::IntervalMatrix{T}) where {T}
     return map(sup, A)
 end
 
@@ -247,30 +248,4 @@ function sample(A::IntervalMatrix{T}; rng::AbstractRNG=GLOBAL_RNG) where {T}
         end
     end
     return B
-end
-
-"""
-    map(f, A::IntervalMatrix)
-
-Apply a function to every entry in an interval matrix.
-
-### Input
-
-- `f` -- function
-- `A` -- interval matrix
-
-### Output
-
-A new interval matrix `M` such that `M[i, j] == f(A[i, j])` where `i` and `j`
-are row respectively column indices.
-"""
-function map(f, A::IntervalMatrix)
-    m, n = size(A)
-    M = similar(A.mat)
-    for j in 1:n
-        for i in 1:m
-            @inbounds M[i, j] = f(A[i, j])
-        end
-    end
-    return IntervalMatrix(M)
 end
