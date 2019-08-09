@@ -177,6 +177,12 @@ function rand(::Type{Interval}; N::Type{<:Real}=Float64,
     return x < y ? Interval(x, y) : Interval(y, x)
 end
 
+# create a random interval for the given numeric type and random-number generator
+@inline function _rand_interval(; N=Float64, rng::AbstractRNG=GLOBAL_RNG)
+    x, y = randn(rng, N), randn(rng, N)
+    return x < y ? Interval(x, y) : Interval(y, x)
+end
+
 """
     rand(::Type{IntervalMatrix}, m::Int=2, n::Int=2;
          N=Float64, rng::AbstractRNG=GLOBAL_RNG)
@@ -200,7 +206,7 @@ function rand(::Type{IntervalMatrix}, m::Int=2, n::Int=2;
     B = Matrix{Interval{N}}(undef, m, n)
     for j in 1:n
         for i in 1:m
-            @inbounds B[i, j] = rand(Interval, N=N)
+            @inbounds B[i, j] = _rand_interval(N=N, rng=rng)
         end
     end
     return IntervalMatrix(B)
