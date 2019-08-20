@@ -68,7 +68,7 @@ In these cases, the rules of interval arithmetic are used; see the wikipedia pag
 [Interval Arithmetic](https://en.wikipedia.org/wiki/Interval_arithmetic) for the
 relevant definitions and algebraic rules that apply.
 
-However, the straightforwad application of the rules of interval arithmetic does
+However, the straightforward application of the rules of interval arithmetic does
 not always give the exact result; in general it only gives an overapproximation [1, 2].
 To illustrate, suppose that we are interested in the quadratic term
 $At + \frac{1}{2}A^2 t^2$, which corresponds to the expansion at order two of
@@ -80,7 +80,7 @@ julia> A + 1/2 * A^2
   [1, 4.5]  [-3, 2]
  [-4, 2.5]  [-1, 9]
 ```
-This computation can be performed exactly single-use expressions implemented
+This computation can be performed exactly via single-use expressions implemented
 in `IntervalMatrices.jl`, obtaining an interval matrix that is strictly included
 in the previous result:
 
@@ -90,8 +90,9 @@ julia> quadratic_expansion(A, 1.0)
   [1, 4.5]  [-2, 1]
  [-3, 1.5]   [1, 7]
 ```
+Computing tight expansions is preferable because it reduces wrapping effects.
 An overapproximation and an underapproximation method at a given order for
-$e^{At}$ where $A$ is an interval matrix is also available; see the `Methods`
+$e^{At}$, where $A$ is an interval matrix, are also available. See the `Methods`
 section for details.
 
 ## Library Outline
