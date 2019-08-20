@@ -51,5 +51,5 @@ $ julia --color=yes docs/make.jl
 
 These persons have contributed to `IntervalMatrices.jl` (in alphabetic order):
 
-- [Marcelo Forets](http://marcelo-forets.fr)
-- [Christian Schilling](https://schillic.github.io/)
+- [Marcelo Forets](http://github.com/mforets), Universidad de la República
+- [Christian Schilling](https://schillic.github.io/), IST Austria

@@ -12,7 +12,7 @@ matrices that have uncertain parameters.
 ## Resources
 
 - [Manual](http://juliareach.github.io/IntervalMatrices.jl/latest/)
-- [Contributing](https://juliareach.github.io/IntervalMatrices.jl/latest/about.html#Contributing-1)
+- [Contributing](https://juliareach.github.io/IntervalMatrices.jl/latest/about/#Contributing-1)
 
 ## Installing
 
@@ -26,12 +26,13 @@ on how to install it for your system.
 To install this package, execute the following command inside Julia's REPL:
 
 ```julia
-Pkg.clone("https://github.com/JuliaReach/IntervalMatrices.jl")
+] add IntervalMatrices
 ```
 
 ## Updating
 
-To checkout the latest version, do
+To checkout the latest version, do:
+
 ```julia
-Pkg.checkout("IntervalMatrices")
+] up IntervalMatrices
 ````
