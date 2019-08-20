@@ -65,7 +65,7 @@ julia> A*A
  [-12, -1]  [6, 22]
 ```
 In these cases, the rules of interval arithmetic are used; see the wikipedia page
-[Interval Arithmetic](https://en.wikipedia.org/wiki/Interval_arithmetic) for the
+on [interval arithmetic](https://en.wikipedia.org/wiki/Interval_arithmetic) for the
 relevant definitions and algebraic rules that apply.
 
 However, the straightforward application of the rules of interval arithmetic does
