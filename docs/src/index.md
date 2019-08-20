@@ -21,6 +21,8 @@ See the section `Library Outline` below for details.
 An *interval matrix* is a matrix whose coefficients are intervals. For instance,
 
 ```jldoctest quickstart
+julia> using IntervalMatrices
+
 julia> A = IntervalMatrix([0..1 1..2; 2..3 -4.. -2])
 2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
  [0, 1]    [1, 2]
