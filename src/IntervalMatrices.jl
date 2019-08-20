@@ -1,9 +1,4 @@
 __precompile__(true)
-
-"""
-Main module for `IntervalMatrices.jl` -- a Julia package to work with
-matrices that have uncertain parameters.
-"""
 module IntervalMatrices
 
 using LinearAlgebra
