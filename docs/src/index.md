@@ -28,7 +28,7 @@ julia> A = IntervalMatrix([0..1 1..2; 2..3 -4.. -2])
 ```
 defines an interval matrix $A$. The type of each coefficient in $A$ is an interval,
 e.g. its coefficient in position $(1, 1)$ is the interval $[0, 1]$ over double-precision
-floating point numbers:
+floating-point numbers:
 
 ```julia
 julia> A[1, 1]
