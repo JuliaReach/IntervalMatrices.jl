@@ -71,7 +71,7 @@ relevant definitions and algebraic rules that apply.
 However, the straightforward application of the rules of interval arithmetic does
 not always give the exact result; in general it only gives an overapproximation [1, 2].
 To illustrate, suppose that we are interested in the quadratic term
-$At + \frac{1}{2}A^2 t^2$, which corresponds to the expansion at order two of
+$At + \frac{1}{2}A^2 t^2$, which corresponds to the Taylor-series expansion at order two of
 $e^{At} - I$. Then, at $t = 1.0$,
 
 ```julia
