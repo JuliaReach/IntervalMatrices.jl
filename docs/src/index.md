@@ -20,7 +20,7 @@ See the section `Library Outline` below for details.
 
 An *interval matrix* is a matrix whose coefficients are intervals. For instance,
 
-```julia
+```jldoctest quickstart
 julia> A = IntervalMatrix([0..1 1..2; 2..3 -4.. -2])
 2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
  [0, 1]    [1, 2]
@@ -30,7 +30,7 @@ defines an interval matrix $A$. The type of each coefficient in $A$ is an interv
 e.g. its coefficient in position $(1, 1)$ is the interval $[0, 1]$ over double-precision
 floating-point numbers:
 
-```julia
+```jldoctest quickstart
 julia> A[1, 1]
 [0, 1]
 
@@ -42,7 +42,7 @@ This library uses the interval arithmetic package
 to deal with interval computations. For instance, one can compute a multiple
 of $A$
 
-```julia
+```jldoctest quickstart
 julia> 2A
 2×2 Array{Interval{Float64},2}:
  [0, 2]    [2, 4]
@@ -50,7 +50,7 @@ julia> 2A
 ```
 Or an interval multiple of $A$,
 
-```julia
+```jldoctest quickstart
 julia> (-1.0..1.0) * A
 2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
  [-1, 1]  [-2, 2]
@@ -58,7 +58,7 @@ julia> (-1.0..1.0) * A
 ```
 
 Or compute the square of $A$,
-```julia
+```jldoctest quickstart
 julia> A*A
 2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
     [2, 7]  [-8, 0]
@@ -74,7 +74,7 @@ To illustrate, suppose that we are interested in the quadratic term
 $At + \frac{1}{2}A^2 t^2$, which corresponds to the Taylor-series expansion at order two of
 $e^{At} - I$. Then, at $t = 1.0$,
 
-```julia
+```jldoctest quickstart
 julia> A + 1/2 * A^2
 2×2 Array{Interval{Float64},2}:
   [1, 4.5]  [-3, 2]
@@ -84,13 +84,12 @@ This computation can be performed exactly via single-use expressions implemented
 in `IntervalMatrices.jl`, obtaining an interval matrix that is strictly included
 in the previous result:
 
-```julia
+```jldoctest quickstart
 julia> quadratic_expansion(A, 1.0)
 2×2 Array{Interval{Float64},2}:
   [1, 4.5]  [-2, 1]
  [-3, 1.5]   [1, 7]
 ```
-Computing tight expansions is preferable because it reduces wrapping effects.
 An overapproximation and an underapproximation method at a given order for
 $e^{At}$, where $A$ is an interval matrix, are also available. See the `Methods`
 section for details.
