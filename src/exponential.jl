@@ -1,7 +1,7 @@
 using LinearAlgebra: checksquare
 
 """
-    quadratic_expansion(A::IntervalMatrix, t, p)
+    quadratic_expansion(A::IntervalMatrix, t)
 
 Exactly compute the quadratic formula ``At + \\frac{1}{2}A^2t^2`` using interval
 arithmetics.
