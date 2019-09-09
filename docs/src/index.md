@@ -46,7 +46,7 @@ of $A$
 
 ```jldoctest quickstart
 julia> 2A
-2×2 Array{Interval{Float64},2}:
+2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
  [0, 2]    [2, 4]
  [4, 6]  [-8, -4]
 ```
@@ -78,7 +78,7 @@ $e^{At} - I$. Then, at $t = 1.0$,
 
 ```jldoctest quickstart
 julia> A + 1/2 * A^2
-2×2 Array{Interval{Float64},2}:
+2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
   [1, 4.5]  [-3, 2]
  [-4, 2.5]  [-1, 9]
 ```
@@ -88,7 +88,7 @@ in the previous result:
 
 ```jldoctest quickstart
 julia> quadratic_expansion(A, 1.0)
-2×2 Array{Interval{Float64},2}:
+2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
   [1, 4.5]  [-2, 1]
  [-3, 1.5]   [1, 7]
 ```
