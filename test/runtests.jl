@@ -25,6 +25,11 @@ end
     x = 0.0..2.0
     @test x * A == A * x ==
           IntervalMatrix([0.0..2.6 0.0..6.8; -2.0..0.0 -0.2..0.2])
+    # multiply scalar and interval matrix
+    x = 1.0
+    for A2 in [x * A, A * x]
+        @test A2 == A && typeof(A2) == typeof(A)
+    end
 end
 
 @testset "Interval matrix methods" begin
