@@ -30,7 +30,7 @@ function quadratic_expansion(A::IntervalMatrix, t)
         end
     end
 
-    W = similar(A)
+    W = IntervalMatrix(similar(A.mat))
 
     @inbounds for j in 1:n
         for i in 1:n

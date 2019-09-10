@@ -20,3 +20,6 @@ import Base: +, *
 
 *(x::Interval, M::IntervalMatrix) = IntervalMatrix(x .* M.mat)
 *(M::IntervalMatrix, x::Interval) = IntervalMatrix(x .* M.mat)
+
+*(x::Number, M::IntervalMatrix) = Interval(x) * M
+*(M::IntervalMatrix, x::Number) = Interval(x) * M

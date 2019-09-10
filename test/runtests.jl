@@ -25,6 +25,11 @@ end
     x = 0.0..2.0
     @test x * A == A * x ==
           IntervalMatrix([0.0..2.6 0.0..6.8; -2.0..0.0 -0.2..0.2])
+    # multiply scalar and interval matrix
+    x = 1.0
+    for A2 in [x * A, A * x]
+        @test A2 == A && typeof(A2) == typeof(A)
+    end
 end
 
 @testset "Interval matrix methods" begin
@@ -39,6 +44,7 @@ end
     m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
     a_over = expm_overapproximation(m, 1.0, 4)
     a_under = expm_underapproximation(m, 1.0, 4)
+    @test a_over isa IntervalMatrix && a_under isa IntervalMatrix
 end
 
 @testset "Interval matrix split" begin
