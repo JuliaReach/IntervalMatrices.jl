@@ -11,21 +11,38 @@ Depth = 3
 CurrentModule = IntervalMatrices
 ```
 
+## Common functions
+
 ```@docs
-opnorm
 inf
 sup
-quadratic_expansion
-expm_overapproximation
-expm_underapproximation
 rand
 sample
 split
 ∈
 ```
 
+## Exponentiation
+
+```@docs
+expm_overapproximation
+expm_underapproximation
+```
+
+## Finite expansions
+
+```@docs
+quadratic_expansion
+```
+
 ## Hulls
 
 ```@docs
 correction_hull
+```
+
+## Norms
+
+```@docs
+opnorm
 ```
