@@ -1,6 +1,6 @@
 name = "IntervalMatrices"
 uuid = "5c1f47dc-42dd-5697-8aaa-4d102d140ba9"
-version = "0.2.2"
+version = "0.2.3"
 
 [deps]
 IntervalArithmetic = "d1acc4aa-44c8-5952-acd4-ba5d80a2a253"
