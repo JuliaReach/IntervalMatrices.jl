@@ -100,7 +100,9 @@ end
 function _expm_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     nA = opnorm(A, Inf)
     c = nA * t / (p + 2)
-    @assert c < 1
+    @assert c < 1 "the remainder of the matrix exponential could not be " *
+        "computed because a convergence condition is not satisfied: $c ≥ 1 " *
+        "but it should be smaller than 1; try choosing a larger order"
     Γ = IntervalMatrix(fill(zero(T)±one(T), (n , n)))
     return Γ * ((nA*t)^(p+1) * (1/factorial(p + 1) * 1/(1-c)))
 end
