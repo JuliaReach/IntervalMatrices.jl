@@ -1,7 +1,7 @@
 import Base: split,
              ∈
 import Random: rand
-import IntervalArithmetic: inf, sup
+import IntervalArithmetic: inf, sup, mid
 
 """
     AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}
@@ -72,7 +72,7 @@ end
 """
     inf(A::IntervalMatrix{T}) where {T}
 
-Return the infimum of this interval matrix, which corresponds to taking the
+Return the infimum of an interval matrix `A`, which corresponds to taking the
 element-wise infimum of `A`.
 
 ### Input
@@ -90,7 +90,7 @@ end
 """
     sup(A::IntervalMatrix{T}) where {T}
 
-Return the supremum of this interval matrix, which corresponds to taking the
+Return the supremum of an interval matrix `A`, which corresponds to taking the
 element-wise supremum of `A`.
 
 ### Input
@@ -103,6 +103,24 @@ A scalar matrix whose coefficients are the suprema of each element in `A`.
 """
 function sup(A::IntervalMatrix{T}) where {T}
     return map(sup, A)
+end
+
+"""
+    mid(A::IntervalMatrix{T}) where {T}
+
+Return the midpoint of an interval matrix `A`, which corresponds to taking the
+element-wise midpoint of `A`.
+
+### Input
+
+- `A` -- interval matrix
+
+### Output
+
+A scalar matrix whose coefficients are the midpoints of each element in `A`.
+"""
+function mid(A::IntervalMatrix{T}) where {T}
+    return map(mid, A)
 end
 
 """

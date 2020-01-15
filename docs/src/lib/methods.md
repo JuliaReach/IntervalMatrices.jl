@@ -16,6 +16,7 @@ CurrentModule = IntervalMatrices
 ```@docs
 inf
 sup
+mid
 rand
 sample
 split

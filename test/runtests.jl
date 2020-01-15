@@ -38,8 +38,10 @@ end
     @test opnorm(m, 1) ≈ 5.3
     l = inf(m)
     r = sup(m)
+    c = mid(m)
     m2 = copy(m)
     @test m2 isa IntervalMatrix && m.mat == m2.mat
+    @test l == inf.(m) && r == sup.(m) && c == mid.(m)
 end
 
 @testset "Interval matrix exponential" begin
