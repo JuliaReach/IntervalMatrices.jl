@@ -275,13 +275,5 @@ A matrix `B` of the same shape as `A` such that `B[i, j] == diam(A[i, j])` for
 each `i` and `j`.
 """
 function diam(A::IntervalMatrix{T}) where {T}
-    m, n = size(A)
-    B = Matrix{T}(undef, m, n)
-    @inbounds for j in 1:n
-        for i in 1:m
-            itv = A[i, j]
-            B[i, j] = (sup(itv) - inf(itv))
-        end
-    end
-    return B
+    return map(diam, A)
 end
