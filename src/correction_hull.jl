@@ -31,7 +31,7 @@ function correction_hull(A::IntervalMatrix{T}, t, p) where {T}
     t2i = t
     @inbounds for i in 2:p
         t2i *= t
-        left = (one(T) / i^(i/i-1) - one(T) / i^(1/i-1)) * t2i
+        left = (one(T) / i^(i/(i-1)) - one(T) / i^(1/(i-1))) * t2i
         itv = Interval(left, zero(T))
         A2i = A2i * A
         fac_i *= i
