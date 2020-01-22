@@ -17,6 +17,7 @@ CurrentModule = IntervalMatrices
 inf
 sup
 mid
+diam
 rand
 sample
 split

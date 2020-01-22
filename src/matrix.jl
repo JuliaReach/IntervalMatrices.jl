@@ -1,7 +1,7 @@
 import Base: split,
              ∈
 import Random: rand
-import IntervalArithmetic: inf, sup, mid
+import IntervalArithmetic: inf, sup, mid, diam
 
 """
     AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}
@@ -255,6 +255,32 @@ function sample(A::IntervalMatrix{T}; rng::AbstractRNG=GLOBAL_RNG) where {T}
         for i in 1:m
             itv = A[i, j]
             B[i, j] = (sup(itv) - inf(itv)) * rand(rng) + inf(itv)
+        end
+    end
+    return B
+end
+
+"""
+    diam(A::IntervalMatrix{T}) where {T}
+
+Return a matrix whose entries describe the diameters of the intervals.
+
+### Input
+
+- `A` -- interval matrix
+
+### Output
+
+A matrix `B` of the same shape as `A` such that `B[i, j] == diam(A[i, j])` for
+each `i` and `j`.
+"""
+function diam(A::IntervalMatrix{T}) where {T}
+    m, n = size(A)
+    B = Matrix{T}(undef, m, n)
+    @inbounds for j in 1:n
+        for i in 1:m
+            itv = A[i, j]
+            B[i, j] = (sup(itv) - inf(itv))
         end
     end
     return B
