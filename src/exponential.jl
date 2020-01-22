@@ -97,7 +97,35 @@ function expm_overapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {
     return res
 end
 
+# Implementation of Prop. 1 in Althoff, Matthias, Bruce H. Krogh, and Olaf Stursberg.
+# "Analyzing reachability of linear dynamic systems with parametric uncertainties."
+# Modeling, Design, and Simulation of Systems with Uncertainties. Springer, Berlin, Heidelberg, 2011. 69-94.
 function _expm_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
+    C = max.(abs.(inf(A)), abs.(sup(A)))
+    # compute Q = I + Ct + (Ct)^2/2! + ... + (Ct)^p/p!
+    Q = Matrix(Diagonal(ones(T, n)))
+
+    tⁱ = 1
+    i! = 1
+    Cⁱ = copy(C)
+    for i in 1:p
+        i! *= i
+        tⁱ *= t
+        Q = Q + Cⁱ * tⁱ/i!
+        Cⁱ = Cⁱ * C
+    end
+    M = exp(C*t)
+    Y  = M - Q
+    Γ = IntervalMatrix(fill(zero(T)±one(T), (n, n)))
+    E = Γ * Y
+    return IntervalMatrix(E) # See #73
+end
+
+# Estimates the sum of the series in the matrix exponential. See Theorem 1
+# in [1] Althoff, Matthias, Olaf Stursberg, and Martin Buss.
+# Reachability analysis of nonlinear systems with uncertain parameters using conservative linearization.
+# 2008 47th IEEE Conference on Decision and Control. IEEE, 2008.
+function _expm_remainder_series(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     nA = opnorm(A, Inf)
     c = nA * t / (p + 2)
     @assert c < 1 "the remainder of the matrix exponential could not be " *
