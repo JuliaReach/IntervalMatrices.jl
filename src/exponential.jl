@@ -101,29 +101,24 @@ end
 # "Analyzing reachability of linear dynamic systems with parametric uncertainties."
 # Modeling, Design, and Simulation of Systems with Uncertainties. Springer, Berlin, Heidelberg, 2011. 69-94.
 function _expm_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
-    C = max.(abs.(inf.(A)), abs.(sup.(A)))
-    M = exp(C*t)
-
-    # compute Q = I + Mt + M^2/2! + ... + M^p/p!
-    # where M = exp(abs(A*t)) and abs is taken component-wise
-    Q = IntervalMatrix(zeros(Interval{T}, n, n))
-    @inbounds for i in 1:n
-        Q[i, i] += one(T)
-    end
+    C = max.(abs.(inf(A)), abs.(sup(A)))
+    # compute Q = I + Ct + (Ct)^2/2! + ... + (Ct)^p/p!
+    Q = Matrix(Diagonal(ones(T, n)))
 
     tⁱ = 1
     i! = 1
-    Mⁱ = copy(M)
+    Cⁱ = copy(C)
     for i in 1:p
         i! *= i
         tⁱ *= t
-        Q = Q + Mⁱ * tⁱ/i!
-        Mⁱ = Mⁱ * M
+        Q = Q + Cⁱ * tⁱ/i!
+        Cⁱ = Cⁱ * C
     end
+    M = exp(C*t)
     Y  = M - Q
     Γ = IntervalMatrix(fill(zero(T)±one(T), (n, n)))
     E = Γ * Y
-    return IntervalMatrix(E) # TODO why do we need the IntervalMatrix?
+    return IntervalMatrix(E) # See #73
 end
 
 # Estimates the sum of the series in the matrix exponential. See Theorem 1
