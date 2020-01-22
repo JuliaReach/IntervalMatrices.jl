@@ -39,9 +39,11 @@ end
     l = inf(m)
     r = sup(m)
     c = mid(m)
+    d = diam(m)
     m2 = copy(m)
     @test m2 isa IntervalMatrix && m.mat == m2.mat
     @test l == inf.(m) && r == sup.(m) && c == mid.(m)
+    @test d ≈ r - l
 end
 
 @testset "Interval matrix exponential" begin
