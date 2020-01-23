@@ -24,10 +24,10 @@ include("arithmetic.jl")
 # =======================================================
 include("exponential.jl")
 
-# ============================================================
-# Method to compute the correction hull of an interval matrix
-# ============================================================
-include("correction_hull.jl")
+# ==============================================================
+# Methods to compute a correction matrix from an interval matrix
+# ==============================================================
+include("correction_matrices.jl")
 
 # ========
 # Exports
