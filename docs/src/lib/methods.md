@@ -37,10 +37,11 @@ expm_underapproximation
 quadratic_expansion
 ```
 
-## Hulls
+## Correction terms
 
 ```@docs
 correction_hull
+input_correction
 ```
 
 ## Norms
