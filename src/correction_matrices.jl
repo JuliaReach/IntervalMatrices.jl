@@ -80,6 +80,6 @@ function _correction_loop!(F, A::IntervalMatrix{T}, Aⁱ, t, p) where {T}
         itv = Interval(left, zero(T))
         Aⁱ = Aⁱ * A
         i! *= i
-        F += itv * Aⁱ * (1/i!)
+        F += itv * Aⁱ * (one(T)/i!)
     end
 end
