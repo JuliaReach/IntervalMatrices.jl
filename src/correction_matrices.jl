@@ -71,6 +71,8 @@ end
 #     if Aⁱ == id, then this function will multiply with Aⁱ⁻¹
 # t:  time step
 # p:  Taylor-approximation order
+# outputs:
+# F is modified by adding \\sum_{i=2}^p [...., 0] * t^i * (Aⁱ * A^i)
 function _correction_loop!(F, A::IntervalMatrix{T}, Aⁱ, t, p) where {T}
     i! = 1
     tⁱ = t
