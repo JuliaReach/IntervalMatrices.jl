@@ -17,6 +17,10 @@ end
     B = A + A
     @test B isa IntervalMatrix
 
+    # can subtract, TODO: add test
+    B = A - A
+    @test B isa IntervalMatrix
+
     # can multiply, TODO: add test
     B = A * A
     @test B isa IntervalMatrix
