@@ -38,6 +38,7 @@ export AbstractIntervalMatrix,
 export inf, sup,
        rand, sample,
        opnorm,
+       square,
        quadratic_expansion,
        expm_overapproximation,
        expm_underapproximation
