@@ -91,3 +91,26 @@ end
     b = square(m)
     @test all(inf(a) .<= inf(b)) && all(sup(b) .>= sup(a))
 end
+
+@testset "Binary decomposition" begin
+    bd = IntervalMatrices.binary_decomposition
+    DF = IntervalMatrices.DoubledFactor
+    OF = IntervalMatrices.OneFactor{Int}()
+    @test Dict(1 => [OF]) == bd(1)
+    @test Dict(2 => [DF(1)], 1 => [OF]) == bd(2)
+    @test Dict(3 => [DF(1), OF], 1 => [OF]) == bd(3)
+    @test Dict(9 => [DF(4), OF], 4 => [DF(2)], 2 => [DF(1)], 1 => [OF]) == bd(9)
+    @test Dict(65 => [DF(32), OF], 32 => [DF(16)], 16 => [DF(8)], 8 => [DF(4)],
+               4 => [DF(2)], 2 => [DF(1)], 1 => [OF]) == bd(65)
+end
+
+@testset "Matrix power" begin
+    # flat intervals
+    B = IntervalMatrix([2.0±0 0.0±0; 0.0±0 3.0±0])
+    C = [2.0 0.0; 0.0 3.0]
+    @test all(mid(B^k) == C^k for k in 1:20)
+
+    # proper intervals
+    D = IntervalMatrix([2.0±0.1 0.0±0.1; 0.0±0.1 3.0±0.1])
+    D^4
+end

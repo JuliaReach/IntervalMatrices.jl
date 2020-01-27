@@ -18,6 +18,7 @@ include("matrix.jl")
 # Arithmetic for interval matrices
 # =================================
 include("arithmetic.jl")
+include("power.jl")
 
 # =======================================================
 # Methods to handle the exponential of an interval matrix
