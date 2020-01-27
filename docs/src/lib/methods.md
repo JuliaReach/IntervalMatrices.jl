@@ -22,6 +22,7 @@ rand
 sample
 split
 ∈
+square
 ```
 
 ## Exponentiation

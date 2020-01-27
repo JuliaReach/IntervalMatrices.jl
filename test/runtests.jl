@@ -84,3 +84,10 @@ end
     f = IntervalMatrices.correction_hull(m, 1e-3, 5)
     f2 = IntervalMatrices.input_correction(m, 1e-3, 5)
 end
+
+@testset "Interval matrix square" begin
+    m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
+    a = m * m
+    b = square(m)
+    @test all(inf(a) .<= inf(b)) && all(sup(b) .>= sup(a))
+end
