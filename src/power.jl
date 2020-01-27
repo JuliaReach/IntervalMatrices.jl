@@ -20,7 +20,8 @@ function ^(M::IntervalMatrix{T}, k::Integer) where {T}
     for i in 1:n, j in 1:n
         println(Msᵏ[i, j])
         println(dict)
-        Mᵏ[i, j] = SymEngine.subs(Msᵏ[i, j], dict)
+        substituted = SymEngine.subs(Msᵏ[i, j], dict)
+        Mᵏ[i, j] = SymEngine.lambdify(substituted)
     end
     return Mᵏ
 end
