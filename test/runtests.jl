@@ -10,12 +10,16 @@ using IntervalMatrices, Test, LinearAlgebra
 end
 
 @testset "Interval matrix arithmetic" begin
-    a = 1.0..1.3; b = 2.0..3.4; c = -0.5 ± 0.5; d = 0.0 ± 0.1
+    a = 1.0..1.3; b = 2.0..3.5; c = -0.5 ± 0.5; d = 0.0 ± 0.1
+    a₊ = 2.0..2.6; b₊ = 4.0..7.0; c₊ = -2.0..0.0; d₊ = -0.2..0.2
+    a₋ = -0.3..0.3; b₋ = -1.5..1.5; c₋ = -1.0..1.0; d₋ = -0.2..0.2
     A = IntervalMatrix([a b; c d])
 
-    # can add, TODO: add test
     B = A + A
-    @test B isa IntervalMatrix
+    @test B isa IntervalMatrix && B == IntervalMatrix([a₊ b₊; c₊ d₊])
+
+    B = A - A
+    @test B isa IntervalMatrix && B == IntervalMatrix([a₋ b₋; c₋ d₋])
 
     # can multiply, TODO: add test
     B = A * A
@@ -24,7 +28,7 @@ end
     # multiply interval and interval matrix
     x = 0.0..2.0
     @test x * A == A * x ==
-          IntervalMatrix([0.0..2.6 0.0..6.8; -2.0..0.0 -0.2..0.2])
+          IntervalMatrix([0.0..2.6 0.0..7.0; -2.0..0.0 -0.2..0.2])
     # multiply scalar and interval matrix
     x = 1.0
     for A2 in [x * A, A * x]
