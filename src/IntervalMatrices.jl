@@ -6,6 +6,8 @@ using LinearAlgebra
 import Random
 using Random: AbstractRNG, GLOBAL_RNG, seed!
 
+import SymEngine
+
 using Reexport
 @reexport using IntervalArithmetic
 
@@ -18,6 +20,7 @@ include("matrix.jl")
 # Arithmetic for interval matrices
 # =================================
 include("arithmetic.jl")
+include("power.jl")
 
 # =======================================================
 # Methods to handle the exponential of an interval matrix
