@@ -58,6 +58,56 @@ function quadratic_expansion(A::IntervalMatrix, t)
 end
 
 """
+    quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
+
+Compute the quadratic expansion of an interval matrix, ``αA + βA^2``, using
+interval arithmetics.
+
+### Input
+
+- `A` -- interval matrix
+- `α` -- linear coefficient
+- `β` -- quadratic coefficient
+
+### Output
+
+An interval matrix that encloses ``B := αA + βA^2``.
+
+### Algorithm
+
+This a variation of the algorithm in [1, Section 6].
+
+[1] Kosheleva, Kreinovich, Mayer, Nguyen. Computing the cube of an interval
+matrix is NP-hard. SAC 2005.
+"""
+function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
+    B = similar(A.mat)
+    n = checksquare(A)
+
+    # case i == j
+    @inbounds for j in 1:n
+        B[j, j] = (α + β*A[j, j]) * A[j, j]
+        for k in 1:n
+            k == j && continue
+            B[j, j] += β * (A[j, k] * A[k, j])
+        end
+    end
+
+    # case i ≠ j
+    @inbounds for j in 1:n
+        for i in 1:n
+            i == j && continue
+            B[i, j] = A[i, j] * (α + β*A[j, j] + β*A[i, i])
+            for k in 1:n
+                (k == i || k == j) && continue
+                B[i, j] += β * (A[i, k] * A[k, j])
+            end
+        end
+    end
+    return IntervalMatrix(B)
+end
+
+"""
     expm_overapproximation(M::IntervalMatrix{T, Interval{T}}, t, p) where {T}
 
 Overapproximation of the exponential of an interval matrix.
