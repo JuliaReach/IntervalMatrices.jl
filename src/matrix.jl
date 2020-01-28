@@ -277,3 +277,49 @@ each `i` and `j`.
 function diam(A::IntervalMatrix{T}) where {T}
     return map(diam, A)
 end
+
+"""
+    scale(A::IntervalMatrix{T}, α::T) where {T}
+
+Return a new interval matrix whose entries are scaled by the given factor.
+
+### Input
+
+- `A` -- interval matrix
+- `α` -- scaling factor
+
+### Output
+
+A new matrix `B` of the same shape as `A` such that `B[i, j] = α*A[i, j]` for
+each `i` and `j`.
+
+### Notes
+
+See `scale!` for the in-place version of this function.
+"""
+function scale(A::IntervalMatrix{T}, α::T) where {T}
+    return scale!(copy(A), α)
+end
+
+"""
+    scale(A::IntervalMatrix{T}, α::T) where {T}
+
+Modifies the given interval matrix, scaling its entries by the given factor.
+
+### Input
+
+- `A` -- interval matrix
+- `α` -- scaling factor
+
+### Output
+
+The matrix `A` such that for each `i` and `j`, the new value of `A[i, j]` is
+`α*A[i, j]`.
+
+### Notes
+
+This is the in-place version of `scale`.
+"""
+function scale!(A::IntervalMatrix{T}, α::T) where {T}
+    return map!(x -> α * x, A, A)
+end
