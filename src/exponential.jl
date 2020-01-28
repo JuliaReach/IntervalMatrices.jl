@@ -118,7 +118,7 @@ function _expm_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     Y  = M - Q
     Γ = IntervalMatrix(fill(zero(T)±one(T), (n, n)))
     E = Γ * Y
-    return IntervalMatrix(E) # See #73
+    return E
 end
 
 # Estimates the sum of the series in the matrix exponential. See Theorem 1
