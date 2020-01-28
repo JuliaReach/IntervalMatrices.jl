@@ -203,7 +203,7 @@ end
 end
 
 """
-    rand(::Type{IntervalMatrix}, m::Int=2, n::Int=2;
+    rand(::Type{IntervalMatrix}, m::Int=2, [n]::Int=m;
          N=Float64, rng::AbstractRNG=GLOBAL_RNG)
 
 Return a random interval matrix of the given size and numeric type.
@@ -212,15 +212,20 @@ Return a random interval matrix of the given size and numeric type.
 
 - `IntervalMatrix` -- type, used for dispatch
 - `m`              -- (optional, default: `2`) number of rows
-- `n`              -- (optional, default: `2`) number of columns
+- `n`              -- (optional, default: `m`) number of columns
 - `rng`            -- (optional, default: `GLOBAL_RNG`) random-number generator
 
 ### Output
 
 An interval matrix of size ``m × n`` whose coefficients are normally-distributed
 intervals of type `N` with mean `0` and standard deviation `1`.
+
+### Notes
+
+If this function is called with only one argument, it creates a square matrix,
+because the number of columns defaults to the number of rows.
 """
-function rand(::Type{IntervalMatrix}, m::Int=2, n::Int=2;
+function rand(::Type{IntervalMatrix}, m::Int=2, n::Int=m;
               N=Float64, rng::AbstractRNG=GLOBAL_RNG)
     B = Matrix{Interval{N}}(undef, m, n)
     for j in 1:n
