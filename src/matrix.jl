@@ -42,8 +42,8 @@ setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 copy(M::IntervalMatrix) = IntervalMatrix(copy(M.mat))
 
 # undef initializer, eg. IntervalMatrix{Float64}(undef, 2, 2)
-function IntervalMatrix{T}(u::UndefInitializer, n, m) where {T}
-    mat = Matrix{Interval{T}}(undef, n, m)
+function IntervalMatrix{T}(u::UndefInitializer, m, n) where {T}
+    mat = Matrix{Interval{T}}(undef, m, n)
     return IntervalMatrix(mat)
 end
 
