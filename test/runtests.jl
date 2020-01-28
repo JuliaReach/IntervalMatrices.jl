@@ -21,7 +21,6 @@ end
     B = A - A
     @test B isa IntervalMatrix && B == IntervalMatrix([a₋ b₋; c₋ d₋])
 
-    # can multiply, TODO: add test
     B = A * A
     @test B isa IntervalMatrix
 
@@ -34,6 +33,15 @@ end
     for A2 in [x * A, A * x]
         @test A2 == A && typeof(A2) == typeof(A)
     end
+
+   # arithmetic closure using interval matrices and non-interval matrices
+   Ainf = inf(A)
+   @test A + Ainf isa IntervalMatrix
+   @test Ainf + A isa IntervalMatrix
+   @test A - Ainf isa IntervalMatrix
+   @test Ainf - A isa IntervalMatrix
+   @test A * Ainf isa IntervalMatrix
+   @test Ainf * A isa IntervalMatrix
 end
 
 @testset "Interval matrix methods" begin
