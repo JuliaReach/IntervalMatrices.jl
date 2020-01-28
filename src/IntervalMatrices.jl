@@ -40,7 +40,7 @@ export inf, sup,
        opnorm,
        square,
        quadratic_expansion,
-       expm_overapproximation,
-       expm_underapproximation
+       exp_overapproximation,
+       exp_underapproximation
 
 end # module
