@@ -41,6 +41,11 @@ getindex(M::IntervalMatrix, i::Int) = getindex(M.mat, i)
 setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 copy(M::IntervalMatrix) = IntervalMatrix(copy(M.mat))
 
+# constructor from uniform scaling
+function IntervalMatrix(αI::UniformScaling{Interval{T}}, n, m=n) where {T}
+    return IntervalMatrix(Matrix(αI, n, m))
+end
+
 """
     opnorm(A::IntervalMatrix, p::Real=Inf)
 
