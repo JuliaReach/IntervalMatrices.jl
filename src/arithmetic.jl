@@ -60,24 +60,24 @@ matrix is NP-hard. SAC 2005.
 function square(A::IntervalMatrix)
     B = similar(A.mat)
     n = checksquare(A)
-    for j in 1:n
+
+    # case i == j
+    @inbounds for j in 1:n
+        B[j, j] = pow(A[j, j], 2)
+        for k in 1:n
+            k == j && continue
+            B[j, j] += A[j, k] * A[k, j]
+        end
+    end
+
+    # case i ≠ j
+    @inbounds for j in 1:n
         for i in 1:n
-            if i == j
-                res = A[i, i]^2
-                for k in 1:n
-                    if k != i
-                        res += A[i, k] * A[k, i]
-                    end
-                end
-                B[i, i] = res
-            else
-                res = A[i, j] * (A[i, i] + A[j, j])
-                for k in 1:n
-                    if k != i && k != j
-                        res += A[i, k] * A[k, j]
-                    end
-                end
-                B[i, j] = res
+            i == j && continue
+            B[i, j] = A[i, j] * (A[j, j] + A[i, i])
+            for k in 1:n
+                (k == i || k == j) && continue
+                B[i, j] += A[i, k] * A[k, j]
             end
         end
     end
