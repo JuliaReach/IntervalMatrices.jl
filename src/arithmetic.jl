@@ -30,7 +30,6 @@ import Base: +, -, *
 *(x::Number, M::IntervalMatrix) = Interval(x) * M
 *(M::IntervalMatrix, x::Number) = Interval(x) * M
 
-# TODO: continue here
 *(M1::IntervalMatrix, M2::AbstractMatrix) = IntervalMatrix(M1.mat * M2)
 *(M1::AbstractMatrix, M2::IntervalMatrix) = IntervalMatrix(M1 * M2.mat)
 
