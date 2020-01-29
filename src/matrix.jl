@@ -42,6 +42,47 @@ setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 copy(M::IntervalMatrix) = IntervalMatrix(copy(M.mat))
 
 """
+    IntervalMatrix(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
+
+Return an interval matrix such that the center and radius of the intervals
+is given by the matrices `C` and `S` respectively.
+
+### Input
+
+- `C` -- center matrix
+- `S` -- radii matrix
+
+### Output
+
+An interval matrix `M` such that `M[i, j]` corresponds to the interval whose center
+is `C[i, j]` and whose radius is `S[i, j]`, for each `i` and `j`. That is,
+``M = C + [-S, S]``.
+
+### Notes
+
+The radii matrix should be nonnegative, i.e. `S[i, j] ≥ 0` for each `i` and `j`.
+This assumption is not checked in this constructor.
+"""
+function IntervalMatrix(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
+    size(C) == size(S) || throw(ArgumentError("the sizes of the center matrix and the " *
+                                "radii matrix should match, but they are $(size(C)) " *
+                                "and $(size(S)) respectively"))
+    m, n = size(C)
+    F = eltype(Interval(one(T)))
+    M = IntervalMatrix{F}(undef, m, n)
+
+    @inbounds for j in 1:n
+        for i in 1:m
+            inf_ij = C[i, j] - S[i, j]
+            sup_ij = C[i, j] + S[i, j]
+            M[i, j] = Interval(inf_ij, sup_ij)
+        end
+    end
+
+    return M
+end
+
+"""
     opnorm(A::IntervalMatrix, p::Real=Inf)
 
 The matrix norm of an interval matrix.
