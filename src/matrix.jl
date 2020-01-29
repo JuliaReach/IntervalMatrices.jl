@@ -42,7 +42,7 @@ setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 copy(M::IntervalMatrix) = IntervalMatrix(copy(M.mat))
 
 # constructor from uniform scaling
-function IntervalMatrix(αI::UniformScaling{Interval{T}}, m, n=m) where {T}
+function IntervalMatrix(αI::UniformScaling{Interval{T}}, m::Integer, n::Integer=m) where {T}
     return IntervalMatrix(Matrix(αI, m, n))
 end
 
