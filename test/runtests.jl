@@ -60,8 +60,8 @@ end
 
 @testset "Interval matrix exponential" begin
     m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
-    a_over = expm_overapproximation(m, 1.0, 4)
-    a_under = expm_underapproximation(m, 1.0, 4)
+    a_over = exp_overapproximation(m, 1.0, 4)
+    a_under = exp_underapproximation(m, 1.0, 4)
     @test a_over isa IntervalMatrix && a_under isa IntervalMatrix
 end
 
