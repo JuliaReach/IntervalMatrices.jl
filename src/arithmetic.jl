@@ -13,6 +13,11 @@ import Base: +, -, *
 +(x::Number, M::IntervalMatrix) = Interval(x) + M
 +(M::IntervalMatrix, x::Number) = Interval(x) + M
 
++(M1::IntervalMatrix, M2::AbstractMatrix) = IntervalMatrix(M1.mat + M2)
++(M1::AbstractMatrix, M2::IntervalMatrix) = IntervalMatrix(M1 + M2.mat)
+-(M1::IntervalMatrix, M2::AbstractMatrix) = IntervalMatrix(M1.mat - M2)
+-(M1::AbstractMatrix, M2::IntervalMatrix) = IntervalMatrix(M1 - M2.mat)
+
 # =========================
 # Multiplication operations
 # =========================
@@ -24,6 +29,13 @@ import Base: +, -, *
 
 *(x::Number, M::IntervalMatrix) = Interval(x) * M
 *(M::IntervalMatrix, x::Number) = Interval(x) * M
+
+*(M1::IntervalMatrix, M2::AbstractMatrix) = IntervalMatrix(M1.mat * M2)
+*(M1::AbstractMatrix, M2::IntervalMatrix) = IntervalMatrix(M1 * M2.mat)
+
+# =========================
+# Multiplication operations
+# =========================
 
 """
     square(A::IntervalMatrix)
