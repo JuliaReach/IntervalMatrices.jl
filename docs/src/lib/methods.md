@@ -28,8 +28,8 @@ square
 ## Exponentiation
 
 ```@docs
-expm_overapproximation
-expm_underapproximation
+exp_overapproximation
+exp_underapproximation
 ```
 
 ## Finite expansions
