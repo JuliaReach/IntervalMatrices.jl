@@ -48,6 +48,11 @@ end
     @test m2 isa IntervalMatrix && m.mat == m2.mat
     @test l == inf.(m) && r == sup.(m) && c == mid.(m)
     @test d ≈ r - l
+    sm = scale(m, 2.0)
+    @test sm ==  2.0 .* m
+    @test sm ≠ m
+    scale!(m, 2.0) # in-place
+    @test sm == m
 end
 
 @testset "Interval matrix exponential" begin
