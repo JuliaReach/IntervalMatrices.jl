@@ -53,8 +53,8 @@ julia> IntervalMatrix(Interval(-1, 1)*I, 2, 3)
 julia> IntervalMatrix(Interval(-1, 1)*I, 3, 2)
 3×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
  [-1, 1]   [0, 0]
- [0, 0]  [-1, 1]
- [0, 0]   [0, 0]
+  [0, 0]  [-1, 1]
+  [0, 0]   [0, 0]
 ```
 """
 struct IntervalMatrix{T, IT<:Interval{T}, MT<:AbstractMatrix{IT}} <: AbstractIntervalMatrix{IT}
