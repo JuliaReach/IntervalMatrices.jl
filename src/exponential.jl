@@ -75,7 +75,21 @@ An interval matrix that encloses ``B := αA + βA^2``.
 
 ### Algorithm
 
-This a variation of the algorithm in [1, Section 6].
+This a variation of the algorithm in [1, Section 6]. If ``A = (aᵢⱼ)`` and
+``B = := αA + βA^2 = (bᵢⱼ)``, the idea is to compute each ``bᵢⱼ`` by factoring
+out repeated expressions (thus the term *single-use expressions*).
+
+First, let ``i ≡ j``. In this case,
+
+```math
+bᵢᵢ = β\\sum_\\{k, k ≠ i} a_{ik} a_{ki} + (α + βa_{ii}) a_{ii}.
+```
+
+Now consider ``i ≠ j``. Then,
+
+```math
+bᵢⱼ = β\\sum_\\{k, k ≠ i, k ≠ j} a_{ik} a_{kj} + (α + βa_{ii} + βa_{jj}) a_{ij}.
+```
 
 [1] Kosheleva, Kreinovich, Mayer, Nguyen. Computing the cube of an interval
 matrix is NP-hard. SAC 2005.
