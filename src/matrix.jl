@@ -62,6 +62,15 @@ is `C[i, j]` and whose radius is `S[i, j]`, for each `i` and `j`. That is,
 
 The radii matrix should be nonnegative, i.e. `S[i, j] ≥ 0` for each `i` and `j`.
 This assumption is not checked in this constructor.
+
+### Examples
+
+```jldoctest
+julia> IntervalMatrix([1 2; 3 4], [1 2; 4 5])
+2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+  [0, 2]   [0, 4]
+ [-1, 7]  [-1, 9]
+ ```
 """
 function IntervalMatrix(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
     size(C) == size(S) || throw(ArgumentError("the sizes of the center matrix and the " *
