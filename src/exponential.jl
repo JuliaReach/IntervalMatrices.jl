@@ -108,7 +108,7 @@ function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
 end
 
 """
-    expm_overapproximation(M::IntervalMatrix{T, Interval{T}}, t, p) where {T}
+    exp_overapproximation(M::IntervalMatrix{T, Interval{T}}, t, p) where {T}
 
 Overapproximation of the exponential of an interval matrix.
 
@@ -123,10 +123,10 @@ Overapproximation of the exponential of an interval matrix.
 See Theorem 1 in *Reachability Analysis of Linear Systems with Uncertain
 Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
-function expm_overapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {T}
+function exp_overapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {T}
     n = checksquare(A)
 
-    E = _expm_remainder(A, t, p; n=n)
+    E = _exp_remainder(A, t, p; n=n)
     S = IntervalMatrix(zeros(Interval{T}, n, n))
     Ai = A * A
     fact_num = t^2
@@ -150,7 +150,7 @@ end
 # Implementation of Prop. 1 in Althoff, Matthias, Bruce H. Krogh, and Olaf Stursberg.
 # "Analyzing reachability of linear dynamic systems with parametric uncertainties."
 # Modeling, Design, and Simulation of Systems with Uncertainties. Springer, Berlin, Heidelberg, 2011. 69-94.
-function _expm_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
+function _exp_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     C = max.(abs.(inf(A)), abs.(sup(A)))
     # compute Q = I + Ct + (Ct)^2/2! + ... + (Ct)^p/p!
     Q = Matrix(Diagonal(ones(T, n)))
@@ -168,14 +168,14 @@ function _expm_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     Y  = M - Q
     Γ = IntervalMatrix(fill(zero(T)±one(T), (n, n)))
     E = Γ * Y
-    return IntervalMatrix(E) # See #73
+    return E
 end
 
 # Estimates the sum of the series in the matrix exponential. See Theorem 1
 # in [1] Althoff, Matthias, Olaf Stursberg, and Martin Buss.
 # Reachability analysis of nonlinear systems with uncertain parameters using conservative linearization.
 # 2008 47th IEEE Conference on Decision and Control. IEEE, 2008.
-function _expm_remainder_series(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
+function _exp_remainder_series(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     nA = opnorm(A, Inf)
     c = nA * t / (p + 2)
     @assert c < 1 "the remainder of the matrix exponential could not be " *
@@ -186,7 +186,7 @@ function _expm_remainder_series(A::IntervalMatrix{T}, t, p; n=checksquare(A)) wh
 end
 
 """
-    expm_underapproximation(M::IntervalMatrix{T, Interval{T}}, t, p) where {T}
+    exp_underapproximation(M::IntervalMatrix{T, Interval{T}}, t, p) where {T}
 
 Overapproximation of the exponential of an interval matrix.
 
@@ -201,7 +201,7 @@ Overapproximation of the exponential of an interval matrix.
 See Theorem 2 in *Reachability Analysis of Linear Systems with Uncertain
 Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
-function expm_underapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {T}
+function exp_underapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {T}
     n = checksquare(A)
 
     Y = zeros(n, n)
