@@ -58,6 +58,70 @@ function quadratic_expansion(A::IntervalMatrix, t)
 end
 
 """
+    quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
+
+Compute the quadratic expansion of an interval matrix, ``αA + βA^2``, using
+interval arithmetics.
+
+### Input
+
+- `A` -- interval matrix
+- `α` -- linear coefficient
+- `β` -- quadratic coefficient
+
+### Output
+
+An interval matrix that encloses ``B := αA + βA^2``.
+
+### Algorithm
+
+This a variation of the algorithm in [1, Section 6]. If ``A = (aᵢⱼ)`` and
+``B := αA + βA^2 = (bᵢⱼ)``, the idea is to compute each ``bᵢⱼ`` by factoring
+out repeated expressions (thus the term *single-use expressions*).
+
+First, let ``i = j``. In this case,
+
+```math
+bⱼⱼ = β\\sum_\\{k, k ≠ j} a_{jk} a_{kj} + (α + βa_{jj}) a_{jj}.
+```
+
+Now consider ``i ≠ j``. Then,
+
+```math
+bᵢⱼ = β\\sum_\\{k, k ≠ i, k ≠ j} a_{ik} a_{kj} + (α + βa_{ii} + βa_{jj}) a_{ij}.
+```
+
+[1] Kosheleva, Kreinovich, Mayer, Nguyen. Computing the cube of an interval
+matrix is NP-hard. SAC 2005.
+"""
+function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
+    B = similar(A.mat)
+    n = checksquare(A)
+
+    # case i == j
+    @inbounds for j in 1:n
+        B[j, j] = (α + β*A[j, j]) * A[j, j]
+        for k in 1:n
+            k == j && continue
+            B[j, j] += β * (A[j, k] * A[k, j])
+        end
+    end
+
+    # case i ≠ j
+    @inbounds for j in 1:n
+        for i in 1:n
+            i == j && continue
+            B[i, j] = A[i, j] * (α + β*A[j, j] + β*A[i, i])
+            for k in 1:n
+                (k == i || k == j) && continue
+                B[i, j] += β * (A[i, k] * A[k, j])
+            end
+        end
+    end
+    return IntervalMatrix(B)
+end
+
+"""
     exp_overapproximation(M::IntervalMatrix{T, Interval{T}}, t, p) where {T}
 
 Overapproximation of the exponential of an interval matrix.
