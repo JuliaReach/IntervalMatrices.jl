@@ -79,7 +79,7 @@ function IntervalMatrix(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
     F = eltype(Interval(one(T)))
     M = IntervalMatrix{F}(undef, m, n)
 
-    @inbounds for j, i in 1:n
+    @inbounds for j in 1:n
         for i in 1:m
             M[i, j] = C[i, j] ± S[i, j]
         end
