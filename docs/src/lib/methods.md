@@ -23,6 +23,8 @@ sample
 split
 ∈
 square
+scale
+scale!
 ```
 
 ## Exponentiation
