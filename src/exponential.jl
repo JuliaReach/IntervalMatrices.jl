@@ -82,7 +82,7 @@ out repeated expressions (thus the term *single-use expressions*).
 First, let ``i = j``. In this case,
 
 ```math
-bᵢᵢ = β\\sum_\\{k, k ≠ i} a_{ik} a_{ki} + (α + βa_{ii}) a_{ii}.
+bⱼⱼ = β\\sum_\\{k, k ≠ j} a_{jk} a_{kj} + (α + βa_{jj}) a_{jj}.
 ```
 
 Now consider ``i ≠ j``. Then,
