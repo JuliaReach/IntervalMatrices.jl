@@ -79,7 +79,7 @@ This a variation of the algorithm in [1, Section 6]. If ``A = (aᵢⱼ)`` and
 ``B := αA + βA^2 = (bᵢⱼ)``, the idea is to compute each ``bᵢⱼ`` by factoring
 out repeated expressions (thus the term *single-use expressions*).
 
-First, let ``i ≡ j``. In this case,
+First, let ``i = j``. In this case,
 
 ```math
 bᵢᵢ = β\\sum_\\{k, k ≠ i} a_{ik} a_{ki} + (α + βa_{ii}) a_{ii}.
