@@ -22,7 +22,7 @@ See Theorem 3 in [1].
 with Uncertain Parameters and Inputs. CDC 2007.
 """
 function correction_hull(A::IntervalMatrix{T}, t, p) where {T}
-    F = _expm_remainder(A, t, p)
+    F = _exp_remainder(A, t, p)
     _correction_loop!(F, A, A, t, p)
     return F
 end
@@ -54,7 +54,7 @@ assessment of automonous cars. 2010.
 function input_correction(A::IntervalMatrix{T}, t, p) where {T}
     n = checksquare(A)
 
-    E = _expm_remainder(A, t, p; n=n)
+    E = _exp_remainder(A, t, p; n=n)
     F = E / opnorm(A, Inf)
 
     id = IntervalMatrix(Diagonal(fill(Interval(one(T)), n)))  # identity matrix

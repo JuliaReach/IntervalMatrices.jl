@@ -38,9 +38,10 @@ export AbstractIntervalMatrix,
 export inf, sup,
        rand, sample,
        opnorm,
+       scale, scale!,
        square,
        quadratic_expansion,
-       expm_overapproximation,
-       expm_underapproximation
+       exp_overapproximation,
+       exp_underapproximation
 
 end # module
