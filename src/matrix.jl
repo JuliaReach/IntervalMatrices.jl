@@ -29,6 +29,34 @@ julia> A = IntervalMatrix([-0.9±0.1 0±0; 0±0 -0.9±0.1])
   [0, 0]          [-1, -0.799999]
 ```
 
+An interval matrix proportional to the identity matrix can be built using the
+`UniformScaling` operator from the standard library `LinearAlgebra`. For example,
+
+```jldoctest interval_uniform_scaling
+julia> using LinearAlgebra
+
+julia> IntervalMatrix(Interval(1)*I, 2)
+2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+ [1, 1]  [0, 0]
+ [0, 0]  [1, 1]
+```
+The number of columns can be specified as a third argument, creating a rectangular
+``m × n`` matrix such that only the entries in the main diagonal,
+``(1, 1), (2, 2), …,  (k, k)`` are specified, where ``k = \\min(m, n)``:
+
+```jldoctest interval_uniform_scaling
+julia> IntervalMatrix(Interval(-1, 1)*I, 2, 3)
+2×3 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+ [-1, 1]   [0, 0]  [0, 0]
+  [0, 0]  [-1, 1]  [0, 0]
+
+julia> IntervalMatrix(Interval(-1, 1)*I, 3, 2)
+3×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+ [-1, 1]   [0, 0]
+  [0, 0]  [-1, 1]
+  [0, 0]   [0, 0]
+```
+
 An uninitialized interval matrix can be constructed using `undef`:
 
 ```jldoctest undef_test
@@ -51,6 +79,11 @@ size(M::IntervalMatrix) = size(M.mat)
 getindex(M::IntervalMatrix, i::Int) = getindex(M.mat, i)
 setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 copy(M::IntervalMatrix) = IntervalMatrix(copy(M.mat))
+
+# constructor from uniform scaling
+function IntervalMatrix(αI::UniformScaling{Interval{T}}, m::Integer, n::Integer=m) where {T}
+    return IntervalMatrix(Matrix(αI, m, n))
+end
 
 # undef initializer, eg. IntervalMatrix{Float64}(undef, 2, 2)
 function IntervalMatrix{T}(u::UndefInitializer, m::Integer, n::Integer=m) where {T}
