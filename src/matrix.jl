@@ -61,7 +61,6 @@ is `C[i, j]` and whose radius is `S[i, j]`, for each `i` and `j`. That is,
 ### Notes
 
 The radii matrix should be nonnegative, i.e. `S[i, j] ≥ 0` for each `i` and `j`.
-This assumption is not checked in this constructor.
 
 ### Examples
 
@@ -80,11 +79,9 @@ function IntervalMatrix(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
     F = eltype(Interval(one(T)))
     M = IntervalMatrix{F}(undef, m, n)
 
-    @inbounds for j in 1:n
+    @inbounds for j, i in 1:n
         for i in 1:m
-            inf_ij = C[i, j] - S[i, j]
-            sup_ij = C[i, j] + S[i, j]
-            M[i, j] = Interval(inf_ij, sup_ij)
+            M[i, j] = C[i, j] ± S[i, j]
         end
     end
 
