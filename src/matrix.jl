@@ -28,6 +28,17 @@ julia> A = IntervalMatrix([-0.9±0.1 0±0; 0±0 -0.9±0.1])
  [-1, -0.799999]   [0, 0]
   [0, 0]          [-1, -0.799999]
 ```
+
+An uninitialized interval matrix can be constructed using `undef`:
+
+```jldoctest undef_test
+julia> m = IntervalMatrix{Float64}(undef, 2, 2);
+
+julia> typeof(m)
+IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}
+```
+Note that this constructor implicitly uses a dense matrix, `Matrix{Float64}`,
+as the matrix (`mat`) field in the new interval matrix.
 """
 struct IntervalMatrix{T, IT<:Interval{T}, MT<:AbstractMatrix{IT}} <: AbstractIntervalMatrix{IT}
     mat::MT
@@ -40,6 +51,12 @@ size(M::IntervalMatrix) = size(M.mat)
 getindex(M::IntervalMatrix, i::Int) = getindex(M.mat, i)
 setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 copy(M::IntervalMatrix) = IntervalMatrix(copy(M.mat))
+
+# undef initializer, eg. IntervalMatrix{Float64}(undef, 2, 2)
+function IntervalMatrix{T}(u::UndefInitializer, m::Integer, n::Integer=m) where {T}
+    mat = Matrix{Interval{T}}(undef, m, n)
+    return IntervalMatrix(mat)
+end
 
 """
     opnorm(A::IntervalMatrix, p::Real=Inf)
