@@ -85,6 +85,12 @@ end
     @test a2 ∉ m
 end
 
+@testset "Interval matrix inclusion" begin
+    m1 = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
+    m2 = IntervalMatrix([-1.2..1.0 -4.1.. -3.9; 3.9..4.2 -1.2..0.9])
+    @test m1 ⊆ m2 && !(m2 ⊆ m1)
+end
+
 @testset "Interval matrix rand" begin
     m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
     for i in 1:3
