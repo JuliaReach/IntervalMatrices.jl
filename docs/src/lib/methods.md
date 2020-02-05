@@ -25,6 +25,7 @@ split
 square
 scale
 scale!
+⊆
 ```
 
 ## Exponentiation
