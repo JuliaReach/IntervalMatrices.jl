@@ -230,7 +230,7 @@ function scale_and_square(A::IntervalMatrix{T}, l::Integer, t, p;
                           validate::Bool=true) where {T}
     if validate
         nA = opnorm(A, Inf) * t
-        c = (p + 2) * 2^l
+        c = (p + 2) * 2.0^l
         if c <= nA
             throw(ArgumentError("the precondition for the " *
                 "scaling-and-squaring algorithm is not satisfied: $c < $nA; " *
@@ -238,7 +238,7 @@ function scale_and_square(A::IntervalMatrix{T}, l::Integer, t, p;
         end
     end
 
-    A_scaled = A / (interval(T(2))^l)
+    A_scaled = A / Interval(T(2))^l
     E = exp_overapproximation(A_scaled, t, p)
     for i in 1:l
         E = square(E)
