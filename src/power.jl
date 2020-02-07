@@ -8,7 +8,7 @@ A wrapper for the matrix power that can be incremented.
 ### Fields
 
 - `M`  -- the original matrix
-- `Mᵏ` -- the current matrix power, i.e., `M^k`
+- `Mᵏ` -- the current matrix power, i.e., ``M^k``
 - `k`  -- the current power index
 
 ### Notes
@@ -41,6 +41,14 @@ julia> get(pow)
  [4, 4]  [2, 9]
  [0, 0]  [0, 1]
 
+julia> index(pow)
+2
+
+julia> base(pow)
+2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+ [2, 2]   [2, 3]
+ [0, 0]  [-1, 1]
+
 ```
 """
 mutable struct IntervalMatrixPower{T}
@@ -54,6 +62,7 @@ mutable struct IntervalMatrixPower{T}
 
     function IntervalMatrixPower(M::IntervalMatrix{T}, Mᵏ::IntervalMatrix{T},
                                  k::Int) where {T}
+        @assert k >= 1 "matrix powers must be positive"
         return new{T}(M, Mᵏ, k)
     end
 end
@@ -65,7 +74,7 @@ end
 """
     increment!(pow::IntervalMatrixPower)
 
-Increment a matrix power.
+Increment a matrix power in-place (i.e., storing the result in `pow`).
 
 ### Input
 
@@ -86,9 +95,9 @@ function increment!(pow::IntervalMatrixPower)
 end
 
 """
-    increment!(pow::IntervalMatrixPower)
+    increment(pow::IntervalMatrixPower)
 
-Increment a matrix power.
+Increment a matrix power without modifying `pow`.
 
 ### Input
 
@@ -118,6 +127,24 @@ function _eval_poweroftwo(M::IntervalMatrix, k::Integer)
 end
 
 """
+    base(pow::IntervalMatrixPower)
+
+Return the original matrix represented by a wrapper of a matrix power.
+
+### Input
+
+- `pow` -- wrapper of a matrix power
+
+### Output
+
+The matrix ``M`` being the basis of the matrix power ``M^k`` represented by the
+wrapper.
+"""
+function base(pow::IntervalMatrixPower)
+    return pow.M
+end
+
+"""
     get(pow::IntervalMatrixPower)
 
 Return the matrix represented by a wrapper of a matrix power.
@@ -132,4 +159,21 @@ The matrix power represented by the wrapper.
 """
 function get(pow::IntervalMatrixPower)
     return pow.Mᵏ
+end
+
+"""
+    index(pow::IntervalMatrixPower)
+
+Return the current index of the wrapper of a matrix power.
+
+### Input
+
+- `pow` -- wrapper of a matrix power
+
+### Output
+
+The index `k` of the wrapper representing ``M^k``.
+"""
+function index(pow::IntervalMatrixPower)
+    return pow.k
 end

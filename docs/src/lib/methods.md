@@ -34,6 +34,8 @@ scale!
 increment!
 increment
 get
+base
+index
 ```
 
 ## Exponentiation

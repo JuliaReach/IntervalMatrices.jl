@@ -50,6 +50,8 @@ export inf, sup,
        exp_underapproximation
 
 export IntervalMatrixPower,
-       increment!, increment
+       increment!, increment,
+       base,
+       index
 
 end # module
