@@ -16,7 +16,7 @@ arithmetics.
 See Lemma 1 in *Reachability Analysis of Linear Systems with Uncertain Parameters
 and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
-function quadratic_expansion(A::IntervalMatrix, t)
+function quadratic_expansion(A::IntervalMatrix{T}, t) where {T}
     n = checksquare(A)
 
     t2d2 = t^2/2
@@ -34,18 +34,18 @@ function quadratic_expansion(A::IntervalMatrix, t)
 
     @inbounds for j in 1:n
         for i in 1:n
-            S = 0
+            S = Interval(zero(T), zero(T))
             if i ≠ j
                 for k in 1:n
                     if k ≠ i && k ≠ j
-                        S = S + A[i, k] * A[k, j]
+                        S += A[i, k] * A[k, j]
                     end
                 end
                 W[i, j] = A[i, j] * (t + (A[i, i] + A[j, j]) * t2d2) + S * t2d2
             else
                 for k in 1:n
                     if k ≠ i
-                        S = S + A[i, k] * A[k, j]
+                        S += A[i, k] * A[k, j]
                     end
                 end
                 u = inf(A[i, i]) * t + inf(A[i, i])^2 * t2d2
@@ -98,7 +98,7 @@ function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
     B = similar(A.mat)
     n = checksquare(A)
 
-    # case i == j
+    # case i = j
     @inbounds for j in 1:n
         B[j, j] = (α + β*A[j, j]) * A[j, j]
         for k in 1:n
@@ -142,14 +142,14 @@ function exp_overapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {T
 
     E = _exp_remainder(A, t, p; n=n)
     S = IntervalMatrix(zeros(Interval{T}, n, n))
-    Ai = A * A
+    Ai = square(A)
     fact_num = t^2
     fact_denom = 2
     for i in 3:p
         fact_num *= t
         fact_denom *= i
-        Ai = Ai * A
-        S = S + Ai * (fact_num / fact_denom)
+        Ai *= A
+        S += Ai * (fact_num / fact_denom)
     end
     W = quadratic_expansion(A, t)
     res = W + S + E
@@ -175,11 +175,11 @@ function _exp_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     for i in 1:p
         i! *= i
         tⁱ *= t
-        Q = Q + Cⁱ * tⁱ/i!
-        Cⁱ = Cⁱ * C
+        Q += Cⁱ * tⁱ/i!
+        Cⁱ *= C
     end
     M = exp(C*t)
-    Y  = M - Q
+    Y = M - Q
     Γ = IntervalMatrix(fill(zero(T)±one(T), (n, n)))
     E = Γ * Y
     return E
@@ -220,20 +220,20 @@ function exp_underapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {
 
     Y = zeros(n, n)
     LA = inf(A)
-    Ail = LA * LA
+    Ail = LA^2
     Z = zeros(n, n)
     RA = sup(A)
-    Air = RA * RA
+    Air = RA^2
     fact_num = t^2
     fact_denom = 2
     for i in 3:p
         fact_num *= t
         fact_denom *= i
         fact = fact_num / fact_denom
-        Ail = Ail * LA
-        Y = Y + Ail * fact
-        Air = Air * RA
-        Z = Z + Air * fact
+        Ail *= LA
+        Y += Ail * fact
+        Air *= RA
+        Z += Air * fact
     end
 
     B = IntervalMatrix(Matrix{Interval{T}}(undef, n , n))
