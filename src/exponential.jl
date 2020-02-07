@@ -210,6 +210,8 @@ Compute the matrix exponential using scaling and squaring.
 - `l` -- scaling-and-squaring order
 - `t` -- non-negative time value
 - `p` -- order of the approximation
+- `validate` -- (optional; default: `true`) option to validate the precondition
+                of the algorithm
 
 ### Algorithm
 
@@ -224,7 +226,18 @@ squares the result ``l`` times.
 [1] Goldsztejn, Alexandre, Arnold Neumaier. "On the exponentiation of interval
 matrices". Reliable Computing. 2014.
 """
-function scale_and_square(A::IntervalMatrix{T}, l::Integer, t, p) where {T}
+function scale_and_square(A::IntervalMatrix{T}, l::Integer, t, p;
+                          validate::Bool=true) where {T}
+    if validate
+        nA = opnorm(A, Inf) * t
+        c = (p + 2) * 2^l
+        if c <= nA
+            throw(ArgumentError("the precondition for the " *
+                "scaling-and-squaring algorithm is not satisfied: $c < $nA; " *
+                "try choosing a larger order"))
+        end
+    end
+
     A_scaled = A / (interval(T(2))^l)
     E = exp_overapproximation(A_scaled, t, p)
     for i in 1:l
