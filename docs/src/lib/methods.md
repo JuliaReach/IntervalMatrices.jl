@@ -28,6 +28,14 @@ scale!
 ⊆
 ```
 
+## Matrix power
+
+```@docs
+increment!
+increment
+get
+```
+
 ## Exponentiation
 
 ```@docs
