@@ -1,5 +1,7 @@
 using IntervalMatrices, Test, LinearAlgebra
 
+using IntervalMatrices: scale_and_square
+
 @testset "Interval arithmetic" begin
     a = -1.5 ± 0.5
     b = -1..1
@@ -30,18 +32,18 @@ end
           IntervalMatrix([0.0..2.6 0.0..7.0; -2.0..0.0 -0.2..0.2])
     # multiply scalar and interval matrix
     x = 1.0
-    for A2 in [x * A, A * x]
+    for A2 in [x * A, A * x, A / x]
         @test A2 == A && typeof(A2) == typeof(A)
     end
 
-   # arithmetic closure using interval matrices and non-interval matrices
-   Ainf = inf(A)
-   @test A + Ainf isa IntervalMatrix
-   @test Ainf + A isa IntervalMatrix
-   @test A - Ainf isa IntervalMatrix
-   @test Ainf - A isa IntervalMatrix
-   @test A * Ainf isa IntervalMatrix
-   @test Ainf * A isa IntervalMatrix
+    # arithmetic closure using interval matrices and non-interval matrices
+    Ainf = inf(A)
+    @test A + Ainf isa IntervalMatrix
+    @test Ainf + A isa IntervalMatrix
+    @test A - Ainf isa IntervalMatrix
+    @test Ainf - A isa IntervalMatrix
+    @test A * Ainf isa IntervalMatrix
+    @test Ainf * A isa IntervalMatrix
 end
 
 @testset "Interval matrix methods" begin
@@ -65,9 +67,14 @@ end
 
 @testset "Interval matrix exponential" begin
     m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
-    a_over = exp_overapproximation(m, 1.0, 4)
-    a_under = exp_underapproximation(m, 1.0, 4)
-    @test a_over isa IntervalMatrix && a_under isa IntervalMatrix
+    overapp1 = exp_overapproximation(m, 1.0, 4)
+    overapp2 = scale_and_square(m, 5, 1.0, 4)
+    underapp = exp_underapproximation(m, 1.0, 4)
+
+    @test underapp isa IntervalMatrix
+    for overapp in [overapp1, overapp2]
+        @test overapp isa IntervalMatrix
+    end
 end
 
 @testset "Interval matrix split" begin

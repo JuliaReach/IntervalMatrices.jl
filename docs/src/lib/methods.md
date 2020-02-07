@@ -32,6 +32,7 @@ scale!
 
 ```@docs
 exp_overapproximation
+scale_and_square
 exp_underapproximation
 ```
 

@@ -200,6 +200,40 @@ function _exp_remainder_series(A::IntervalMatrix{T}, t, p; n=checksquare(A)) whe
 end
 
 """
+    scale_and_square(A::IntervalMatrix{T}, l::Integer, t, p)
+
+Compute the matrix exponential using scaling and squaring.
+
+### Input
+
+- `A` -- interval matrix
+- `l` -- scaling-and-squaring order
+- `t` -- non-negative time value
+- `p` -- order of the approximation
+
+### Algorithm
+
+We use the algorithm in [1, Section 4.3], which first scales `A` by factor
+``2^{-l}``, computes the matrix exponential for the scaled matrix, and then
+squares the result ``l`` times.
+
+```math
+    \\exp(A * 2^{-l})^{2^l}
+```
+
+[1] Goldsztejn, Alexandre, Arnold Neumaier. "On the exponentiation of interval
+matrices". Reliable Computing. 2014.
+"""
+function scale_and_square(A::IntervalMatrix{T}, l::Integer, t, p) where {T}
+    A_scaled = A / (interval(T(2))^l)
+    E = exp_overapproximation(A_scaled, t, p)
+    for i in 1:l
+        E = square(E)
+    end
+    return E
+end
+
+"""
     exp_underapproximation(M::IntervalMatrix{T, Interval{T}}, t, p) where {T}
 
 Overapproximation of the exponential of an interval matrix.
