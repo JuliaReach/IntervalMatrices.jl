@@ -1,5 +1,7 @@
 using IntervalMatrices, Test, LinearAlgebra
 
+using IntervalMatrices: scale_and_square
+
 @testset "Interval arithmetic" begin
     a = -1.5 ± 0.5
     b = -1..1
@@ -65,9 +67,14 @@ end
 
 @testset "Interval matrix exponential" begin
     m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
-    a_over = exp_overapproximation(m, 1.0, 4)
-    a_under = exp_underapproximation(m, 1.0, 4)
-    @test a_over isa IntervalMatrix && a_under isa IntervalMatrix
+    overapp1 = exp_overapproximation(m, 1.0, 4)
+    overapp2 = scale_and_square(m, 5, 1.0, 4)
+    underapp = exp_underapproximation(m, 1.0, 4)
+
+    @test underapp isa IntervalMatrix
+    for overapp in [overapp1, overapp2]
+        @test overapp isa IntervalMatrix
+    end
 end
 
 @testset "Interval matrix split" begin
