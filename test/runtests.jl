@@ -30,18 +30,18 @@ end
           IntervalMatrix([0.0..2.6 0.0..7.0; -2.0..0.0 -0.2..0.2])
     # multiply scalar and interval matrix
     x = 1.0
-    for A2 in [x * A, A * x]
+    for A2 in [x * A, A * x, A / x]
         @test A2 == A && typeof(A2) == typeof(A)
     end
 
-   # arithmetic closure using interval matrices and non-interval matrices
-   Ainf = inf(A)
-   @test A + Ainf isa IntervalMatrix
-   @test Ainf + A isa IntervalMatrix
-   @test A - Ainf isa IntervalMatrix
-   @test Ainf - A isa IntervalMatrix
-   @test A * Ainf isa IntervalMatrix
-   @test Ainf * A isa IntervalMatrix
+    # arithmetic closure using interval matrices and non-interval matrices
+    Ainf = inf(A)
+    @test A + Ainf isa IntervalMatrix
+    @test Ainf + A isa IntervalMatrix
+    @test A - Ainf isa IntervalMatrix
+    @test Ainf - A isa IntervalMatrix
+    @test A * Ainf isa IntervalMatrix
+    @test Ainf * A isa IntervalMatrix
 end
 
 @testset "Interval matrix methods" begin
