@@ -1,6 +1,6 @@
 using IntervalMatrices, Test, LinearAlgebra
 
-using IntervalMatrices: scale_and_square
+using IntervalMatrices: _truncated_exponential_series, scale_and_square
 
 @testset "Interval arithmetic" begin
     a = -1.5 ± 0.5
@@ -67,6 +67,11 @@ end
 
 @testset "Interval matrix exponential" begin
     m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
+
+    for i in 0:4
+        _truncated_exponential_series(m, 1.0, i)
+    end
+
     overapp1 = exp_overapproximation(m, 1.0, 4)
     overapp2 = scale_and_square(m, 5, 1.0, 4)
     underapp = exp_underapproximation(m, 1.0, 4)

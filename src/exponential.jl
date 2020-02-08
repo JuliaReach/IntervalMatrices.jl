@@ -121,19 +121,25 @@ function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
     return IntervalMatrix(B)
 end
 
-function _truncated_exponential_series(A::IntervalMatrix{T}, t, p;
+function _truncated_exponential_series(A::IntervalMatrix{T}, t, p::Integer;
                                        n=checksquare(A)) where {T}
-    @assert p > 1 "the order $p < 2 is not supported"
-
-    # indices i = 1 and i = 2
-    S = quadratic_expansion(A, t)
+    if p == 0
+        # index i = 0 (identity matrix)
+        return IntervalMatrix(Interval(one(T)) * I, n)
+    elseif p == 1
+        # index i = 1
+        S = A * t
+    else
+        # indices i = 1 and i = 2
+        S = quadratic_expansion(A, t)
+    end
 
     # index i = 0, (identity matrix, added implicitly)
     for i in 1:n
         S[i, i] += one(T)
     end
 
-    if p == 2
+    if p < 3
         return S
     end
 
