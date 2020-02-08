@@ -156,10 +156,20 @@ The matrix ``p``-norm of an interval matrix ``A`` is defined as
 ```
 
 where ``\\max`` and ``|·|`` are taken elementwise.
+
+### Algorithm
+
+We exploit that
+
+```math
+    ‖A‖_p = ‖\\max(-\\text{inf}(A), \\text{sup}(A))‖_p
+```
+
+to avoid taking the absolute (``|·|``).
 """
 function LinearAlgebra.opnorm(A::IntervalMatrix, p::Real=Inf)
     if p == Inf || p == 1
-        return LinearAlgebra.opnorm(max.(abs.(inf(A)), abs.(sup(A))), p)
+        return LinearAlgebra.opnorm(max.((-).(inf(A)), sup(A)), p)
     else
         error("the interval matrix norm for this value of p=$p is not implemented")
     end
