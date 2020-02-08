@@ -125,8 +125,7 @@ function IntervalMatrix(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
                                 "radii matrix should match, but they are $(size(C)) " *
                                 "and $(size(S)) respectively"))
     m, n = size(C)
-    F = eltype(Interval(one(T)))
-    M = IntervalMatrix{F}(undef, m, n)
+    M = IntervalMatrix{T}(undef, m, n)
 
     @inbounds for j in 1:n
         for i in 1:m

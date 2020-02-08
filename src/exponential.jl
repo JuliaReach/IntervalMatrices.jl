@@ -283,7 +283,7 @@ function exp_underapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {
         Z += Air * fact
     end
 
-    B = IntervalMatrix(Matrix{Interval{T}}(undef, n , n))
+    B = IntervalMatrix{T}(undef, n , n)
     @inbounds for j in 1:n
         for i in 1:n
             minYZ = min(Y[i, j], Z[i, j])

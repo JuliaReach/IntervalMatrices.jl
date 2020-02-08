@@ -57,7 +57,7 @@ function input_correction(A::IntervalMatrix{T}, t, p) where {T}
     E = _exp_remainder(A, t, p; n=n)
     F = E / opnorm(A, Inf)
 
-    id = IntervalMatrix(Diagonal(fill(Interval(one(T)), n)))  # identity matrix
+    id = IntervalMatrix(Interval(one(T)) * I, n)
     _correction_loop!(F, A, id, t, p)
 
     return F
