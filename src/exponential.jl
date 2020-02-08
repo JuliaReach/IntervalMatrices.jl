@@ -138,14 +138,15 @@ function _truncated_exponential_series(A::IntervalMatrix{T}, t, p;
     end
 
     # indices i >= 3
-    Ai = square(A)
+    pow = IntervalMatrixPower(A)
+    increment!(pow)
     fact_num = t^2
     fact_denom = 2
     for i in 3:p
         fact_num *= t
         fact_denom *= i
-        Ai *= A
-        S += Ai * (fact_num / fact_denom)
+        Aⁱ = increment!(pow)
+        S += Aⁱ * (fact_num / fact_denom)
     end
 
     return S
@@ -281,20 +282,20 @@ function exp_underapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {
 
     Y = zeros(n, n)
     LA = inf(A)
-    Ail = LA^2
+    Aⁱl = LA^2
     Z = zeros(n, n)
     RA = sup(A)
-    Air = RA^2
+    Aⁱr = RA^2
     fact_num = t^2
     fact_denom = 2
     for i in 3:p
         fact_num *= t
         fact_denom *= i
         fact = fact_num / fact_denom
-        Ail *= LA
-        Y += Ail * fact
-        Air *= RA
-        Z += Air * fact
+        Aⁱl *= LA
+        Y += Aⁱl * fact
+        Aⁱr *= RA
+        Z += Aⁱr * fact
     end
 
     B = IntervalMatrix(Matrix{Interval{T}}(undef, n , n))
