@@ -22,3 +22,9 @@ AbstractIntervalMatrix
 ```@docs
 IntervalMatrix
 ```
+
+## Interval-matrix-power wrapper
+
+```@docs
+IntervalMatrixPower
+```

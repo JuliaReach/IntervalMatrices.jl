@@ -19,6 +19,11 @@ include("matrix.jl")
 # =================================
 include("arithmetic.jl")
 
+# ==================================================
+# Methods to compute the power of an interval matrix
+# ==================================================
+include("power.jl")
+
 # =======================================================
 # Methods to handle the exponential of an interval matrix
 # =======================================================
@@ -43,5 +48,10 @@ export inf, sup,
        quadratic_expansion,
        exp_overapproximation,
        exp_underapproximation
+
+export IntervalMatrixPower,
+       increment!, increment,
+       base,
+       index
 
 end # module
