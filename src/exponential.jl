@@ -121,8 +121,45 @@ function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
     return IntervalMatrix(B)
 end
 
+function _truncated_exponential_series(A::IntervalMatrix{T}, t, p::Integer;
+                                       n=checksquare(A)) where {T}
+    if p == 0
+        # index i = 0 (identity matrix)
+        return IntervalMatrix(Interval(one(T)) * I, n)
+    elseif p == 1
+        # index i = 1
+        S = A * t
+    else
+        # indices i = 1 and i = 2
+        S = quadratic_expansion(A, t)
+    end
+
+    # index i = 0, (identity matrix, added implicitly)
+    for i in 1:n
+        S[i, i] += one(T)
+    end
+
+    if p < 3
+        return S
+    end
+
+    # indices i >= 3
+    pow = IntervalMatrixPower(A)
+    increment!(pow)
+    fact_num = t^2
+    fact_denom = 2
+    for i in 3:p
+        fact_num *= t
+        fact_denom *= i
+        Aⁱ = increment!(pow)
+        S += Aⁱ * (fact_num / fact_denom)
+    end
+
+    return S
+end
+
 """
-    exp_overapproximation(M::IntervalMatrix{T, Interval{T}}, t, p) where {T}
+    exp_overapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {T}
 
 Overapproximation of the exponential of an interval matrix.
 
@@ -139,26 +176,9 @@ Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
 function exp_overapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {T}
     n = checksquare(A)
-
+    S = _truncated_exponential_series(A, t, p; n=n)
     E = _exp_remainder(A, t, p; n=n)
-    S = IntervalMatrix(zeros(Interval{T}, n, n))
-    Ai = square(A)
-    fact_num = t^2
-    fact_denom = 2
-    for i in 3:p
-        fact_num *= t
-        fact_denom *= i
-        Ai *= A
-        S += Ai * (fact_num / fact_denom)
-    end
-    W = quadratic_expansion(A, t)
-    res = W + S + E
-
-    # add identity matrix implicitly
-    for i in 1:n
-        res[i, i] += one(T)
-    end
-    return res
+    return S + E
 end
 
 # Implementation of Prop. 1 in Althoff, Matthias, Bruce H. Krogh, and Olaf Stursberg.
@@ -263,24 +283,25 @@ See Theorem 2 in *Reachability Analysis of Linear Systems with Uncertain
 Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
 function exp_underapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {T}
+    @assert p > 1 "the order $p < 2 is not supported"
     n = checksquare(A)
 
     Y = zeros(n, n)
     LA = inf(A)
-    Ail = LA^2
+    Aⁱl = LA^2
     Z = zeros(n, n)
     RA = sup(A)
-    Air = RA^2
+    Aⁱr = RA^2
     fact_num = t^2
     fact_denom = 2
     for i in 3:p
         fact_num *= t
         fact_denom *= i
         fact = fact_num / fact_denom
-        Ail *= LA
-        Y += Ail * fact
-        Air *= RA
-        Z += Air * fact
+        Aⁱl *= LA
+        Y += Aⁱl * fact
+        Aⁱr *= RA
+        Z += Aⁱr * fact
     end
 
     B = IntervalMatrix{T}(undef, n , n)
