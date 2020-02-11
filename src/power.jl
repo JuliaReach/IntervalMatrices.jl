@@ -67,11 +67,12 @@ function IntervalMatrixPower(M::IntervalMatrix{T}) where {T}
     return IntervalMatrixPower(M, M, 1)
 end
 
-function IntervalMatrixPower(M::IntervalMatrix{T}, k::Int) where {T}
+function IntervalMatrixPower(M::IntervalMatrix{T}, k::Int;
+                             algorithm::String="power") where {T}
     @assert k >= 1 "matrix powers must be positive"
     pow = IntervalMatrixPower(M, M, 1)
     @inbounds for i in 1:(k-1)
-        increment!(pow)
+        increment!(pow; algorithm=algorithm)
     end
     return pow
 end
@@ -167,16 +168,16 @@ function _eval_intersect(pow::IntervalMatrixPower)
     return intersect(_eval_multiply(pow), _eval_power(pow))
 end
 
-function _eval_sqrt(pow::IntervalMatrixPower)
+function _eval_sqrt(pow::IntervalMatrixPower; algorithm::String="power")
     # decompose k = a² + b with a, b being integers
     k = pow.k
     a = floor(Int, sqrt(k))
     b = k - a^2
 
     # recursively compute M^a and M^b
-    Mᵏ = square(get(IntervalMatrixPower(pow.M, a)))
+    Mᵏ = square(get(IntervalMatrixPower(pow.M, a; algorithm=algorithm)))
     if b > 0
-        Mᵏ *= get(IntervalMatrixPower(pow.M, b))
+        Mᵏ *= get(IntervalMatrixPower(pow.M, b; algorithm=algorithm))
     end
     return Mᵏ
 end
