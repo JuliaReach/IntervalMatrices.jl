@@ -100,6 +100,11 @@ function IntervalMatrix(A::AbstractMatrix{T}) where {T<:Number}
     return IntervalMatrix(map(Interval, A))
 end
 
+# conversion from scalar matrix to interval matrix
+function convert(::Type{<:IntervalMatrix}, A::AbstractMatrix{T}) where {T<:Number}
+    return IntervalMatrix(map(x -> convert(Interval, x), A))
+end
+
 """
     IntervalMatrix(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
 
