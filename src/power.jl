@@ -93,6 +93,7 @@ Increment a matrix power in-place (i.e., storing the result in `pow`).
     * `"multiply"` -- fast computation using `*` from the previous result
     * `"power"` -- recomputation using `^`
     * `"intersect"` -- combination of `"multiply"` and `"power"`
+    * `"sqrt"` -- decompose `k = a² + b`
 
 ### Output
 
@@ -113,6 +114,8 @@ function increment!(pow::IntervalMatrixPower; algorithm::String="intersect")
         pow.Mᵏ = _eval_power(pow)
     elseif algorithm == "intersect"
         pow.Mᵏ = _eval_intersect(pow)
+    elseif algorithm == "sqrt"
+        pow.Mᵏ = _eval_sqrt(pow)
     else
         throw(ArgumentError("algorithm $algorithm is not available; choose " *
             "from 'multiply', 'power', 'intersect'"))
@@ -162,6 +165,20 @@ end
 
 function _eval_intersect(pow::IntervalMatrixPower)
     return intersect(_eval_multiply(pow), _eval_power(pow))
+end
+
+function _eval_sqrt(pow::IntervalMatrixPower)
+    # decompose k = a² + b with a, b being integers
+    k = pow.k
+    a = floor(Int, sqrt(k))
+    b = k - a^2
+
+    # recursively compute M^a and M^b
+    Mᵏ = square(get(IntervalMatrixPower(pow.M, a)))
+    if b > 0
+        Mᵏ *= get(IntervalMatrixPower(pow.M, b))
+    end
+    return Mᵏ
 end
 
 """
