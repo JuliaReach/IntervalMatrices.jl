@@ -1,4 +1,4 @@
-import Base: similar, split, ∈, ⊆
+import Base: similar, split, ∈, ⊆, ∩
 import Random: rand
 import IntervalArithmetic: inf, sup, mid, diam
 
@@ -464,4 +464,31 @@ This is the in-place version of `scale`.
 """
 function scale!(A::IntervalMatrix{T}, α::T) where {T}
     return map!(x -> α * x, A, A)
+end
+
+"""
+    ∩(A::IntervalMatrix, B::IntervalMatrix)
+
+Intersect two interval matrices.
+
+### Input
+
+- `A` -- interval matrix
+- `B` -- interval matrix (of the same shape as `A`)
+
+### Output
+
+A new matrix `C` of the same shape as `A` such that
+`C[i, j] = A[i, j] ∩ B[i, j]` for each `i` and `j`.
+"""
+function ∩(A::IntervalMatrix, B::IntervalMatrix)
+    m, n = size(A)
+    @assert size(A) == size(B) "incompatible matrix sizes (A: $(size(A)), B: " *
+                               "$(size(B)))"
+
+    C = similar(A)
+    @inbounds for j in 1:n, i in 1:m
+        C[i, j] = A[i, j] ∩ B[i, j]
+    end
+    return C
 end

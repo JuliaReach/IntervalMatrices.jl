@@ -26,6 +26,7 @@ square
 scale
 scale!
 ⊆
+∩
 ```
 
 ## Matrix power
