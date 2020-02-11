@@ -71,6 +71,9 @@ end
     @test sm ≠ m
     scale!(m, 2.0) # in-place
     @test sm == m
+    m3 = IntervalMatrix([-2.0..2.0 -2.0..0.0; 0.0..2.0 -1.0..1.0])
+    m4 = IntervalMatrix([-1.0..1.0 -1.0..1.0; -1.0..1.0 -2.0..2.0])
+    @test m3 ∩ m4 == IntervalMatrix([-1.0..1.0 -1.0..0.0; 0.0..1.0 -1.0..1.0])
 end
 
 @testset "Interval matrix exponential" begin
