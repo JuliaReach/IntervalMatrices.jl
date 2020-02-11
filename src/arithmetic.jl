@@ -60,7 +60,7 @@ We follow [1, Section 6].
 matrix is NP-hard. SAC 2005.
 """
 function square(A::IntervalMatrix)
-    B = similar(A.mat)
+    B = similar(A)
     n = checksquare(A)
 
     # case i == j
@@ -83,5 +83,5 @@ function square(A::IntervalMatrix)
             end
         end
     end
-    return IntervalMatrix(B)
+    return B
 end
