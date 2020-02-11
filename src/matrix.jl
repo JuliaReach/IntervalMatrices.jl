@@ -1,4 +1,4 @@
-import Base: similar, split, ∈, ⊆, ∩
+import Base: similar, split, ∈, ⊆, ∩, convert
 import Random: rand
 import IntervalArithmetic: inf, sup, mid, diam
 
@@ -103,6 +103,11 @@ end
 # conversion from scalar matrix to interval matrix
 function convert(::Type{<:IntervalMatrix}, A::AbstractMatrix{T}) where {T<:Number}
     return IntervalMatrix(map(x -> convert(Interval, x), A))
+end
+
+# no-op
+function convert(::Type{<:IntervalMatrix}, A::IntervalMatrix)
+    return A
 end
 
 """
