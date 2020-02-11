@@ -65,6 +65,15 @@ mutable struct IntervalMatrixPower{T}
         @assert k >= 1 "matrix powers must be positive"
         return new{T}(M, Mᵏ, k)
     end
+
+    function IntervalMatrixPower(M::IntervalMatrix{T}, k::Int) where {T}
+        @assert k >= 1 "matrix powers must be positive"
+        pow = IntervalMatrixPower(M, M, 1)
+        @inbounds for i in 1:(k-1)
+            increment!(pow)
+        end
+        return pow
+    end
 end
 
 function copy(pow::IntervalMatrixPower)
