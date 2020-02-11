@@ -172,11 +172,51 @@ We exploit that
 to avoid taking the absolute (``|·|``).
 """
 function LinearAlgebra.opnorm(A::IntervalMatrix, p::Real=Inf)
-    if p == Inf || p == 1
-        return LinearAlgebra.opnorm(max.((-).(inf(A)), sup(A)), p)
+    if p == Inf
+        return _opnorm_inf(A)
+    elseif p == 1
+        return _opnorm_1(A)
     else
         error("the interval matrix norm for this value of p=$p is not implemented")
     end
+end
+
+# The operator norm in the infinity norm corresponds to the
+# maximum absolute value row-sum. Julia has column-major
+# ordering so for efficiency we iterate over the transpose of A.
+function _opnorm_inf(A::IntervalMatrix{N}) where {N}
+    m, n = size(A)
+    res = zero(N)
+    At = transpose(A)
+    @inbounds @simd for j in 1:m
+        acc = zero(N)
+        for i in 1:n
+            x = At[i, j]
+            acc += max(abs(inf(x)), abs(sup(x)))
+        end
+        if acc > res
+            res = acc
+        end
+    end
+    return res
+end
+
+# The operator norm in the 1-norm corresponds to the
+# maximum absolute value column-sum.
+function _opnorm_1(A::IntervalMatrix{N}) where {N}
+    m, n = size(A)
+    res = zero(N)
+    @inbounds @simd for j in 1:m
+        acc = zero(N)
+        for i in 1:n
+            x = A[i, j]
+            acc += max(abs(inf(x)), abs(sup(x)))
+        end
+        if acc > res
+            res = acc
+        end
+    end
+    return res
 end
 
 """
