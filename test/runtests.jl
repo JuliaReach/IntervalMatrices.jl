@@ -11,6 +11,14 @@ using IntervalMatrices: _truncated_exponential_series, scale_and_square
     @test a * (b + 1) == -4.0..0.0
 end
 
+@testset "Interval matrix construction" begin
+    m1 = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.8..4.2 0.0..0.9])
+    m2 = IntervalMatrix{Float64}(undef, 2, 2)
+    @test m2 isa IntervalMatrix{Float64} && size(m2) == (2, 2)
+    m3 = similar(m1)
+    @test m3 isa IntervalMatrix{Float64} && size(m3) == size(m1)
+end
+
 @testset "Interval matrix arithmetic" begin
     a = 1.0..1.3; b = 2.0..3.5; c = -0.5 ± 0.5; d = 0.0 ± 0.1
     a₊ = 2.0..2.6; b₊ = 4.0..7.0; c₊ = -2.0..0.0; d₊ = -0.2..0.2

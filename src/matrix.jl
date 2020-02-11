@@ -1,4 +1,4 @@
-import Base: split, ∈, ⊆
+import Base: similar, split, ∈, ⊆
 import Random: rand
 import IntervalArithmetic: inf, sup, mid, diam
 
@@ -88,6 +88,11 @@ end
 function IntervalMatrix{T}(u::UndefInitializer, m::Integer, n::Integer=m) where {T}
     mat = Matrix{Interval{T}}(undef, m, n)
     return IntervalMatrix(mat)
+end
+
+# similar initializer
+function similar(M::IntervalMatrix)
+    return IntervalMatrix(similar(M.mat))
 end
 
 """

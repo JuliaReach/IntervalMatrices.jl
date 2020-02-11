@@ -30,7 +30,7 @@ function quadratic_expansion(A::IntervalMatrix{T}, t) where {T}
         end
     end
 
-    W = IntervalMatrix(similar(A.mat))
+    W = similar(A)
 
     @inbounds for j in 1:n
         for i in 1:n
@@ -95,7 +95,7 @@ bᵢⱼ = β\\sum_\\{k, k ≠ i, k ≠ j} a_{ik} a_{kj} + (α + βa_{ii} + βa_{
 matrix is NP-hard. SAC 2005.
 """
 function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
-    B = similar(A.mat)
+    B = similar(A)
     n = checksquare(A)
 
     # case i = j
@@ -118,7 +118,7 @@ function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
             end
         end
     end
-    return IntervalMatrix(B)
+    return B
 end
 
 function _truncated_exponential_series(A::IntervalMatrix{T}, t, p::Integer;
