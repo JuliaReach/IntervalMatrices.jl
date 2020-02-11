@@ -133,3 +133,13 @@ end
     b = square(m)
     @test all(inf(a) .<= inf(b)) && all(sup(b) .>= sup(a))
 end
+
+@testset "Interval matrix power" begin
+    m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
+    pow = IntervalMatrixPower(m)
+    increment!(pow)  # power of two
+    increment!(pow, algorithm="multiply")
+    increment!(pow)  # power of two
+    increment!(pow, algorithm="power")
+    increment!(pow, algorithm="intersect")
+end

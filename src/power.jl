@@ -81,24 +81,41 @@ function copy(pow::IntervalMatrixPower)
 end
 
 """
-    increment!(pow::IntervalMatrixPower)
+    increment!(pow::IntervalMatrixPower; [algorithm="intersect"])
 
 Increment a matrix power in-place (i.e., storing the result in `pow`).
 
 ### Input
 
-- `pow` -- wrapper of a matrix power (modified in this function)
+- `pow`       -- wrapper of a matrix power (modified in this function)
+- `algorithm` -- (optional; default: `"intersect"`) algorithm to compute the
+                 matrix power; available options:
+    * `"multiply"` -- fast computation using `*` from the previous result
+    * `"power"` -- recomputation using `^`
+    * `"intersect"` -- combination of `"multiply"` and `"power"`
 
 ### Output
 
 The next matrix power now, reflected in the modified wrapper.
+
+### Notes
+
+Independent of `"algorithm"`, if the index is a power of two, we compute the
+exact result using squaring.
 """
-function increment!(pow::IntervalMatrixPower)
+function increment!(pow::IntervalMatrixPower; algorithm::String="intersect")
     pow.k += 1
     if _isapoweroftwo(pow.k)
-        pow.Mᵏ = _eval_poweroftwo(pow.M, pow.k)
+        pow.Mᵏ = _eval_poweroftwo(pow)
+    elseif algorithm == "multiply"
+        pow.Mᵏ = _eval_multiply(pow)
+    elseif algorithm == "power"
+        pow.Mᵏ = _eval_power(pow)
+    elseif algorithm == "intersect"
+        pow.Mᵏ = _eval_intersect(pow)
     else
-        pow.Mᵏ *= pow.M
+        throw(ArgumentError("algorithm $algorithm is not available; choose " *
+            "from 'multiply', 'power', 'intersect'"))
     end
     return pow.Mᵏ
 end
@@ -127,12 +144,24 @@ function _isapoweroftwo(k::Integer)
 end
 
 # compute the (exact) matrix power for a power of two
-function _eval_poweroftwo(M::IntervalMatrix, k::Integer)
-    Mᵏ = M
-    @inbounds for i in 1:Int(log(2, k))
+function _eval_poweroftwo(pow::IntervalMatrixPower)
+    Mᵏ = pow.M
+    @inbounds for i in 1:Int(log(2, pow.k))
         Mᵏ = square(Mᵏ)
     end
     return Mᵏ
+end
+
+function _eval_multiply(pow::IntervalMatrixPower)
+    return pow.Mᵏ * pow.M
+end
+
+function _eval_power(pow::IntervalMatrixPower)
+    return pow.M^pow.k
+end
+
+function _eval_intersect(pow::IntervalMatrixPower)
+    return intersect(_eval_multiply(pow), _eval_power(pow))
 end
 
 """
