@@ -56,24 +56,24 @@ mutable struct IntervalMatrixPower{T}
     Mᵏ::IntervalMatrix{T}
     k::Int
 
-    function IntervalMatrixPower(M::IntervalMatrix{T}) where {T}
-        return new{T}(M, M, 1)
-    end
-
     function IntervalMatrixPower(M::IntervalMatrix{T}, Mᵏ::IntervalMatrix{T},
                                  k::Int) where {T}
         @assert k >= 1 "matrix powers must be positive"
         return new{T}(M, Mᵏ, k)
     end
+end
 
-    function IntervalMatrixPower(M::IntervalMatrix{T}, k::Int) where {T}
-        @assert k >= 1 "matrix powers must be positive"
-        pow = IntervalMatrixPower(M, M, 1)
-        @inbounds for i in 1:(k-1)
-            increment!(pow)
-        end
-        return pow
+function IntervalMatrixPower(M::IntervalMatrix{T}) where {T}
+    return IntervalMatrixPower(M, M, 1)
+end
+
+function IntervalMatrixPower(M::IntervalMatrix{T}, k::Int) where {T}
+    @assert k >= 1 "matrix powers must be positive"
+    pow = IntervalMatrixPower(M, M, 1)
+    @inbounds for i in 1:(k-1)
+        increment!(pow)
     end
+    return pow
 end
 
 function copy(pow::IntervalMatrixPower)
