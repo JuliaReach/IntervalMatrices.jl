@@ -81,16 +81,18 @@ function copy(pow::IntervalMatrixPower)
     return IntervalMatrixPower(pow.M, pow.Mᵏ, pow.k)
 end
 
+const default_algorithm = "intersect"
+
 """
-    increment!(pow::IntervalMatrixPower; [algorithm="intersect"])
+    increment!(pow::IntervalMatrixPower; [algorithm=default_algorithm])
 
 Increment a matrix power in-place (i.e., storing the result in `pow`).
 
 ### Input
 
 - `pow`       -- wrapper of a matrix power (modified in this function)
-- `algorithm` -- (optional; default: `"intersect"`) algorithm to compute the
-                 matrix power; available options:
+- `algorithm` -- (optional; default: `default_algorithm`) algorithm to compute
+                 the matrix power; available options:
     * `"multiply"` -- fast computation using `*` from the previous result
     * `"power"` -- recomputation using `^`
     * `"decompose_binary"` -- decompose `k = 2a + b`
@@ -98,14 +100,15 @@ Increment a matrix power in-place (i.e., storing the result in `pow`).
 
 ### Output
 
-The next matrix power now, reflected in the modified wrapper.
+The next matrix power, reflected in the modified wrapper.
 
 ### Notes
 
 Independent of `"algorithm"`, if the index is a power of two, we compute the
 exact result using squaring.
 """
-function increment!(pow::IntervalMatrixPower; algorithm::String="intersect")
+function increment!(pow::IntervalMatrixPower;
+                    algorithm::String=default_algorithm)
     pow.k += 1
     if _isapoweroftwo(pow.k)
         pow.Mᵏ = _eval_poweroftwo(pow)
@@ -113,10 +116,10 @@ function increment!(pow::IntervalMatrixPower; algorithm::String="intersect")
         pow.Mᵏ = _eval_multiply(pow)
     elseif algorithm == "power"
         pow.Mᵏ = _eval_power(pow)
-    elseif algorithm == "intersect"
-        pow.Mᵏ = _eval_intersect(pow)
     elseif algorithm == "decompose_binary"
         pow.Mᵏ = _eval_decompose_binary(pow)
+    elseif algorithm == "intersect"
+        pow.Mᵏ = _eval_intersect(pow)
     else
         throw(ArgumentError("algorithm $algorithm is not available; choose " *
             "from 'multiply', 'power', 'decompose_binary', 'intersect'"))
@@ -125,20 +128,23 @@ function increment!(pow::IntervalMatrixPower; algorithm::String="intersect")
 end
 
 """
-    increment(pow::IntervalMatrixPower)
+    increment(pow::IntervalMatrixPower; [algorithm=default_algorithm])
 
 Increment a matrix power without modifying `pow`.
 
 ### Input
 
 - `pow` -- wrapper of a matrix power
+- `algorithm` -- (optional; default: `default_algorithm`) algorithm to compute
+                 the matrix power; see [`increment!`](@ref) for available options
 
 ### Output
 
-The next matrix power now.
+The next matrix power.
 """
-function increment(pow::IntervalMatrixPower)
-    return increment!(copy(pow))
+function increment(pow::IntervalMatrixPower;
+                   algorithm::String=default_algorithm)
+    return increment!(copy(pow), algorithm=algorithm)
 end
 
 # checks whether a number is a power of 2
