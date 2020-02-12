@@ -95,6 +95,11 @@ function similar(M::IntervalMatrix)
     return IntervalMatrix(similar(M.mat))
 end
 
+# constructor from a scalar matrix
+function IntervalMatrix(A::AbstractMatrix{T}) where {T<:Number}
+    return IntervalMatrix(map(Interval, A))
+end
+
 """
     IntervalMatrix(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
 
