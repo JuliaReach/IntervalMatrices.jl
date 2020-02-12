@@ -196,7 +196,7 @@ function _opnorm_1(A::IntervalMatrix{T}) where {T}
     res = zero(T)
     @inbounds @simd for j in 1:n
         acc = zero(T)
-        for i in 1:n
+        for i in 1:m
             x = A[i, j]
             acc += max(abs(inf(x)), abs(sup(x)))
         end
