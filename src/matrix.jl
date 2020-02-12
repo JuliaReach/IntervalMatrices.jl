@@ -165,23 +165,51 @@ The matrix ``p``-norm of an interval matrix ``A`` is defined as
 ```
 
 where ``\\max`` and ``|·|`` are taken elementwise.
-
-### Algorithm
-
-We exploit that
-
-```math
-    ‖A‖_p = ‖\\max(-\\text{inf}(A), \\text{sup}(A))‖_p
-```
-
-to avoid taking the absolute (``|·|``).
 """
 function LinearAlgebra.opnorm(A::IntervalMatrix, p::Real=Inf)
-    if p == Inf || p == 1
-        return LinearAlgebra.opnorm(max.((-).(inf(A)), sup(A)), p)
+    if p == Inf
+        return _opnorm_inf(A)
+    elseif p == 1
+        return _opnorm_1(A)
     else
         error("the interval matrix norm for this value of p=$p is not implemented")
     end
+end
+
+# The operator norm in the infinity norm corresponds to the
+# maximum absolute value row-sum.
+function _opnorm_inf(A::IntervalMatrix{T}) where {T}
+    m, n = size(A)
+    res = zero(T)
+    @inbounds @simd for i in 1:m
+        acc = zero(T)
+        for j in 1:n
+            x = A[i, j]
+            acc += max(abs(inf(x)), abs(sup(x)))
+        end
+        if acc > res
+            res = acc
+        end
+    end
+    return res
+end
+
+# The operator norm in the 1-norm corresponds to the
+# maximum absolute value column-sum.
+function _opnorm_1(A::IntervalMatrix{T}) where {T}
+    m, n = size(A)
+    res = zero(T)
+    @inbounds @simd for j in 1:n
+        acc = zero(T)
+        for i in 1:m
+            x = A[i, j]
+            acc += max(abs(inf(x)), abs(sup(x)))
+        end
+        if acc > res
+            res = acc
+        end
+    end
+    return res
 end
 
 """
