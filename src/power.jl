@@ -67,11 +67,12 @@ function IntervalMatrixPower(M::IntervalMatrix{T}) where {T}
     return IntervalMatrixPower(M, M, 1)
 end
 
-function IntervalMatrixPower(M::IntervalMatrix{T}, k::Int) where {T}
+function IntervalMatrixPower(M::IntervalMatrix{T}, k::Int;
+                             algorithm::String="power") where {T}
     @assert k >= 1 "matrix powers must be positive"
     pow = IntervalMatrixPower(M, M, 1)
     @inbounds for i in 1:(k-1)
-        increment!(pow)
+        increment!(pow; algorithm=algorithm)
     end
     return pow
 end
@@ -93,6 +94,7 @@ Increment a matrix power in-place (i.e., storing the result in `pow`).
     * `"multiply"` -- fast computation using `*` from the previous result
     * `"power"` -- recomputation using `^`
     * `"intersect"` -- combination of `"multiply"` and `"power"`
+    * `"sqrt"` -- decompose `k = a² + b`
 
 ### Output
 
@@ -113,6 +115,8 @@ function increment!(pow::IntervalMatrixPower; algorithm::String="intersect")
         pow.Mᵏ = _eval_power(pow)
     elseif algorithm == "intersect"
         pow.Mᵏ = _eval_intersect(pow)
+    elseif algorithm == "sqrt"
+        pow.Mᵏ = _eval_sqrt(pow)
     else
         throw(ArgumentError("algorithm $algorithm is not available; choose " *
             "from 'multiply', 'power', 'intersect'"))
@@ -162,6 +166,20 @@ end
 
 function _eval_intersect(pow::IntervalMatrixPower)
     return intersect(_eval_multiply(pow), _eval_power(pow))
+end
+
+function _eval_sqrt(pow::IntervalMatrixPower; algorithm::String="power")
+    # decompose k = a² + b with a, b being integers
+    k = pow.k
+    a = floor(Int, sqrt(k))
+    b = k - a^2
+
+    # recursively compute M^a and M^b
+    Mᵏ = square(get(IntervalMatrixPower(pow.M, a; algorithm=algorithm)))
+    if b > 0
+        Mᵏ *= get(IntervalMatrixPower(pow.M, b; algorithm=algorithm))
+    end
+    return Mᵏ
 end
 
 """

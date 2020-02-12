@@ -142,4 +142,5 @@ end
     increment!(pow)  # power of two
     increment!(pow, algorithm="power")
     increment!(pow, algorithm="intersect")
+    increment!(pow, algorithm="sqrt")
 end
