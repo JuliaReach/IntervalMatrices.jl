@@ -135,7 +135,7 @@ end
 end
 
 @testset "Interval matrix power" begin
-    m = IntervalMatrix([2.0..2.0 2.0.. 3.0; 0.0..0.0 -1.0..1.0])
+    m = IntervalMatrix([2.0..2.0 2.0..3.0; 0.0..0.0 -1.0..1.0])
     pow = IntervalMatrixPower(m)
     increment!(pow)  # power of two
     increment!(pow, algorithm="multiply")
