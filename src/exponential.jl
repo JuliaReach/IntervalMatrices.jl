@@ -220,7 +220,56 @@ function _exp_remainder_series(A::IntervalMatrix{T}, t, p; n=checksquare(A)) whe
 end
 
 """
-    scale_and_square(A::IntervalMatrix{T}, l::Integer, t, p)
+    horner(A::IntervalMatrix{T}, K::Integer; [validate]::Bool=true)
+
+Compute the matrix exponential using the Horner scheme.
+
+### Input
+
+- `A` -- interval matrix
+- `K` -- number of expansions in the Horner scheme
+- `validate` -- (optional; default: `true`) option to validate the precondition
+                of the algorithm
+
+### Algorithm
+
+We use the algorithm in [1, Section 4.2].
+
+[1] Goldsztejn, Alexandre, Arnold Neumaier. "On the exponentiation of interval
+matrices". Reliable Computing. 2014.
+"""
+function horner(A::IntervalMatrix{T}, K::Integer;
+                       validate::Bool=true) where {T}
+    if validate
+        nA = opnorm(A, Inf)
+        c = K + 2
+        if c <= nA
+            throw(ArgumentError("the precondition for the " *
+                "Horner-scheme algorithm is not satisfied: $c <= $nA; " *
+                "try choosing a larger order"))
+        end
+    end
+    if K <= 0
+        throw(ArgumentError("the Horner evaluation requires a positive " *
+            "number of expansions but received $K"))
+    end
+
+    n = checksquare(A)
+    Iₙ = IntervalMatrix(Interval(one(T)) * I, n)
+    H = Iₙ + A/K
+    for i in (K-1):-1:1
+        H = Iₙ + A / i * H
+    end
+
+    # remainder; the paper uses a less precise computation here
+    R = _exp_remainder(A, one(T), K)
+
+    return H + R
+end
+
+"""
+    scale_and_square(A::IntervalMatrix{T}, l::Integer, t, p;
+                     [validate]::Bool=true)
 
 Compute the matrix exponential using scaling and squaring.
 
@@ -253,7 +302,7 @@ function scale_and_square(A::IntervalMatrix{T}, l::Integer, t, p;
         c = (p + 2) * 2.0^l
         if c <= nA
             throw(ArgumentError("the precondition for the " *
-                "scaling-and-squaring algorithm is not satisfied: $c < $nA; " *
+                "scaling-and-squaring algorithm is not satisfied: $c <= $nA; " *
                 "try choosing a larger order"))
         end
     end
