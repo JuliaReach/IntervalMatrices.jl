@@ -194,7 +194,7 @@ end
 function _opnorm_1(A::IntervalMatrix{T}) where {T}
     m, n = size(A)
     res = zero(T)
-    @inbounds @simd for j in 1:m
+    @inbounds @simd for j in 1:n
         acc = zero(T)
         for i in 1:n
             x = A[i, j]
