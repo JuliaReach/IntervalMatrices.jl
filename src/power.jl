@@ -19,7 +19,7 @@ The internal representation (such as the fields) are subject to future changes.
 ### Examples
 
 ```jldoctest
-julia> A = IntervalMatrix([Interval(2.0) Interval(2.0, 3.0); Interval(0.0) Interval(-1.0, 1.0)])
+julia> A = IntervalMatrix([2.0..2.0 2.0.. 3.0; 0.0..0.0 -1.0..1.0])
 2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
  [2, 2]   [2, 3]
  [0, 0]  [-1, 1]
@@ -94,7 +94,7 @@ Increment a matrix power in-place (i.e., storing the result in `pow`).
     * `"multiply"` -- fast computation using `*` from the previous result
     * `"power"` -- recomputation using `^`
     * `"intersect"` -- combination of `"multiply"` and `"power"`
-    * `"sqrt"` -- decompose `k = a² + b`
+    * `"decompose_binary"` -- decompose `k = 2a + b`
 
 ### Output
 
@@ -115,11 +115,11 @@ function increment!(pow::IntervalMatrixPower; algorithm::String="intersect")
         pow.Mᵏ = _eval_power(pow)
     elseif algorithm == "intersect"
         pow.Mᵏ = _eval_intersect(pow)
-    elseif algorithm == "sqrt"
-        pow.Mᵏ = _eval_sqrt(pow)
+    elseif algorithm == "decompose_binary"
+        pow.Mᵏ = _eval_decompose_binary(pow)
     else
         throw(ArgumentError("algorithm $algorithm is not available; choose " *
-            "from 'multiply', 'power', 'intersect'"))
+            "from 'multiply', 'power', 'decompose_binary', 'intersect'"))
     end
     return pow.Mᵏ
 end
@@ -168,16 +168,19 @@ function _eval_intersect(pow::IntervalMatrixPower)
     return intersect(_eval_multiply(pow), _eval_power(pow))
 end
 
-function _eval_sqrt(pow::IntervalMatrixPower; algorithm::String="power")
-    # decompose k = a² + b with a, b being integers
-    k = pow.k
-    a = floor(Int, sqrt(k))
-    b = k - a^2
+function _eval_decompose_binary(pow::IntervalMatrixPower)
+    return _eval_decompose_binary_helper(pow.M, pow.k)
+end
 
-    # recursively compute M^a and M^b
-    Mᵏ = square(get(IntervalMatrixPower(pow.M, a; algorithm=algorithm)))
-    if b > 0
-        Mᵏ *= get(IntervalMatrixPower(pow.M, b; algorithm=algorithm))
+# decompose k = 2a + b with a, b being positive integers and a being maximal
+function _eval_decompose_binary_helper(M, k)
+    if k == 1
+        Mᵏ = M
+    else
+        Mᵏ = square(_eval_decompose_binary_helper(M, div(k, 2)))
+        if k % 2 == 1
+            Mᵏ *= M
+        end
     end
     return Mᵏ
 end
