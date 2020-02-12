@@ -138,12 +138,12 @@ end
 end
 
 @testset "Interval matrix power" begin
-    m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
+    m = IntervalMatrix([2.0..2.0 2.0..3.0; 0.0..0.0 -1.0..1.0])
     pow = IntervalMatrixPower(m)
     increment!(pow)  # power of two
     increment!(pow, algorithm="multiply")
     increment!(pow)  # power of two
     increment!(pow, algorithm="power")
+    increment!(pow, algorithm="decompose_binary")
     increment!(pow, algorithm="intersect")
-    increment!(pow, algorithm="sqrt")
 end
