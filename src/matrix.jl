@@ -182,16 +182,14 @@ function LinearAlgebra.opnorm(A::IntervalMatrix, p::Real=Inf)
 end
 
 # The operator norm in the infinity norm corresponds to the
-# maximum absolute value row-sum. Julia has column-major
-# ordering so for efficiency we iterate over the transpose of A.
-function _opnorm_inf(A::IntervalMatrix{N}) where {N}
+# maximum absolute value row-sum.
+function _opnorm_inf(A::IntervalMatrix{T}) where {T}
     m, n = size(A)
-    res = zero(N)
-    At = transpose(A)
-    @inbounds @simd for j in 1:m
-        acc = zero(N)
-        for i in 1:n
-            x = At[i, j]
+    res = zero(T)
+    @inbounds @simd for i in 1:m
+        acc = zero(T)
+        for j in 1:n
+            x = A[i, j]
             acc += max(abs(inf(x)), abs(sup(x)))
         end
         if acc > res
@@ -203,11 +201,11 @@ end
 
 # The operator norm in the 1-norm corresponds to the
 # maximum absolute value column-sum.
-function _opnorm_1(A::IntervalMatrix{N}) where {N}
+function _opnorm_1(A::IntervalMatrix{T}) where {T}
     m, n = size(A)
-    res = zero(N)
+    res = zero(T)
     @inbounds @simd for j in 1:m
-        acc = zero(N)
+        acc = zero(T)
         for i in 1:n
             x = A[i, j]
             acc += max(abs(inf(x)), abs(sup(x)))
