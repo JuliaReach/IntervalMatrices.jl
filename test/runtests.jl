@@ -17,6 +17,9 @@ end
     @test m2 isa IntervalMatrix{Float64} && size(m2) == (2, 2)
     m3 = similar(m1)
     @test m3 isa IntervalMatrix{Float64} && size(m3) == size(m1)
+    m = [1.0 2.0; 3.0 4.0]
+    mint = IntervalMatrix([Interval(1) Interval(2); Interval(3) Interval(4)])
+    @test IntervalMatrix(m) == mint
 end
 
 @testset "Interval matrix arithmetic" begin
