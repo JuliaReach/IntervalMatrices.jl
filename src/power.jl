@@ -93,8 +93,8 @@ Increment a matrix power in-place (i.e., storing the result in `pow`).
                  matrix power; available options:
     * `"multiply"` -- fast computation using `*` from the previous result
     * `"power"` -- recomputation using `^`
-    * `"intersect"` -- combination of `"multiply"` and `"power"`
     * `"decompose_binary"` -- decompose `k = 2a + b`
+    * `"intersect"` -- combination of `"multiply"`/`"power"`/`"decompose_binary"`
 
 ### Output
 
@@ -164,10 +164,6 @@ function _eval_power(pow::IntervalMatrixPower)
     return pow.M^pow.k
 end
 
-function _eval_intersect(pow::IntervalMatrixPower)
-    return intersect(_eval_multiply(pow), _eval_power(pow))
-end
-
 function _eval_decompose_binary(pow::IntervalMatrixPower)
     return _eval_decompose_binary_helper(pow.M, pow.k)
 end
@@ -183,6 +179,11 @@ function _eval_decompose_binary_helper(M, k)
         end
     end
     return Mᵏ
+end
+
+function _eval_intersect(pow::IntervalMatrixPower)
+    return intersect(intersect(_eval_multiply(pow), _eval_power(pow)),
+                     _eval_decompose_binary(pow))
 end
 
 """
