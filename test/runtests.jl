@@ -1,6 +1,7 @@
 using IntervalMatrices, Test, LinearAlgebra
 
-using IntervalMatrices: _truncated_exponential_series, scale_and_square
+using IntervalMatrices: _truncated_exponential_series, horner,
+                        scale_and_square
 
 @testset "Interval arithmetic" begin
     a = -1.5 ± 0.5
@@ -87,11 +88,12 @@ end
     end
 
     overapp1 = exp_overapproximation(m, 1.0, 4)
-    overapp2 = scale_and_square(m, 5, 1.0, 4)
+    overapp2 = horner(m, 10)
+    overapp3 = scale_and_square(m, 5, 1.0, 4)
     underapp = exp_underapproximation(m, 1.0, 4)
 
     @test underapp isa IntervalMatrix
-    for overapp in [overapp1, overapp2]
+    for overapp in [overapp1, overapp2, overapp3]
         @test overapp isa IntervalMatrix
     end
 end
