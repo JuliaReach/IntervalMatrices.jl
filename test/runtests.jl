@@ -78,6 +78,8 @@ end
     m3 = IntervalMatrix([-2.0..2.0 -2.0..0.0; 0.0..2.0 -1.0..1.0])
     m4 = IntervalMatrix([-1.0..1.0 -1.0..1.0; -1.0..1.0 -2.0..2.0])
     @test m3 ∩ m4 == IntervalMatrix([-1.0..1.0 -1.0..0.0; 0.0..1.0 -1.0..1.0])
+    @test diam_norm(m3) ≈ 6.0 # default diameter p-norm is Inf
+    @test diam_norm(m3, 1) ≈ 6.0
 end
 
 @testset "Interval matrix exponential" begin

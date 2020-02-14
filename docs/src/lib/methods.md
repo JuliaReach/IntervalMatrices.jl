@@ -65,4 +65,5 @@ input_correction
 
 ```@docs
 opnorm
+diam_norm
 ```
