@@ -527,7 +527,7 @@ function ∩(A::IntervalMatrix, B::IntervalMatrix)
 end
 
 """
-    diam_norm(A::IntervalMatrix{T}, p=Inf) where {T}
+    diam_norm(A::IntervalMatrix, p=Inf)
 
 Return the diameter norm of the interval matrix.
 
@@ -547,6 +547,6 @@ for an interval `x`.
 
 This function gives a measure of the *width* of the interval matrix.
 """
-function diam_norm(A::IntervalMatrix{T}, p=Inf) where {T}
-    return opnorm(diam.(A), p=p)
+function diam_norm(A::IntervalMatrix, p=Inf)
+    return opnorm(diam.(A), p)
 end
