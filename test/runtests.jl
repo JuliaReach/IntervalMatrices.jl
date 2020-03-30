@@ -1,7 +1,10 @@
 using IntervalMatrices, Test, LinearAlgebra
 
-using IntervalMatrices: _truncated_exponential_series, horner,
-                        scale_and_square
+using IntervalMatrices: _truncated_exponential_series,
+                        horner,
+                        scale_and_square,
+                        correction_hull,
+                        input_correction
 
 @testset "Interval arithmetic" begin
     a = -1.5 ± 0.5
@@ -130,8 +133,9 @@ end
 
 @testset "Interval matrix correction terms" begin
     m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
-    f = IntervalMatrices.correction_hull(m, 1e-3, 5)
-    f2 = IntervalMatrices.input_correction(m, 1e-3, 5)
+    f = correction_hull(m, 1e-3, 5)
+    f2 = input_correction(m, 1e-3, 5)
+    f = correction_hull(mid(m), 1e-3, 5)
 end
 
 @testset "Interval matrix square" begin
