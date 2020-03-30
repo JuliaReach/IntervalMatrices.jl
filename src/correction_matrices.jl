@@ -27,6 +27,11 @@ function correction_hull(A::IntervalMatrix{T}, t, p) where {T}
     return F
 end
 
+# general matrix type
+function correction_hull(A::AbstractMatrix, t, p)
+    return correction_hull(IntervalMatrix(A), t, p)
+end
+
 """
     input_correction(A::IntervalMatrix{T}, t, p) where {T}
 
