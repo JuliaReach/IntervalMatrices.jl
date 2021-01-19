@@ -13,7 +13,8 @@ If you like this package, consider contributing! You can send bug reports (or fi
 and send your code), add examples to the documentation or propose new features.
 
 Below we detail some of the guidelines that should be followed when contributing
-to this package.
+to this package. Further information can be found in the
+[`JuliaReachDevDocs` site](https://juliareach.github.io/JuliaReachDevDocs/latest/).
 
 ### Branches
 
