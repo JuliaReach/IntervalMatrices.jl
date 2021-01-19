@@ -7,40 +7,30 @@
 [![Join the chat at https://gitter.im/JuliaReach/Lobby](https://badges.gitter.im/JuliaReach/Lobby.svg)](https://gitter.im/JuliaReach/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 `IntervalMatrices.jl` is a [Julia](http://julialang.org) package to work with
-matrices that have uncertain parameters.
+matrices that have interval coefficients.
 
 ## Resources
 
 - [Manual](http://juliareach.github.io/IntervalMatrices.jl/latest/)
-- [Contributing](https://juliareach.github.io/IntervalMatrices.jl/latest/about/#Contributing-1)
-- [Release notes of tagged versions](https://github.com/JuliaReach/IntervalMatrices.jl/releases)
-- [Release notes of the development version](https://github.com/JuliaReach/IntervalMatrices.jl/wiki/Release-log-tracker)
+- [Releases](https://github.com/JuliaReach/IntervalMatrices.jl/releases)
 - [Developers](https://juliareach.github.io/IntervalMatrices.jl/latest/about/#Credits-1)
+- [Contributing](https://juliareach.github.io/IntervalMatrices.jl/latest/about/#Contributing-1)
 
 ## Installing
 
-This package requires Julia v1.0 or later.
-Refer to the [official documentation](https://julialang.org/downloads) on how to
-install and run Julia on your system.
+This package requires Julia v1.0 or later. Refer to the
+[official documentation](https://julialang.org/downloads) on how to install and
+run Julia on your system.
 
-Depending on your needs, choose an appropriate command from the following list
-and enter it in Julia's REPL.
-To activate the `pkg` mode, type `]` (and to leave it, type `<backspace>`).
-
-#### [Install the latest release version](https://julialang.github.io/Pkg.jl/v1/managing-packages/#Adding-registered-packages-1)
+To activate the `pkg` mode, type `]` (and to leave it, type `<backspace>`). To
+install this package, do:
 
 ```julia
 pkg> add IntervalMatrices
 ```
 
-#### Install the latest development version
+Other installation options can be found in the manual.
 
-```julia
-pkg> add IntervalMatrices#master
-```
+## Quickstart
 
-#### [Clone the package for development](https://julialang.github.io/Pkg.jl/v1/managing-packages/#Developing-packages-1)
-
-```julia
-pkg> dev IntervalMatrices
-```
+A quickstart guide is available in the manual.
