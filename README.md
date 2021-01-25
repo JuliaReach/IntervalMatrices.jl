@@ -6,8 +6,13 @@
 [![Code coverage](http://codecov.io/github/JuliaReach/IntervalMatrices.jl/coverage.svg?branch=master)](https://codecov.io/github/JuliaReach/IntervalMatrices.jl?branch=master)
 [![Join the chat at https://gitter.im/JuliaReach/Lobby](https://badges.gitter.im/JuliaReach/Lobby.svg)](https://gitter.im/JuliaReach/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+
 `IntervalMatrices.jl` is a [Julia](http://julialang.org) package to work with
 matrices that have interval coefficients.
+
+<p align="center">
+    <img src="docs/src/assets/banner.jpg" alt="IntervalMatrices.jl" width="450"/>
+</p>
 
 ## Resources
 
