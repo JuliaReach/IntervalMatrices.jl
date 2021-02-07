@@ -24,6 +24,7 @@ end
     m = [1.0 2.0; 3.0 4.0]
     mint = IntervalMatrix([Interval(1) Interval(2); Interval(3) Interval(4)])
     @test IntervalMatrix(m) == mint
+    @test convert(IntervalMatrix, m) == mint
 end
 
 @testset "Interval matrix arithmetic" begin

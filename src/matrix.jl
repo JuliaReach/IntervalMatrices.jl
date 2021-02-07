@@ -1,4 +1,4 @@
-import Base: similar, split, ∈, ⊆, ∩
+import Base: similar, split, ∈, ⊆, ∩, convert
 import Random: rand
 import IntervalArithmetic: inf, sup, mid, diam
 
@@ -98,6 +98,22 @@ end
 # constructor from a scalar matrix
 function IntervalMatrix(A::AbstractMatrix{T}) where {T<:Number}
     return IntervalMatrix(map(Interval, A))
+end
+
+# conversion from scalar matrix to interval matrix
+function convert(::Type{<:IntervalMatrix}, A::AbstractMatrix{T}) where {T<:Number}
+    return IntervalMatrix(map(x -> convert(Interval, x), A))
+end
+
+# no-op
+function convert(::Type{IntervalMatrix{T}}, A::IntervalMatrix{T}) where {T<:Number}
+    return A
+end
+
+# conversion with numeric type promotion
+function convert(::Type{IntervalMatrix{T}}, A::IntervalMatrix{S}) where {T<:Number, S<:Number}
+    IT = Interval{promote_type(T, S)}
+    return IntervalMatrix(map(x -> convert(IT, x), A))
 end
 
 """
