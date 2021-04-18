@@ -52,7 +52,7 @@ An *interval matrix* is a matrix whose coefficients are intervals. For instance,
 julia> using IntervalMatrices
 
 julia> A = IntervalMatrix([0..1 1..2; 2..3 -4.. -2])
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [0, 1]    [1, 2]
  [2, 3]  [-4, -2]
 ```
@@ -74,7 +74,7 @@ of $A$,
 
 ```jldoctest quickstart
 julia> 2A
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [0, 2]    [2, 4]
  [4, 6]  [-8, -4]
 ```
@@ -82,7 +82,7 @@ Or an interval multiple of $A$,
 
 ```jldoctest quickstart
 julia> (-1.0..1.0) * A
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [-1, 1]  [-2, 2]
  [-3, 3]  [-4, 4]
 ```
@@ -90,7 +90,7 @@ julia> (-1.0..1.0) * A
 Or compute the square of $A$,
 ```jldoctest quickstart
 julia> A*A
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
     [2, 7]  [-8, 0]
  [-12, -1]  [6, 22]
 ```
@@ -106,7 +106,7 @@ $e^{At} - I$. Then, at $t = 1.0$,
 
 ```jldoctest quickstart
 julia> A + 1/2 * A^2
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
   [1, 4.5]  [-3, 2]
  [-4, 2.5]  [-1, 9]
 ```
@@ -115,7 +115,7 @@ single-use expressions implemented in this library:
 
 ```jldoctest quickstart
 julia> quadratic_expansion(A, 1.0)
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
   [1, 4.5]  [-2, 1]
  [-3, 1.5]   [1, 7]
 ```

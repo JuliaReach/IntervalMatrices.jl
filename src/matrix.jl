@@ -23,7 +23,7 @@ parametrized in the number field, the interval type, and the matrix type.
 
 ```jldoctest
 julia> A = IntervalMatrix([-0.9±0.1 0±0; 0±0 -0.9±0.1])
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [-1, -0.799999]   [0, 0]
   [0, 0]          [-1, -0.799999]
 ```
@@ -35,7 +35,7 @@ An interval matrix proportional to the identity matrix can be built using the
 julia> using LinearAlgebra
 
 julia> IntervalMatrix(Interval(1)*I, 2)
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [1, 1]  [0, 0]
  [0, 0]  [1, 1]
 ```
@@ -45,12 +45,12 @@ The number of columns can be specified as a third argument, creating a rectangul
 
 ```jldoctest interval_uniform_scaling
 julia> IntervalMatrix(Interval(-1, 1)*I, 2, 3)
-2×3 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×3 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [-1, 1]   [0, 0]  [0, 0]
   [0, 0]  [-1, 1]  [0, 0]
 
 julia> IntervalMatrix(Interval(-1, 1)*I, 3, 2)
-3×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+3×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [-1, 1]   [0, 0]
   [0, 0]  [-1, 1]
   [0, 0]   [0, 0]
@@ -62,7 +62,7 @@ An uninitialized interval matrix can be constructed using `undef`:
 julia> m = IntervalMatrix{Float64}(undef, 2, 2);
 
 julia> typeof(m)
-IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}
+IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}
 ```
 Note that this constructor implicitly uses a dense matrix, `Matrix{Float64}`,
 as the matrix (`mat`) field in the new interval matrix.
@@ -125,7 +125,7 @@ The radii matrix should be nonnegative, i.e. `S[i, j] ≥ 0` for each `i` and `j
 
 ```jldoctest
 julia> IntervalMatrix([1 2; 3 4], [1 2; 4 5])
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
   [0, 2]   [0, 4]
  [-1, 7]  [-1, 9]
  ```
