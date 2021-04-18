@@ -20,24 +20,24 @@ The internal representation (such as the fields) are subject to future changes.
 
 ```jldoctest
 julia> A = IntervalMatrix([2.0..2.0 2.0..3.0; 0.0..0.0 -1.0..1.0])
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [2, 2]   [2, 3]
  [0, 0]  [-1, 1]
 
 julia> pow = IntervalMatrixPower(A);
 
 julia> increment!(pow)
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [4, 4]  [2, 9]
  [0, 0]  [0, 1]
 
 julia> increment(pow)
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [8, 8]  [-1, 21]
  [0, 0]   [-1, 1]
 
 julia> get(pow)
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [4, 4]  [2, 9]
  [0, 0]  [0, 1]
 
@@ -45,7 +45,7 @@ julia> index(pow)
 2
 
 julia> base(pow)
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [2, 2]   [2, 3]
  [0, 0]  [-1, 1]
 
