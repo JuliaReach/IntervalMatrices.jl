@@ -69,10 +69,12 @@ end
     r = sup(m)
     c = mid(m)
     d = diam(m)
+    rad = radius(m)
     m2 = copy(m)
     @test m2 isa IntervalMatrix && m.mat == m2.mat
     @test l == inf.(m) && r == sup.(m) && c == mid.(m)
     @test d ≈ r - l
+    @test rad ≈ d/2
     sm = scale(m, 2.0)
     @test sm ==  2.0 .* m
     @test sm ≠ m
@@ -81,6 +83,7 @@ end
     m3 = IntervalMatrix([-2.0..2.0 -2.0..0.0; 0.0..2.0 -1.0..1.0])
     m4 = IntervalMatrix([-1.0..1.0 -1.0..1.0; -1.0..1.0 -2.0..2.0])
     @test m3 ∩ m4 == IntervalMatrix([-1.0..1.0 -1.0..0.0; 0.0..1.0 -1.0..1.0])
+    @test m3 ∪ m4 == IntervalMatrix([-2.0..2.0 -2.0..1.0; -1.0..2.0 -2.0..2.0])
     @test diam_norm(m3) ≈ 6.0 # default diameter p-norm is Inf
     @test diam_norm(m3, 1) ≈ 6.0
 end
@@ -122,6 +125,8 @@ end
     m1 = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
     m2 = IntervalMatrix([-1.2..1.0 -4.1.. -3.9; 3.9..4.2 -1.2..0.9])
     @test m1 ⊆ m2 && !(m2 ⊆ m1)
+    @test m1 ⊂ m2
+    @test !(m1 ⊂ m1)
 end
 
 @testset "Interval matrix rand" begin

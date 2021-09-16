@@ -1,6 +1,6 @@
-import Base: similar, split, ∈, ⊆, ∩
+import Base: similar, split, ∈, ⊆, ∩, ∪
 import Random: rand
-import IntervalArithmetic: inf, sup, mid, diam
+import IntervalArithmetic: inf, sup, mid, diam, radius, ⊂
 
 """
     AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}
@@ -227,7 +227,7 @@ element-wise infimum of `A`.
 A scalar matrix whose coefficients are the infima of each element in `A`.
 """
 function inf(A::IntervalMatrix{T}) where {T}
-    return map(inf, A)
+    return map(inf, A.mat)
 end
 
 """
@@ -245,7 +245,7 @@ element-wise supremum of `A`.
 A scalar matrix whose coefficients are the suprema of each element in `A`.
 """
 function sup(A::IntervalMatrix{T}) where {T}
-    return map(sup, A)
+    return map(sup, A.mat)
 end
 
 """
@@ -263,7 +263,25 @@ element-wise midpoint of `A`.
 A scalar matrix whose coefficients are the midpoints of each element in `A`.
 """
 function mid(A::IntervalMatrix{T}) where {T}
-    return map(mid, A)
+    return map(mid, A.mat)
+end
+
+"""
+    radius(A::IntervalMatrix{T}) where {T}
+
+Return the radius of an interval matrix `A`, which corresponds to taking the
+element-wise radius of `A`.
+
+### Input
+
+- `A` -- interval matrix
+
+### Output
+
+A scalar matrix whose coefficients are the radii of each element in `A`.
+"""
+function radius(A::IntervalMatrix{T}) where {T}
+    return map(radius, A.mat)
 end
 
 """
@@ -353,6 +371,33 @@ function ⊆(A::AbstractIntervalMatrix, B::AbstractIntervalMatrix)
     m, n = size(A)
     @inbounds for j in 1:n, i in 1:m
         if !(A[i, j] ⊆ B[i, j])
+            return false
+        end
+    end
+    return true
+end
+
+"""
+    ⊂(A::AbstractIntervalMatrix, B::AbstractIntervalMatrix)
+
+Check whether an interval matrix is stricly contained in another interval matrix.
+
+### Input
+
+- `A` -- interval matrix
+- `B` -- interval matrix
+
+### Output
+
+`true` iff `A[i, j] ⊂ B[i, j]` for all `i, j`.
+"""
+function ⊂(A::AbstractIntervalMatrix, B::AbstractIntervalMatrix)
+    @assert size(A) == size(B) "incompatible matrix sizes $(size(A)) and " *
+                               "$(size(B))"
+
+    m, n = size(A)
+    @inbounds for j in 1:n, i in 1:m
+        if !(A[i, j] ⊂ B[i, j])
             return false
         end
     end
@@ -450,7 +495,7 @@ A matrix `B` of the same shape as `A` such that `B[i, j] == diam(A[i, j])` for
 each `i` and `j`.
 """
 function diam(A::IntervalMatrix{T}) where {T}
-    return map(diam, A)
+    return map(diam, A.mat)
 end
 
 """
@@ -519,11 +564,30 @@ function ∩(A::IntervalMatrix, B::IntervalMatrix)
     @assert size(A) == size(B) "incompatible matrix sizes (A: $(size(A)), B: " *
                                "$(size(B)))"
 
-    C = similar(A)
-    @inbounds for j in 1:n, i in 1:m
-        C[i, j] = A[i, j] ∩ B[i, j]
-    end
-    return C
+    return map((x, y) -> x ∩ y, A, B)
+end
+
+"""
+    ∪(A::IntervalMatrix, B::IntervalMatrix)
+
+Finds the interval union (hull) of two interval matrices.
+
+### Input
+
+- `A` -- interval matrix
+- `B` -- interval matrix (of the same shape as `A`)
+
+### Output
+
+A new matrix `C` of the same shape as `A` such that
+`C[i, j] = A[i, j] ∪ B[i, j]` for each `i` and `j`.
+"""
+function ∪(A::IntervalMatrix, B::IntervalMatrix)
+    m, n = size(A)
+    @assert size(A) == size(B) "incompatible matrix sizes (A: $(size(A)), B: " *
+                               "$(size(B)))"
+
+    return map((x, y) -> x ∪ y, A, B)
 end
 
 """
