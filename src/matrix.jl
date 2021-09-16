@@ -1,6 +1,6 @@
 import Base: similar, split, ∈, ⊆, ∩, ∪
 import Random: rand
-import IntervalArithmetic: inf, sup, mid, diam, radius, ⊂
+import IntervalArithmetic: inf, sup, mid, diam, radius, ⊂, hull
 
 """
     AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}
@@ -567,10 +567,34 @@ function ∩(A::IntervalMatrix, B::IntervalMatrix)
     return map((x, y) -> x ∩ y, A, B)
 end
 
+
+"""
+    hull(A::IntervalMatrix, B::IntervalMatrix)
+
+Finds the interval hull of two interval matrices. This is equivalent to [`∪`](@ref).
+
+### Input
+
+- `A` -- interval matrix
+- `B` -- interval matrix (of the same shape as `A`)
+
+### Output
+
+A new matrix `C` of the same shape as `A` such that
+`C[i, j] = hull(A[i, j], B[i, j])` for each `i` and `j`.
+"""
+function hull(A::IntervalMatrix, B::IntervalMatrix)
+    @assert size(A) == size(B) "incompatible matrix sizes (A: $(size(A)), B: " *
+                               "$(size(B)))"
+
+    return map((x, y) -> hull(x, y), A, B)
+end
+
 """
     ∪(A::IntervalMatrix, B::IntervalMatrix)
 
 Finds the interval union (hull) of two interval matrices.
+This is equivalent to [`hull`](@ref).
 
 ### Input
 
@@ -582,13 +606,7 @@ Finds the interval union (hull) of two interval matrices.
 A new matrix `C` of the same shape as `A` such that
 `C[i, j] = A[i, j] ∪ B[i, j]` for each `i` and `j`.
 """
-function ∪(A::IntervalMatrix, B::IntervalMatrix)
-    m, n = size(A)
-    @assert size(A) == size(B) "incompatible matrix sizes (A: $(size(A)), B: " *
-                               "$(size(B)))"
-
-    return map((x, y) -> x ∪ y, A, B)
-end
+∪(A::IntervalMatrix, B::IntervalMatrix) = hull(A, B)
 
 """
     diam_norm(A::IntervalMatrix, p=Inf)
