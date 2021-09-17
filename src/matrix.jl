@@ -564,7 +564,7 @@ function ∩(A::IntervalMatrix, B::IntervalMatrix)
     @assert size(A) == size(B) "incompatible matrix sizes (A: $(size(A)), B: " *
                                "$(size(B)))"
 
-    return map((x, y) -> x ∩ y, A, B)
+    return IntervalMatrix(map((x, y) -> x ∩ y, A, B))
 end
 
 
@@ -587,7 +587,7 @@ function hull(A::IntervalMatrix, B::IntervalMatrix)
     @assert size(A) == size(B) "incompatible matrix sizes (A: $(size(A)), B: " *
                                "$(size(B)))"
 
-    return map((x, y) -> hull(x, y), A, B)
+    return IntervalMatrix(map((x, y) -> hull(x, y), A, B))
 end
 
 """
