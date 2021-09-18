@@ -1,6 +1,6 @@
 import Base: similar, split, ∈, ⊆, ∩, ∪
 import Random: rand
-import IntervalArithmetic: inf, sup, mid, diam, radius, ⊂, hull
+import IntervalArithmetic: inf, sup, mid, diam, radius, hull
 
 """
     AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}
@@ -371,33 +371,6 @@ function ⊆(A::AbstractIntervalMatrix, B::AbstractIntervalMatrix)
     m, n = size(A)
     @inbounds for j in 1:n, i in 1:m
         if !(A[i, j] ⊆ B[i, j])
-            return false
-        end
-    end
-    return true
-end
-
-"""
-    ⊂(A::AbstractIntervalMatrix, B::AbstractIntervalMatrix)
-
-Check whether an interval matrix is stricly contained in another interval matrix.
-
-### Input
-
-- `A` -- interval matrix
-- `B` -- interval matrix
-
-### Output
-
-`true` iff `A[i, j] ⊂ B[i, j]` for all `i, j`.
-"""
-function ⊂(A::AbstractIntervalMatrix, B::AbstractIntervalMatrix)
-    @assert size(A) == size(B) "incompatible matrix sizes $(size(A)) and " *
-                               "$(size(B))"
-
-    m, n = size(A)
-    @inbounds for j in 1:n, i in 1:m
-        if !(A[i, j] ⊂ B[i, j])
             return false
         end
     end
