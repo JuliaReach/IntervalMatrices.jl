@@ -133,8 +133,8 @@ julia> IntervalMatrix([1 2; 3 4], [1 2; 4 5])
 """
 function IntervalMatrix(A::MT, B::MT) where {T, MT<:AbstractMatrix{T}}
     size(A) == size(B) || throw(ArgumentError("the sizes of the lower and upper bound " *
-                                "matrices should match, but they are $(size(C)) " *
-                                "and $(size(S)) respectively"))
+                                "matrices should match, but they are $(size(A)) " *
+                                "and $(size(B)) respectively"))
 
     return map((x, y) -> Interval(x, y), A, B)
 end
