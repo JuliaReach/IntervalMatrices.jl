@@ -1,6 +1,6 @@
 import Base: similar, split, ∈, ⊆, ∩, ∪
 import Random: rand
-import IntervalArithmetic: inf, sup, mid, diam, radius, hull
+import IntervalArithmetic: ±, inf, sup, mid, diam, radius, hull
 
 """
     AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}
@@ -101,7 +101,46 @@ function IntervalMatrix(A::AbstractMatrix{T}) where {T<:Number}
 end
 
 """
-    IntervalMatrix(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
+    IntervalMatrix(A::MT, B::MT) where {T, MT<:AbstractMatrix{T}}
+
+Return an interval matrix such that the lower and upper bounds of the intervals
+are given by the matrices `A` and `B` respectively.
+
+### Input
+
+- `A` -- lower bound matrix
+- `B` -- upper bound matrix
+
+### Output
+
+An interval matrix `M` such that `M[i, j]` corresponds to the interval whose lower bound
+is `A[i, j]` and whose upper bound is `B[i, j]`, for each `i` and `j`. That is,
+``M_{ij} = [A_{ij}, B_{ij}]``.
+
+### Notes
+
+The upper bound should be bigger or equal than the lower bound,
+i.e. `B[i, j] ≥ A[i, j]` for each `i` and `j`.
+
+### Examples
+
+```jldoctest
+julia> IntervalMatrix([1 2; 3 4], [1 2; 4 5])
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
+  [1, 1]   [2, 2]
+ [3, 4]  [4, 5]
+```
+"""
+function IntervalMatrix(A::MT, B::MT) where {T, MT<:AbstractMatrix{T}}
+    size(A) == size(B) || throw(ArgumentError("the sizes of the lower and upper bound " *
+                                "matrices should match, but they are $(size(A)) " *
+                                "and $(size(B)) respectively"))
+
+    return map((x, y) -> Interval(x, y), A, B)
+end
+
+"""
+    ±(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
 
 Return an interval matrix such that the center and radius of the intervals
 is given by the matrices `C` and `S` respectively.
@@ -124,26 +163,18 @@ The radii matrix should be nonnegative, i.e. `S[i, j] ≥ 0` for each `i` and `j
 ### Examples
 
 ```jldoctest
-julia> IntervalMatrix([1 2; 3 4], [1 2; 4 5])
+julia> [1 2; 3 4] ± [1 2; 4 5]
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
   [0, 2]   [0, 4]
  [-1, 7]  [-1, 9]
- ```
+```
 """
-function IntervalMatrix(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
+function ±(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
     size(C) == size(S) || throw(ArgumentError("the sizes of the center matrix and the " *
                                 "radii matrix should match, but they are $(size(C)) " *
                                 "and $(size(S)) respectively"))
-    m, n = size(C)
-    M = IntervalMatrix{T}(undef, m, n)
 
-    @inbounds for j in 1:n
-        for i in 1:m
-            M[i, j] = C[i, j] ± S[i, j]
-        end
-    end
-
-    return M
+    return map((x, y) -> x ± y, C, S)
 end
 
 """
