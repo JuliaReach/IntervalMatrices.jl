@@ -100,7 +100,7 @@ function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
 
     # case i = j
     @inbounds for j in 1:n
-        B[j, j] = (α + β*A[j, j]) * A[j, j]
+        B[j, j] = quadratic_expansion(A[j, j], α, β)
         for k in 1:n
             k == j && continue
             B[j, j] += β * (A[j, k] * A[k, j])
@@ -119,6 +119,12 @@ function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
         end
     end
     return B
+end
+
+function quadratic_expansion(x::Interval, α::Real, β::Real)
+    iszero(β) && return α * x
+
+    return ((2 * β * x + α) ^ 2 - α ^ 2) / (4 * β)
 end
 
 function _truncated_exponential_series(A::IntervalMatrix{T}, t, p::Integer;
