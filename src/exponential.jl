@@ -1,63 +1,6 @@
 using LinearAlgebra: checksquare
 
 """
-    quadratic_expansion(A::IntervalMatrix, t)
-
-Exactly compute the quadratic formula ``At + \\frac{1}{2}A^2t^2`` using interval
-arithmetics.
-
-### Input
-
-- `A` -- interval matrix
-- `t` -- non-negative time value
-
-### Algorithm
-
-See Lemma 1 in *Reachability Analysis of Linear Systems with Uncertain Parameters
-and Inputs* by M. Althoff, O. Stursberg, M. Buss.
-"""
-function quadratic_expansion(A::IntervalMatrix{T}, t) where {T}
-    n = checksquare(A)
-
-    t2d2 = t^2/2
-    @inline function κ(aii, t)
-        if -1/t ∈ aii
-            return -1/2
-        else
-            a = inf(aii) * t + inf(aii)^2 * t2d2
-            b = sup(aii) * t + sup(aii)^2 * t2d2
-            return min(a, b)
-        end
-    end
-
-    W = similar(A)
-
-    @inbounds for j in 1:n
-        for i in 1:n
-            S = Interval(zero(T), zero(T))
-            if i ≠ j
-                for k in 1:n
-                    if k ≠ i && k ≠ j
-                        S += A[i, k] * A[k, j]
-                    end
-                end
-                W[i, j] = A[i, j] * (t + (A[i, i] + A[j, j]) * t2d2) + S * t2d2
-            else
-                for k in 1:n
-                    if k ≠ i
-                        S += A[i, k] * A[k, j]
-                    end
-                end
-                u = inf(A[i, i]) * t + inf(A[i, i])^2 * t2d2
-                v = sup(A[i, i]) * t + sup(A[i, i])^2 * t2d2
-                W[i, i] = Interval(κ(A[i, i], t), max(u, v)) + S * t2d2
-            end
-        end
-    end
-    return W
-end
-
-"""
     quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
 
 Compute the quadratic expansion of an interval matrix, ``αA + βA^2``, using
@@ -100,7 +43,7 @@ function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
 
     # case i = j
     @inbounds for j in 1:n
-        B[j, j] = (α + β*A[j, j]) * A[j, j]
+        B[j, j] = quadratic_expansion(A[j, j], α, β)
         for k in 1:n
             k == j && continue
             B[j, j] += β * (A[j, k] * A[k, j])
@@ -121,6 +64,12 @@ function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
     return B
 end
 
+function quadratic_expansion(x::Interval, α::Real, β::Real)
+    iszero(β) && return α * x
+
+    return ((2 * β * x + α) ^ 2 - α ^ 2) / (4 * β)
+end
+
 function _truncated_exponential_series(A::IntervalMatrix{T}, t, p::Integer;
                                        n=checksquare(A)) where {T}
     if p == 0
@@ -131,7 +80,7 @@ function _truncated_exponential_series(A::IntervalMatrix{T}, t, p::Integer;
         S = A * t
     else
         # indices i = 1 and i = 2
-        S = quadratic_expansion(A, t)
+        S = quadratic_expansion(A, t, t^2/2)
     end
 
     # index i = 0, (identity matrix, added implicitly)
@@ -362,7 +311,7 @@ function exp_underapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {
         end
     end
 
-    W = quadratic_expansion(A, t)
+    W = quadratic_expansion(A, t, t^2/2)
     res = W + B
 
     # add identity matrix implicitly
