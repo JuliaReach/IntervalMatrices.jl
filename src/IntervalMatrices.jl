@@ -26,7 +26,7 @@ include("operations/setops.jl")
 # ==================================================
 # Methods to compute the power of an interval matrix
 # ==================================================
-include("power.jl")
+include("operations/power.jl")
 
 # =======================================================
 # Methods to handle the exponential of an interval matrix
