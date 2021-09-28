@@ -15,9 +15,13 @@ using Reexport
 include("matrix.jl")
 
 # =================================
-# Arithmetic for interval matrices
+# Operations for interval matrices
 # =================================
-include("arithmetic.jl")
+include("operations/arithmetic.jl")
+include("operations/norm.jl")
+include("operations/numops.jl")
+include("operations/random.jl")
+include("operations/setops.jl")
 
 # ==================================================
 # Methods to compute the power of an interval matrix
