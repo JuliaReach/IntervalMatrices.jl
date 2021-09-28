@@ -10,7 +10,7 @@ Abstract supertype for interval matrix types.
 abstract type AbstractIntervalMatrix{IT} <: AbstractMatrix{IT} end
 
 """
-    IntervalMatrix{T, IT<:Interval{T}, MT<:AbstractMatrix{IT}} <: AbstractIntervalMatrix{IT}
+    IntervalMatrix{T, IT, MT<:AbstractMatrix{IT}} <: AbstractIntervalMatrix{IT}
 
 An interval matrix i.e. a matrix whose coefficients are intervals. This type is
 parametrized in the number field, the interval type, and the matrix type.
@@ -67,7 +67,7 @@ IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}
 Note that this constructor implicitly uses a dense matrix, `Matrix{Float64}`,
 as the matrix (`mat`) field in the new interval matrix.
 """
-struct IntervalMatrix{T, IT<:Interval{T}, MT<:AbstractMatrix{IT}} <: AbstractIntervalMatrix{IT}
+struct IntervalMatrix{T, IT, MT<:AbstractMatrix{IT}} <: AbstractIntervalMatrix{IT}
     mat::MT
 end
 
@@ -78,6 +78,10 @@ size(M::IntervalMatrix) = size(M.mat)
 getindex(M::IntervalMatrix, i::Int) = getindex(M.mat, i)
 setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 copy(M::IntervalMatrix) = IntervalMatrix(copy(M.mat))
+
+function IntervalMatrix(A::MT) where {T, IT<:AbstractInterval{T}, MT<:AbstractMatrix{IT}}
+    return IntervalMatrix{T, IT, MT}(A)
+end
 
 # constructor from uniform scaling
 function IntervalMatrix(αI::UniformScaling{Interval{T}}, m::Integer, n::Integer=m) where {T}
