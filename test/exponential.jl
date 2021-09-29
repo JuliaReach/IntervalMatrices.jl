@@ -43,3 +43,12 @@ end
     increment!(pow, algorithm="decompose_binary")
     increment!(pow, algorithm="intersect")
 end
+
+@testset "Transmission line model" begin
+    A = transmission_line() |> Matrix
+    expA = exp(A)
+    @test opnorm(expA, Inf)< 1e-6
+    Aint = IntervalMatrix(interval.(A))
+    expA_int = exp_overapproximation(Aint, 1.0, 10)
+    @test opnorm(expA_int, Inf) > 1e122
+end
