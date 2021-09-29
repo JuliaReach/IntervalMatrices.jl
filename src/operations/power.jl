@@ -19,25 +19,25 @@ The internal representation (such as the fields) are subject to future changes.
 ### Examples
 
 ```jldoctest
-julia> A = IntervalMatrix([Interval(2.0) Interval(2.0, 3.0); Interval(0.0) Interval(-1.0, 1.0)])
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+julia> A = IntervalMatrix([2.0..2.0 2.0..3.0; 0.0..0.0 -1.0..1.0])
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [2, 2]   [2, 3]
  [0, 0]  [-1, 1]
 
 julia> pow = IntervalMatrixPower(A);
 
 julia> increment!(pow)
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [4, 4]  [2, 9]
  [0, 0]  [0, 1]
 
 julia> increment(pow)
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [8, 8]  [-1, 21]
  [0, 0]   [-1, 1]
 
 julia> get(pow)
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [4, 4]  [2, 9]
  [0, 0]  [0, 1]
 
@@ -45,7 +45,7 @@ julia> index(pow)
 2
 
 julia> base(pow)
-2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [2, 2]   [2, 3]
  [0, 0]  [-1, 1]
 
@@ -81,31 +81,34 @@ function copy(pow::IntervalMatrixPower)
     return IntervalMatrixPower(pow.M, pow.Mᵏ, pow.k)
 end
 
+const default_algorithm = "intersect"
+
 """
-    increment!(pow::IntervalMatrixPower; [algorithm="intersect"])
+    increment!(pow::IntervalMatrixPower; [algorithm=default_algorithm])
 
 Increment a matrix power in-place (i.e., storing the result in `pow`).
 
 ### Input
 
 - `pow`       -- wrapper of a matrix power (modified in this function)
-- `algorithm` -- (optional; default: `"intersect"`) algorithm to compute the
-                 matrix power; available options:
+- `algorithm` -- (optional; default: `default_algorithm`) algorithm to compute
+                 the matrix power; available options:
     * `"multiply"` -- fast computation using `*` from the previous result
     * `"power"` -- recomputation using `^`
-    * `"intersect"` -- combination of `"multiply"` and `"power"`
-    * `"sqrt"` -- decompose `k = a² + b`
+    * `"decompose_binary"` -- decompose `k = 2a + b`
+    * `"intersect"` -- combination of `"multiply"`/`"power"`/`"decompose_binary"`
 
 ### Output
 
-The next matrix power now, reflected in the modified wrapper.
+The next matrix power, reflected in the modified wrapper.
 
 ### Notes
 
 Independent of `"algorithm"`, if the index is a power of two, we compute the
 exact result using squaring.
 """
-function increment!(pow::IntervalMatrixPower; algorithm::String="intersect")
+function increment!(pow::IntervalMatrixPower;
+                    algorithm::String=default_algorithm)
     pow.k += 1
     if _isapoweroftwo(pow.k)
         pow.Mᵏ = _eval_poweroftwo(pow)
@@ -113,32 +116,35 @@ function increment!(pow::IntervalMatrixPower; algorithm::String="intersect")
         pow.Mᵏ = _eval_multiply(pow)
     elseif algorithm == "power"
         pow.Mᵏ = _eval_power(pow)
+    elseif algorithm == "decompose_binary"
+        pow.Mᵏ = _eval_decompose_binary(pow)
     elseif algorithm == "intersect"
         pow.Mᵏ = _eval_intersect(pow)
-    elseif algorithm == "sqrt"
-        pow.Mᵏ = _eval_sqrt(pow)
     else
         throw(ArgumentError("algorithm $algorithm is not available; choose " *
-            "from 'multiply', 'power', 'intersect'"))
+            "from 'multiply', 'power', 'decompose_binary', 'intersect'"))
     end
     return pow.Mᵏ
 end
 
 """
-    increment(pow::IntervalMatrixPower)
+    increment(pow::IntervalMatrixPower; [algorithm=default_algorithm])
 
 Increment a matrix power without modifying `pow`.
 
 ### Input
 
 - `pow` -- wrapper of a matrix power
+- `algorithm` -- (optional; default: `default_algorithm`) algorithm to compute
+                 the matrix power; see [`increment!`](@ref) for available options
 
 ### Output
 
-The next matrix power now.
+The next matrix power.
 """
-function increment(pow::IntervalMatrixPower)
-    return increment!(copy(pow))
+function increment(pow::IntervalMatrixPower;
+                   algorithm::String=default_algorithm)
+    return increment!(copy(pow), algorithm=algorithm)
 end
 
 # checks whether a number is a power of 2
@@ -164,22 +170,26 @@ function _eval_power(pow::IntervalMatrixPower)
     return pow.M^pow.k
 end
 
-function _eval_intersect(pow::IntervalMatrixPower)
-    return intersect(_eval_multiply(pow), _eval_power(pow))
+function _eval_decompose_binary(pow::IntervalMatrixPower)
+    return _eval_decompose_binary_helper(pow.M, pow.k)
 end
 
-function _eval_sqrt(pow::IntervalMatrixPower; algorithm::String="power")
-    # decompose k = a² + b with a, b being integers
-    k = pow.k
-    a = floor(Int, sqrt(k))
-    b = k - a^2
-
-    # recursively compute M^a and M^b
-    Mᵏ = square(get(IntervalMatrixPower(pow.M, a; algorithm=algorithm)))
-    if b > 0
-        Mᵏ *= get(IntervalMatrixPower(pow.M, b; algorithm=algorithm))
+# decompose k = 2a + b with a, b being positive integers and a being maximal
+function _eval_decompose_binary_helper(M, k)
+    if k == 1
+        Mᵏ = M
+    else
+        Mᵏ = square(_eval_decompose_binary_helper(M, div(k, 2)))
+        if k % 2 == 1
+            Mᵏ *= M
+        end
     end
     return Mᵏ
+end
+
+function _eval_intersect(pow::IntervalMatrixPower)
+    return intersect(intersect(_eval_multiply(pow), _eval_power(pow)),
+                     _eval_decompose_binary(pow))
 end
 
 """

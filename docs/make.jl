@@ -8,7 +8,7 @@ makedocs(
     modules = [IntervalMatrices],
     format = Documenter.HTML(
         prettyurls = get(ENV, "CI", nothing) == "true",
-        assets = ["assets/juliareach.css"]),
+        assets = ["assets/juliareach.css"], sidebar_sitename=true),
     pages = [
         "Home" => "index.md",
         "Library" => Any[
@@ -20,5 +20,6 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/JuliaReach/IntervalMatrices.jl.git"
+    repo = "github.com/JuliaReach/IntervalMatrices.jl.git",
+    push_preview = true,
 )

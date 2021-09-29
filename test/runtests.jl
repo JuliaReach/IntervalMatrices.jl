@@ -1,6 +1,10 @@
 using IntervalMatrices, Test, LinearAlgebra
 
-using IntervalMatrices: _truncated_exponential_series, scale_and_square
+using IntervalMatrices: _truncated_exponential_series,
+                        horner,
+                        scale_and_square,
+                        correction_hull,
+                        input_correction
 
 @testset "Interval arithmetic" begin
     a = -1.5 ± 0.5
@@ -20,6 +24,14 @@ end
     m = [1.0 2.0; 3.0 4.0]
     mint = IntervalMatrix([Interval(1) Interval(2); Interval(3) Interval(4)])
     @test IntervalMatrix(m) == mint
+
+    A = [1 2; 3 4]
+    B = [1 2; 4 5]
+
+    @test IntervalMatrix(A, B) == IntervalMatrix([1..1 2..2; 3..4 4..5])
+
+    @test A ± B == IntervalMatrix([0..2 0..4;-1..7 -1..9])
+
     @test convert(IntervalMatrix, m) == mint
 end
 
@@ -66,10 +78,12 @@ end
     r = sup(m)
     c = mid(m)
     d = diam(m)
+    rad = radius(m)
     m2 = copy(m)
     @test m2 isa IntervalMatrix && m.mat == m2.mat
     @test l == inf.(m) && r == sup.(m) && c == mid.(m)
     @test d ≈ r - l
+    @test rad ≈ d/2
     sm = scale(m, 2.0)
     @test sm ==  2.0 .* m
     @test sm ≠ m
@@ -78,9 +92,15 @@ end
     m3 = IntervalMatrix([-2.0..2.0 -2.0..0.0; 0.0..2.0 -1.0..1.0])
     m4 = IntervalMatrix([-1.0..1.0 -1.0..1.0; -1.0..1.0 -2.0..2.0])
     @test m3 ∩ m4 == IntervalMatrix([-1.0..1.0 -1.0..0.0; 0.0..1.0 -1.0..1.0])
+    @test m3 ∪ m4 == IntervalMatrix([-2.0..2.0 -2.0..1.0; -1.0..2.0 -2.0..2.0])
+    @test diam_norm(m3) ≈ 6.0 # default diameter p-norm is Inf
+    @test diam_norm(m3, 1) ≈ 6.0
 end
 
 @testset "Interval matrix exponential" begin
+
+    @test quadratic_expansion(-3..3, 1.0, 2.0) == Interval(-0.125, 21)
+
     m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
 
     for i in 0:4
@@ -88,11 +108,12 @@ end
     end
 
     overapp1 = exp_overapproximation(m, 1.0, 4)
-    overapp2 = scale_and_square(m, 5, 1.0, 4)
+    overapp2 = horner(m, 10)
+    overapp3 = scale_and_square(m, 5, 1.0, 4)
     underapp = exp_underapproximation(m, 1.0, 4)
 
     @test underapp isa IntervalMatrix
-    for overapp in [overapp1, overapp2]
+    for overapp in [overapp1, overapp2, overapp3]
         @test overapp isa IntervalMatrix
     end
 end
@@ -116,6 +137,7 @@ end
     m1 = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
     m2 = IntervalMatrix([-1.2..1.0 -4.1.. -3.9; 3.9..4.2 -1.2..0.9])
     @test m1 ⊆ m2 && !(m2 ⊆ m1)
+
 end
 
 @testset "Interval matrix rand" begin
@@ -127,8 +149,9 @@ end
 
 @testset "Interval matrix correction terms" begin
     m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
-    f = IntervalMatrices.correction_hull(m, 1e-3, 5)
-    f2 = IntervalMatrices.input_correction(m, 1e-3, 5)
+    f = correction_hull(m, 1e-3, 5)
+    f2 = input_correction(m, 1e-3, 5)
+    f = correction_hull(mid(m), 1e-3, 5)
 end
 
 @testset "Interval matrix square" begin
@@ -139,12 +162,12 @@ end
 end
 
 @testset "Interval matrix power" begin
-    m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
+    m = IntervalMatrix([2.0..2.0 2.0..3.0; 0.0..0.0 -1.0..1.0])
     pow = IntervalMatrixPower(m)
     increment!(pow)  # power of two
     increment!(pow, algorithm="multiply")
     increment!(pow)  # power of two
     increment!(pow, algorithm="power")
+    increment!(pow, algorithm="decompose_binary")
     increment!(pow, algorithm="intersect")
-    increment!(pow, algorithm="sqrt")
 end

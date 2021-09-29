@@ -43,6 +43,7 @@ index
 
 ```@docs
 exp_overapproximation
+horner
 scale_and_square
 exp_underapproximation
 ```
@@ -64,4 +65,5 @@ input_correction
 
 ```@docs
 opnorm
+diam_norm
 ```
