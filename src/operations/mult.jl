@@ -13,7 +13,6 @@ Sets the algorithm used to perform matrix multiplication with interval matrices.
 
 - `multype` -- symbol describing the algorithm used
    - `:slow` -- uses traditional matrix multiplication algorithm.
-   - `:rank1` -- uses rank1 update
    - `:fast` -- computes an enclosure of the matrix product using the midpoint-radius
                 notation of the matrix [[RUM10]](@ref).
 
