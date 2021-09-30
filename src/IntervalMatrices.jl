@@ -18,6 +18,7 @@ include("matrix.jl")
 # Operations for interval matrices
 # =================================
 include("operations/arithmetic.jl")
+include("operations/mult.jl")
 include("operations/norm.jl")
 include("operations/numops.jl")
 include("operations/random.jl")
@@ -42,7 +43,8 @@ include("correction_matrices.jl")
 # Exports
 # ========
 export AbstractIntervalMatrix,
-       IntervalMatrix
+       IntervalMatrix,
+       set_multiplication_mode, get_multiplication_mode
 
 export inf, sup,
        rand, sample,
@@ -58,5 +60,10 @@ export IntervalMatrixPower,
        increment!, increment,
        base,
        index
+
+
+function __init__()
+    set_multiplication_mode(config[:multiplication])
+end
 
 end # module

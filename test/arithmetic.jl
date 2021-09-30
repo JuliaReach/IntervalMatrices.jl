@@ -19,9 +19,6 @@ end
     B = A - A
     @test B isa IntervalMatrix && B == IntervalMatrix([a₋ b₋; c₋ d₋])
 
-    B = A * A
-    @test B isa IntervalMatrix
-
     # multiply interval and interval matrix
     x = 0.0..2.0
     @test x * A == A * x ==
@@ -40,4 +37,24 @@ end
     @test Ainf - A isa IntervalMatrix
     @test A * Ainf isa IntervalMatrix
     @test Ainf * A isa IntervalMatrix
+end
+
+@testset "Matrix multiplication" begin
+
+    # test default settings
+    @test get_multiplication_mode() == Dict(:multiplication => :fast)
+
+    A = IntervalMatrix([2..4 -2..1; -1..2 2..4])
+    set_multiplication_mode(:slow)
+    @test A * A == IntervalMatrix([0..18 -16..8; -8..16 0..18])
+    @test A * mid.(A) == IntervalMatrix([5..12.5 -8..2; -2..8 5..12.5])
+    @test mid.(A) * A == IntervalMatrix([5..12.5 -8..2; -2..8 5..12.5])
+
+    # set_multiplication_mode(:rank1)
+    # @test A * A == [0..18 -16..8; -8..16 0..18]
+
+    set_multiplication_mode(:fast)
+    @test A * A == IntervalMatrix([-2..19.5 -16..10; -10..16 -2..19.5])
+    @test A * mid.(A) == IntervalMatrix([5..12.5 -8..2; -2..8 5..12.5])
+    @test mid.(A) * A == IntervalMatrix([5..12.5 -8..2; -2..8 5..12.5])
 end
