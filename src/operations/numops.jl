@@ -90,7 +90,7 @@ end
 
 
 """
-    split(A::IntervalMatrix{T}) where {T}
+    midpoint_radius(A::IntervalMatrix{T}) where {T}
 
 Split an interval matrix ``A`` into two scalar matrices ``C`` and ``S``
 such that ``A = C + [-S, S]``.
@@ -104,19 +104,4 @@ such that ``A = C + [-S, S]``.
 A pair `(C, S)` such that the entries of `C` are the central points and the
 entries of `S` are the (nonnegative) radii of the intervals in `A`.
 """
-function split(A::IntervalMatrix{T}) where {T}
-    m, n = size(A)
-    C = Matrix{T}(undef, m, n)
-    S = Matrix{T}(undef, m, n)
-
-    @inbounds for j in 1:n
-        for i in 1:m
-            itv = A[i, j]
-            radius = (sup(itv) - inf(itv)) / T(2)
-            C[i, j] = inf(itv) + radius
-            S[i, j] = radius
-        end
-    end
-
-    return C, S
-end
+midpoint_radius(A::IntervalMatrix) = (mid(A), radius(A))
