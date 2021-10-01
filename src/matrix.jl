@@ -83,6 +83,10 @@ function IntervalMatrix(A::MT) where {T, IT<:AbstractInterval{T}, MT<:AbstractMa
     return IntervalMatrix{T, IT, MT}(A)
 end
 
+function IntervalMatrix(A::MT) where {T, IT<:Complex{Interval{T}}, MT <:AbstractMatrix{IT}}
+    return IntervalMatrix{T, IT, MT}(A)
+end
+
 # constructor from uniform scaling
 function IntervalMatrix(αI::UniformScaling{Interval{T}}, m::Integer, n::Integer=m) where {T}
     return IntervalMatrix(Matrix(αI, m, n))
