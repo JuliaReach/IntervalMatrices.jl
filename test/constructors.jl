@@ -22,3 +22,21 @@ end
     @test c ≈ [-0.1 -4.; 4. -0.1]
     @test s ≈ [1. 0.1; 0.1 1.]
 end
+
+@testset "Complex interval matrices" begin
+    m1 = IntervalMatrix([(1..2)+im*(3..4) 1;2 3])
+    @test m1 isa IntervalMatrix{Float64}
+    @test eltype(m1) == Complex{Interval{Float64}}
+
+    rp = real(m1)
+    ip = imag(m1)
+    @test rp isa IntervalMatrix{Float64}
+    @test eltype(rp) == Interval{Float64}
+
+    @test ip isa IntervalMatrix{Float64}
+    @test eltype(ip) == Interval{Float64}
+
+    m2 = IntervalMatrix([1+im 2+im;3+im 4+im])
+    @test m2 isa IntervalMatrix{Float64}
+    @test eltype(m2) == Complex{Interval{Float64}}
+end

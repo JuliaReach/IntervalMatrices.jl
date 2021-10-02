@@ -1,4 +1,4 @@
-import Base: similar, ∈, ⊆, ∩, ∪
+import Base: similar, ∈, ⊆, ∩, ∪, real, imag
 import Random: rand
 import IntervalArithmetic: ±, inf, sup, mid, diam, radius, midpoint_radius, hull
 
@@ -80,6 +80,10 @@ setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 copy(M::IntervalMatrix) = IntervalMatrix(copy(M.mat))
 
 function IntervalMatrix(A::MT) where {T, IT<:AbstractInterval{T}, MT<:AbstractMatrix{IT}}
+    return IntervalMatrix{T, IT, MT}(A)
+end
+
+function IntervalMatrix(A::MT) where {T, IT<:Complex{Interval{T}}, MT <:AbstractMatrix{IT}}
     return IntervalMatrix{T, IT, MT}(A)
 end
 
