@@ -62,8 +62,7 @@ export IntervalMatrixPower,
        index
 
 
-function __init__()
-    set_multiplication_mode(config[:multiplication])
-end
+set_multiplication_mode(config[:multiplication])
+
 
 end # module
