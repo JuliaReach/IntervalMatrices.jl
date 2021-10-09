@@ -38,4 +38,4 @@ Other installation options can be found in the manual.
 
 ## Quickstart
 
-A quickstart guide is available in the manual.
+A quickstart guide is available in [the documentation](https://juliareach.github.io/IntervalMatrices.jl/latest/#Quickstart).
