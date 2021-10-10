@@ -46,9 +46,7 @@ size(M::IntervalMatrixPencil) = size(M.A0)
 getindex(M::IntervalMatrixPencil, i::Int) = getindex(M.A0, i) + M.λ * getindex(M.A1, i)
 function setindex!(M::IntervalMatrixPencil{T}, X::T, inds...) where {T}
     setindex!(M.A0, X, inds...)
-    if !iszero(getindex(M.A1, inds...)) || !iszero(M.λ)
-        setindex!(M.A1, zero(T), inds...)
-    end
+    setindex!(M.A1, zero(T), inds...)
 end
 copy(M::IntervalMatrixPencil) = IntervalMatrixPencil(copy(M.A0), copy(M.A1), M.λ)
 
@@ -90,7 +88,7 @@ julia> λ1 = 0 .. 1; λ2 = 2 .. 3;
 julia> P = AffineIntervalMatrix(A0, [A1, A2], [λ1, λ1]);
 
 julia> P[1, 1]
-[1, 3]
+[1, 2]
 
 julia> P[1, 2]
 [0, 2]
@@ -100,6 +98,17 @@ struct AffineIntervalMatrix{T, IT, MT0<:AbstractMatrix{T}, MT<:AbstractMatrix{T}
     A0::MT0
     A::MTA
     λ::VIT
+
+    # inner constructor with dimension check
+    function AffineIntervalMatrix(A0::MT0, A::MTA, λ::VIT) where {T, IT, MT0<:AbstractMatrix{T}, MT<:AbstractMatrix{T}, MTA<:AbstractVector{MT}, VIT<:AbstractVector{IT}}
+        k = length(A)
+        @assert k == length(λ) "expected `A` and `λ` to have the same length, got $(length(A)) and $(length(λ)) respectively"
+        n = checksquare(A0)
+        @inbounds for i in 1:k
+            @assert n == checksquare(A[i]) "each matrix should have the same size $n × $n"
+        end
+        return new{T, IT, MT0, MT, MTA, VIT}(A0, A, λ)
+    end
 end
 
 IndexStyle(::Type{<:AffineIntervalMatrix}) = IndexLinear()
