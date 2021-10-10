@@ -18,15 +18,25 @@ inf
 sup
 mid
 diam
+radius
+midpoint_radius
 rand
 sample
-split
 ∈
+±
+⊆
+∩
+∪
+hull
+```
+
+## Arithmetic
+
+```@docs
 square
 scale
 scale!
-⊆
-∩
+set_multiplication_mode
 ```
 
 ## Matrix power
