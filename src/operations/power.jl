@@ -33,8 +33,8 @@ julia> increment!(pow)
 
 julia> increment(pow)
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
- [8, 8]  [-1, 21]
- [0, 0]   [-1, 1]
+  [8, 8]  [-1, 21]
+ [-0, 0]   [-1, 1]
 
 julia> get(pow)
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:

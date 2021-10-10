@@ -135,7 +135,7 @@ i.e. `B[i, j] ≥ A[i, j]` for each `i` and `j`.
 ```jldoctest
 julia> IntervalMatrix([1 2; 3 4], [1 2; 4 5])
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
-  [1, 1]   [2, 2]
+ [1, 1]  [2, 2]
  [3, 4]  [4, 5]
 ```
 """
@@ -144,7 +144,7 @@ function IntervalMatrix(A::MT, B::MT) where {T, MT<:AbstractMatrix{T}}
                                 "matrices should match, but they are $(size(A)) " *
                                 "and $(size(B)) respectively"))
 
-    return map((x, y) -> Interval(x, y), A, B)
+    return IntervalMatrix(map((x, y) -> Interval(x, y), A, B))
 end
 
 """
@@ -182,5 +182,5 @@ function ±(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
                                 "radii matrix should match, but they are $(size(C)) " *
                                 "and $(size(S)) respectively"))
 
-    return map((x, y) -> x ± y, C, S)
+    return IntervalMatrix(map((x, y) -> x ± y, C, S))
 end

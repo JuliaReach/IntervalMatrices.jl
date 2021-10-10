@@ -14,7 +14,8 @@ makedocs(
         "Library" => Any[
         "Types" => "lib/types.md",
         "Methods" => "lib/methods.md"],
-        "About" => "about.md"
+        "About" => "about.md",
+        "References" => "references.md"
     ],
     strict = true
 )

@@ -89,12 +89,12 @@ julia> (-1.0..1.0) * A
 
 Or compute the square of $A$,
 ```jldoctest quickstart
-julia> A*A
+julia> square(A)
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
-    [2, 7]  [-8, 0]
- [-12, -1]  [6, 22]
+    [2, 7]  [-8, -1]
+ [-12, -2]   [6, 22]
 ```
-In these cases, the rules of interval arithmetic are used; see the wikipedia page
+In these cases, the rules of interval arithmetic are used; see the Wikipedia page
 on [interval arithmetic](https://en.wikipedia.org/wiki/Interval_arithmetic) for the
 relevant definitions and algebraic rules that apply.
 
@@ -107,14 +107,14 @@ $e^{At} - I$. Then, at $t = 1.0$,
 ```jldoctest quickstart
 julia> A + 1/2 * A^2
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
-  [1, 4.5]  [-3, 2]
- [-4, 2.5]  [-1, 9]
+  [0.5, 4.5]  [-3.25, 2.5]
+ [-4.25, 3]   [-2.25, 9]
 ```
 However, that result is not tight. The computation can be performed exactly via
 single-use expressions implemented in this library:
 
 ```jldoctest quickstart
-julia> quadratic_expansion(A, 1.0)
+julia> quadratic_expansion(A, 1.0, 0.5)
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
   [1, 4.5]  [-2, 1]
  [-3, 1.5]   [1, 7]
