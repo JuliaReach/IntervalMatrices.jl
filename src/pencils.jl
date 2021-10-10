@@ -76,7 +76,7 @@ contains one matrix proportional to an interval.
 
 ### Examples
 
-The matrix pencil ``I + [1 1; -1 1] * (0 .. 1) + [0 1; 1 0] * (2 .. 3)`` is:
+The affine matrix ``I + [1 1; -1 1] * (0 .. 1) + [0 1; 1 0] * (2 .. 3)`` is:
 
 ```jldoctest
 julia> using LinearAlgebra
