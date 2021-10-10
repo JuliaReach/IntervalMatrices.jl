@@ -28,3 +28,15 @@ IntervalMatrix
 ```@docs
 IntervalMatrixPower
 ```
+
+## Matrix pencil
+
+```@docs
+IntervalMatrixPencil
+```
+
+## Affine interval matrix
+
+```@docs
+AffineIntervalMatrix
+```
