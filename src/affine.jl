@@ -1,5 +1,5 @@
 """
-    IntervalMatrixPencil{T, IT, MT0<:AbstractMatrix{T}, MT1<:AbstractMatrix{T}} <: AbstractIntervalMatrix{IT}
+    AffineIntervalMatrix1{T, IT, MT0<:AbstractMatrix{T}, MT1<:AbstractMatrix{T}} <: AbstractIntervalMatrix{IT}
 
 Interval matrix representing the matrix
 
@@ -16,39 +16,39 @@ where ``A₀`` and ``A₁`` are real (or complex) matrices, and ``λ`` is an int
 
 ### Examples
 
-The matrix pencil ``I + [1 1; -1 1] * (0 .. 1)`` is:
+The matrix ``I + [1 1; -1 1] * (0 .. 1)`` is:
 
 ```jldoctest
 julia> using LinearAlgebra
 
-julia> P = IntervalMatrixPencil(Matrix(1.0I, 2, 2), [1 1; -1 1.], 0 .. 1);
+julia> P = AffineIntervalMatrix1(Matrix(1.0I, 2, 2), [1 1; -1 1.], 0 .. 1);
 
 julia> P
-2×2 IntervalMatrixPencil{Float64, Interval{Float64}, Matrix{Float64}, Matrix{Float64}}:
+2×2 AffineIntervalMatrix1{Float64, Interval{Float64}, Matrix{Float64}, Matrix{Float64}}:
   [1, 2]  [0, 1]
  [-1, 0]  [1, 2]
 ```
 """
-struct IntervalMatrixPencil{T, IT, MT0<:AbstractMatrix{T}, MT1<:AbstractMatrix{T}} <: AbstractIntervalMatrix{IT}
+struct AffineIntervalMatrix1{T, IT, MT0<:AbstractMatrix{T}, MT1<:AbstractMatrix{T}} <: AbstractIntervalMatrix{IT}
     A0::MT0
     A1::MT1
     λ::IT
 
     # inner constructor with dimension check
-    function IntervalMatrixPencil(A0::MT0, A1::MT1, λ::IT) where {T, IT, MT0<:AbstractMatrix{T}, MT1<:AbstractMatrix{T}}
+    function AffineIntervalMatrix1(A0::MT0, A1::MT1, λ::IT) where {T, IT, MT0<:AbstractMatrix{T}, MT1<:AbstractMatrix{T}}
         @assert checksquare(A0) == checksquare(A1) "the size of `A0` and `A1` should match, got $(size(A0)) and $(size(A1)) respectively"
         return new{T, IT, MT0, MT1}(A0, A1, λ)
     end
 end
 
-IndexStyle(::Type{<:IntervalMatrixPencil}) = IndexLinear()
-size(M::IntervalMatrixPencil) = size(M.A0)
-getindex(M::IntervalMatrixPencil, i::Int) = getindex(M.A0, i) + M.λ * getindex(M.A1, i)
-function setindex!(M::IntervalMatrixPencil{T}, X::T, inds...) where {T}
+IndexStyle(::Type{<:AffineIntervalMatrix1}) = IndexLinear()
+size(M::AffineIntervalMatrix1) = size(M.A0)
+getindex(M::AffineIntervalMatrix1, i::Int) = getindex(M.A0, i) + M.λ * getindex(M.A1, i)
+function setindex!(M::AffineIntervalMatrix1{T}, X::T, inds...) where {T}
     setindex!(M.A0, X, inds...)
     setindex!(M.A1, zero(T), inds...)
 end
-copy(M::IntervalMatrixPencil) = IntervalMatrixPencil(copy(M.A0), copy(M.A1), M.λ)
+copy(M::AffineIntervalMatrix1) = AffineIntervalMatrix1(copy(M.A0), copy(M.A1), M.λ)
 
 """
     AffineIntervalMatrix{T, IT, MT0<:AbstractMatrix{T}, MT<:AbstractMatrix{T}, MTA<:AbstractVector{MT}} <: AbstractIntervalMatrix{IT}
@@ -69,7 +69,7 @@ are intervals.
 
 ### Notes
 
-This type is the general case of the [`IntervalMatrixPencil`](@ref), which only
+This type is the general case of the [`AffineIntervalMatrix1`](@ref), which only
 contains one matrix proportional to an interval.
 
 ### Examples
