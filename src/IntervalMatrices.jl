@@ -13,6 +13,7 @@ using Reexport
 # Type defining an interval matrix
 # ================================
 include("matrix.jl")
+include("affine.jl")
 
 # =================================
 # Operations for interval matrices
@@ -61,6 +62,8 @@ export IntervalMatrixPower,
        base,
        index
 
+export AffineIntervalMatrix,
+       AffineIntervalMatrix1
 
 set_multiplication_mode(config[:multiplication])
 
