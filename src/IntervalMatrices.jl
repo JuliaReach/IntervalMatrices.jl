@@ -2,6 +2,7 @@ __precompile__(true)
 module IntervalMatrices
 
 using LinearAlgebra
+using LinearAlgebra: checksquare
 
 import Random
 using Random: AbstractRNG, GLOBAL_RNG, seed!

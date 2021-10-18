@@ -49,7 +49,18 @@ base
 index
 ```
 
-## Exponentiation
+## Matrix exponential
+
+### Algorithms
+
+```@docs
+IntervalMatrices.Horner
+IntervalMatrices.ScaleAndSquare
+IntervalMatrices.TaylorOverapproximation
+IntervalMatrices.TaylorUnderapproximation
+```
+
+### Implementations
 
 ```@docs
 exp_overapproximation

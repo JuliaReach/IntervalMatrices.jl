@@ -1,10 +1,177 @@
-using LinearAlgebra: checksquare
+# ==========================================
+# Interface for interval matrix exponential
+# ==========================================
+
+abstract type AbstractExponentiationMethod end
+
+# compute e^{At} using the given algorithm `alg`
+function Base.exp(A::IntervalMatrix{T, Interval{T}}, t=one(T);
+                  alg::AbstractExponentiationMethod=ScaleAndSquare(5, 4)) where {T}
+    return _exp(alg, A, t)
+end
+
+# ==============================================================================
+# Matrix exponential using over (or under) approx of the truncated Taylor series
+# ==============================================================================
+
+"""
+    TaylorOverapproximation <: AbstractExponentiationMethod
+
+Matrix exponential overapproximation using a truncated Taylor series.
+
+### Fields
+
+- `p` -- order of the approximation
+"""
+struct TaylorOverapproximation <: AbstractExponentiationMethod
+    p::Int
+end
+
+function _exp(alg::TaylorOverapproximation, A::IntervalMatrix{T}, t=one(T)) where {T}
+    return exp_overapproximation(A, t, alg.p)
+end
+
+"""
+    TaylorUnderapproximation <: AbstractExponentiationMethod
+
+Matrix exponential underapproximation using a truncated Taylor series.
+
+### Fields
+
+- `p` -- order of the approximation
+"""
+struct TaylorUnderapproximation <: AbstractExponentiationMethod
+    p::Int
+end
+
+function _exp(alg::TaylorUnderapproximation, A::IntervalMatrix{T}, t=one(T)) where {T}
+    return exp_underapproximation(A, t, alg.p)
+end
+
+"""
+    exp_overapproximation(A::IntervalMatrix{T}, t, p)
+
+Overapproximation of the exponential of an interval matrix.
+
+### Input
+
+- `A` -- interval matrix
+- `t` -- non-negative time value
+- `p` -- order of the approximation
+
+### Algorithm
+
+See Theorem 1 in *Reachability Analysis of Linear Systems with Uncertain
+Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
+"""
+function exp_overapproximation(A::IntervalMatrix{T}, t, p) where {T}
+    n = checksquare(A)
+    S = _truncated_exponential_series(A, t, p; n=n)
+    E = _exp_remainder(A, t, p; n=n)
+    return S + E
+end
+
+# Implementation of Prop. 1 in Althoff, Matthias, Bruce H. Krogh, and Olaf Stursberg.
+# "Analyzing reachability of linear dynamic systems with parametric uncertainties."
+# Modeling, Design, and Simulation of Systems with Uncertainties. Springer, Berlin, Heidelberg, 2011. 69-94.
+function _exp_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
+    C = max.(abs.(inf(A)), abs.(sup(A)))
+    # compute Q = I + Ct + (Ct)^2/2! + ... + (Ct)^p/p!
+    Q = Matrix(Diagonal(ones(T, n)))
+
+    tⁱ = 1
+    i! = 1
+    Cⁱ = copy(C)
+    for i in 1:p
+        i! *= i
+        tⁱ *= t
+        Q += Cⁱ * tⁱ/i!
+        Cⁱ *= C
+    end
+    M = exp(C*t)
+    Y = M - Q
+    Γ = IntervalMatrix(fill(zero(T)±one(T), (n, n)))
+    E = Γ * Y
+    return E
+end
+
+# Estimates the sum of the series in the matrix exponential. See Theorem 1
+# in [1] Althoff, Matthias, Olaf Stursberg, and Martin Buss.
+# Reachability analysis of nonlinear systems with uncertain parameters using conservative linearization.
+# 2008 47th IEEE Conference on Decision and Control. IEEE, 2008.
+function _exp_remainder_series(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
+    nA = opnorm(A, Inf)
+    c = nA * t / (p + 2)
+    @assert c < 1 "the remainder of the matrix exponential could not be " *
+        "computed because a convergence condition is not satisfied: $c ≥ 1 " *
+        "but it should be smaller than 1; try choosing a larger order"
+    Γ = IntervalMatrix(fill(zero(T)±one(T), (n , n)))
+    return Γ * ((nA*t)^(p+1) * (1/factorial(p + 1) * 1/(1-c)))
+end
+
+"""
+    exp_underapproximation(A::IntervalMatrix{T}, t, p) where {T}
+
+Underapproximation of the exponential of an interval matrix using a truncated
+Taylor series expansion.
+
+### Input
+
+- `alg` -- algorithm
+- `A`   -- interval matrix
+- `t`   -- non-negative time value
+
+### Algorithm
+
+See Theorem 2 in *Reachability Analysis of Linear Systems with Uncertain
+Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
+"""
+function exp_underapproximation(A::IntervalMatrix{T}, t, p) where {T}
+    @assert p > 1 "the order $p < 2 is not supported"
+    n = checksquare(A)
+
+    Y = zeros(n, n)
+    LA = inf(A)
+    Aⁱl = LA^2
+    Z = zeros(n, n)
+    RA = sup(A)
+    Aⁱr = RA^2
+    fact_num = t^2
+    fact_denom = 2
+    for i in 3:p
+        fact_num *= t
+        fact_denom *= i
+        fact = fact_num / fact_denom
+        Aⁱl *= LA
+        Y += Aⁱl * fact
+        Aⁱr *= RA
+        Z += Aⁱr * fact
+    end
+
+    B = IntervalMatrix{T}(undef, n , n)
+    @inbounds for j in 1:n
+        for i in 1:n
+            minYZ = min(Y[i, j], Z[i, j])
+            maxYZ = max(Y[i, j], Z[i, j])
+            B[i, j] = Interval(minYZ, maxYZ)
+        end
+    end
+
+    W = quadratic_expansion(A, t, t^2/2)
+    res = W + B
+
+    # add identity matrix implicitly
+    for i in 1:n
+        @inbounds res[i, i] += one(T)
+    end
+    return res
+end
 
 """
     quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
 
 Compute the quadratic expansion of an interval matrix, ``αA + βA^2``, using
-interval arithmetics.
+interval arithmetic.
 
 ### Input
 
@@ -107,113 +274,25 @@ function _truncated_exponential_series(A::IntervalMatrix{T}, t, p::Integer;
     return S
 end
 
+# ==============================================================
+# Matrix exponential using the scaling and squaring method
+# ==============================================================
+
 """
-    exp_overapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {T}
+    ScaleAndSquare <: AbstractExponentiationMethod
 
-Overapproximation of the exponential of an interval matrix.
+### Fields
 
-### Input
-
-- `A` -- interval matrix
-- `t` -- non-negative time value
+- `l` -- scaling-and-squaring order
 - `p` -- order of the approximation
-
-### Algorithm
-
-See Theorem 1 in *Reachability Analysis of Linear Systems with Uncertain
-Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
 """
-function exp_overapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {T}
-    n = checksquare(A)
-    S = _truncated_exponential_series(A, t, p; n=n)
-    E = _exp_remainder(A, t, p; n=n)
-    return S + E
+struct ScaleAndSquare <: AbstractExponentiationMethod
+    l::Int
+    p::Int
 end
 
-# Implementation of Prop. 1 in Althoff, Matthias, Bruce H. Krogh, and Olaf Stursberg.
-# "Analyzing reachability of linear dynamic systems with parametric uncertainties."
-# Modeling, Design, and Simulation of Systems with Uncertainties. Springer, Berlin, Heidelberg, 2011. 69-94.
-function _exp_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
-    C = max.(abs.(inf(A)), abs.(sup(A)))
-    # compute Q = I + Ct + (Ct)^2/2! + ... + (Ct)^p/p!
-    Q = Matrix(Diagonal(ones(T, n)))
-
-    tⁱ = 1
-    i! = 1
-    Cⁱ = copy(C)
-    for i in 1:p
-        i! *= i
-        tⁱ *= t
-        Q += Cⁱ * tⁱ/i!
-        Cⁱ *= C
-    end
-    M = exp(C*t)
-    Y = M - Q
-    Γ = IntervalMatrix(fill(zero(T)±one(T), (n, n)))
-    E = Γ * Y
-    return E
-end
-
-# Estimates the sum of the series in the matrix exponential. See Theorem 1
-# in [1] Althoff, Matthias, Olaf Stursberg, and Martin Buss.
-# Reachability analysis of nonlinear systems with uncertain parameters using conservative linearization.
-# 2008 47th IEEE Conference on Decision and Control. IEEE, 2008.
-function _exp_remainder_series(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
-    nA = opnorm(A, Inf)
-    c = nA * t / (p + 2)
-    @assert c < 1 "the remainder of the matrix exponential could not be " *
-        "computed because a convergence condition is not satisfied: $c ≥ 1 " *
-        "but it should be smaller than 1; try choosing a larger order"
-    Γ = IntervalMatrix(fill(zero(T)±one(T), (n , n)))
-    return Γ * ((nA*t)^(p+1) * (1/factorial(p + 1) * 1/(1-c)))
-end
-
-"""
-    horner(A::IntervalMatrix{T}, K::Integer; [validate]::Bool=true)
-
-Compute the matrix exponential using the Horner scheme.
-
-### Input
-
-- `A` -- interval matrix
-- `K` -- number of expansions in the Horner scheme
-- `validate` -- (optional; default: `true`) option to validate the precondition
-                of the algorithm
-
-### Algorithm
-
-We use the algorithm in [1, Section 4.2].
-
-[1] Goldsztejn, Alexandre, Arnold Neumaier. "On the exponentiation of interval
-matrices". Reliable Computing. 2014.
-"""
-function horner(A::IntervalMatrix{T}, K::Integer;
-                       validate::Bool=true) where {T}
-    if validate
-        nA = opnorm(A, Inf)
-        c = K + 2
-        if c <= nA
-            throw(ArgumentError("the precondition for the " *
-                "Horner-scheme algorithm is not satisfied: $c <= $nA; " *
-                "try choosing a larger order"))
-        end
-    end
-    if K <= 0
-        throw(ArgumentError("the Horner evaluation requires a positive " *
-            "number of expansions but received $K"))
-    end
-
-    n = checksquare(A)
-    Iₙ = IntervalMatrix(Interval(one(T)) * I, n)
-    H = Iₙ + A/K
-    for i in (K-1):-1:1
-        H = Iₙ + A / i * H
-    end
-
-    # remainder; the paper uses a less precise computation here
-    R = _exp_remainder(A, one(T), K)
-
-    return H + R
+function _exp(alg::ScaleAndSquare, A, t=one(T))
+    return scale_and_square(A, alg.l, t, alg.p)
 end
 
 """
@@ -264,59 +343,72 @@ function scale_and_square(A::IntervalMatrix{T}, l::Integer, t, p;
     return E
 end
 
-"""
-    exp_underapproximation(M::IntervalMatrix{T, Interval{T}}, t, p) where {T}
+# ==========================================
+# Matrix exponential using Horner's method
+# ==========================================
 
-Overapproximation of the exponential of an interval matrix.
+"""
+    Horner <: AbstractExponentiationMethod
+
+Matrix exponential using Horner's method.
+
+### Fields
+
+- `K` -- number of expansions in the Horner scheme
+"""
+struct Horner <: AbstractExponentiationMethod
+    K::Int
+end
+
+function _exp(alg::Horner, A::IntervalMatrix{T}, t=one(T)) where {T}
+    At = isone(t) ? A : A*t
+    return horner(At, alg.K)
+end
+
+"""
+    horner(A::IntervalMatrix{T}, K::Integer; [validate]::Bool=true)
+
+Compute the matrix exponential using the Horner scheme.
 
 ### Input
 
 - `A` -- interval matrix
-- `t` -- non-negative time value
-- `p` -- order of the approximation
+- `K` -- number of expansions in the Horner scheme
+- `validate` -- (optional; default: `true`) option to validate the precondition
+                of the algorithm
 
 ### Algorithm
 
-See Theorem 2 in *Reachability Analysis of Linear Systems with Uncertain
-Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
+We use the algorithm in [1, Section 4.2].
+
+[1] Goldsztejn, Alexandre, Arnold Neumaier. "On the exponentiation of interval
+matrices". Reliable Computing. 2014.
 """
-function exp_underapproximation(A::IntervalMatrix{T, Interval{T}}, t, p) where {T}
-    @assert p > 1 "the order $p < 2 is not supported"
-    n = checksquare(A)
-
-    Y = zeros(n, n)
-    LA = inf(A)
-    Aⁱl = LA^2
-    Z = zeros(n, n)
-    RA = sup(A)
-    Aⁱr = RA^2
-    fact_num = t^2
-    fact_denom = 2
-    for i in 3:p
-        fact_num *= t
-        fact_denom *= i
-        fact = fact_num / fact_denom
-        Aⁱl *= LA
-        Y += Aⁱl * fact
-        Aⁱr *= RA
-        Z += Aⁱr * fact
-    end
-
-    B = IntervalMatrix{T}(undef, n , n)
-    @inbounds for j in 1:n
-        for i in 1:n
-            minYZ = min(Y[i, j], Z[i, j])
-            maxYZ = max(Y[i, j], Z[i, j])
-            B[i, j] = Interval(minYZ, maxYZ)
+function horner(A::IntervalMatrix{T}, K::Integer;
+                validate::Bool=true) where {T}
+    if validate
+        nA = opnorm(A, Inf)
+        c = K + 2
+        if c <= nA
+            throw(ArgumentError("the precondition for the " *
+                "Horner-scheme algorithm is not satisfied: $c <= $nA; " *
+                "try choosing a larger order"))
         end
     end
-
-    W = quadratic_expansion(A, t, t^2/2)
-    res = W + B
-
-    # add identity matrix implicitly
-    for i in 1:n
-        @inbounds res[i, i] += one(T)
+    if K <= 0
+        throw(ArgumentError("the Horner evaluation requires a positive " *
+            "number of expansions but received $K"))
     end
-    return res
+
+    n = checksquare(A)
+    Iₙ = IntervalMatrix(Interval(one(T)) * I, n)
+    H = Iₙ + A/K
+    for i in (K-1):-1:1
+        H = Iₙ + A / i * H
+    end
+
+    # remainder; ref [1] uses a less precise computation here
+    R = _exp_remainder(A, one(T), K)
+
+    return H + R
 end

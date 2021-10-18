@@ -1,22 +1,30 @@
+using IntervalMatrices: TaylorOverapproximation,
+                        TaylorUnderapproximation,
+                        ScaleAndSquare,
+                        Horner
+
 @testset "Interval matrix exponential" begin
 
     @test quadratic_expansion(-3..3, 1.0, 2.0) == Interval(-0.125, 21)
 
-    m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
+    M = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
 
     for i in 0:4
-        _truncated_exponential_series(m, 1.0, i)
+        _truncated_exponential_series(M, 1.0, i)
     end
 
-    overapp1 = exp_overapproximation(m, 1.0, 4)
-    overapp2 = horner(m, 10)
-    overapp3 = scale_and_square(m, 5, 1.0, 4)
-    underapp = exp_underapproximation(m, 1.0, 4)
+    overapp1 = exp_overapproximation(M, 1.0, 4)
+    overapp2 = horner(M, 10)
+    overapp3 = scale_and_square(M, 5, 1.0, 4)
+    underapp1 = exp_underapproximation(M, 1.0, 4)
 
-    @test underapp isa IntervalMatrix
-    for overapp in [overapp1, overapp2, overapp3]
-        @test overapp isa IntervalMatrix
-    end
+    @test all(x -> isa(x, IntervalMatrix), [overapp1, overapp2, overapp3, underapp1])
+
+    @test exp(M) == exp(M, alg=ScaleAndSquare(5, 4)) # default
+    @test overapp1 == exp(M, alg=TaylorOverapproximation(4))
+    @test overapp2 == exp(M, alg=Horner(10))
+    @test overapp3 == exp(M, alg=ScaleAndSquare(5, 4))
+    @test underapp1 == exp(M, alg=TaylorUnderapproximation(4))
 end
 
 @testset "Interval matrix correction terms" begin
