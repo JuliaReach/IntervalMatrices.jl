@@ -54,7 +54,7 @@ function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
     @inbounds for j in 1:n
         for i in 1:n
             i == j && continue
-            B[i, j] = A[i, j] * (α + β*A[j, j] + β*A[i, i])
+            B[i, j] = A[i, j] * (α + β*(A[j, j] + A[i, i]))
             for k in 1:n
                 (k == i || k == j) && continue
                 B[i, j] += β * (A[i, k] * A[k, j])
