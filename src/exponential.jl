@@ -156,8 +156,8 @@ end
 
 # Estimates the sum of the series in the matrix exponential. See Theorem 1
 # in [1] Althoff, Matthias, Olaf Stursberg, and Martin Buss.
-# Reachability analysis of nonlinear systems with uncertain parameters using conservative linearization.
-# 2008 47th IEEE Conference on Decision and Control. IEEE, 2008.
+# Reachability Analysis of Linear Systems with Uncertain Parameters and Inputs.
+# 2007 46th IEEE Conference on Decision and Control. IEEE, 2007.
 function _exp_remainder_series(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     nA = opnorm(A, Inf)
     c = nA * t / (p + 2)
