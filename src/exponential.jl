@@ -295,68 +295,6 @@ function _exp(alg::ScaleAndSquare, A, t=one(T))
     return scale_and_square(A, alg.l, t, alg.p)
 end
 
-# Estimates the sum of the series in the matrix exponential. See Theorem 1
-# in [1] Althoff, Matthias, Olaf Stursberg, and Martin Buss.
-# Reachability Analysis of Linear Systems with Uncertain Parameters and Inputs.
-# 2007 46th IEEE Conference on Decision and Control. IEEE, 2007.
-function _exp_remainder_series(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
-    nA = opnorm(A, Inf)
-    c = nA * t / (p + 2)
-    @assert c < 1 "the remainder of the matrix exponential could not be " *
-        "computed because a convergence condition is not satisfied: $c ≥ 1 " *
-        "but it should be smaller than 1; try choosing a larger order"
-    Γ = IntervalMatrix(fill(zero(T)±one(T), (n , n)))
-    return Γ * ((nA*t)^(p+1) * (1/factorial(p + 1) * 1/(1-c)))
-end
-
-"""
-    horner(A::IntervalMatrix{T}, K::Integer; [validate]::Bool=true)
-
-Compute the matrix exponential using the Horner scheme.
-
-### Input
-
-- `A` -- interval matrix
-- `K` -- number of expansions in the Horner scheme
-- `validate` -- (optional; default: `true`) option to validate the precondition
-                of the algorithm
-
-### Algorithm
-
-We use the algorithm in [1, Section 4.2].
-
-[1] Goldsztejn, Alexandre, Arnold Neumaier. "On the exponentiation of interval
-matrices". Reliable Computing. 2014.
-"""
-function horner(A::IntervalMatrix{T}, K::Integer;
-                       validate::Bool=true) where {T}
-    if validate
-        nA = opnorm(A, Inf)
-        c = K + 2
-        if c <= nA
-            throw(ArgumentError("the precondition for the " *
-                "Horner-scheme algorithm is not satisfied: $c <= $nA; " *
-                "try choosing a larger order"))
-        end
-    end
-    if K <= 0
-        throw(ArgumentError("the Horner evaluation requires a positive " *
-            "number of expansions but received $K"))
-    end
-
-    n = checksquare(A)
-    Iₙ = IntervalMatrix(Interval(one(T)) * I, n)
-    H = Iₙ + A/K
-    for i in (K-1):-1:1
-        H = Iₙ + A / i * H
-    end
-
-    # remainder; the paper uses a less precise computation here
-    R = _exp_remainder(A, one(T), K)
-
-    return H + R
-end
-
 """
     scale_and_square(A::IntervalMatrix{T}, l::Integer, t, p;
                      [validate]::Bool=true)
