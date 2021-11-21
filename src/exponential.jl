@@ -51,13 +51,19 @@ end
 """
     exp_overapproximation(A::IntervalMatrix{T}, t, p)
 
-Overapproximation of the exponential of an interval matrix.
+Overapproximation of the exponential of an interval matrix, `exp(A*t)`,
+using a truncated Taylor series.
 
 ### Input
 
 - `A` -- interval matrix
-- `t` -- non-negative time value
+- `t` -- exponentiation factor
 - `p` -- order of the approximation
+
+### Output
+
+A matrix enclosure of `exp(A*t)`, i.e. an interval matrix `M = (m_{ij})`
+such that `[exp(A*t)]_{ij} ⊆ m_{ij}`.
 
 ### Algorithm
 
@@ -112,14 +118,19 @@ end
 """
     exp_underapproximation(A::IntervalMatrix{T}, t, p) where {T}
 
-Underapproximation of the exponential of an interval matrix using a truncated
-Taylor series expansion.
+Underapproximation of the exponential of an interval matrix, `exp(A*t)`, using a
+truncated Taylor series expansion.
 
 ### Input
 
-- `alg` -- algorithm
-- `A`   -- interval matrix
-- `t`   -- non-negative time value
+- `A` -- interval matrix
+- `t` -- exponentiation factor
+- `p` -- order of the approximation
+
+### Output
+
+An underapproximation of `exp(A*t)`, i.e. an interval matrix `M = (m_{ij})`
+such that `m_{ij} ⊆ [exp(A*t)]_{ij}`.
 
 ### Algorithm
 
