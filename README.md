@@ -1,6 +1,6 @@
 # IntervalMatrices.jl
 
-[![Build Status](https://travis-ci.org/JuliaReach/IntervalMatrices.jl.svg?branch=master)](https://travis-ci.org/JuliaReach/IntervalMatrices.jl)
+[![Build Status](https://github.com/JuliaReach/IntervalMatrices.jl/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/JuliaReach/IntervalMatrices.jl/actions/workflows/ci.yml?query=branch%3Amaster)
 [![Docs latest](https://img.shields.io/badge/docs-latest-blue.svg)](http://juliareach.github.io/IntervalMatrices.jl/dev/)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/JuliaReach/IntervalMatrices.jl/blob/master/LICENSE)
 [![Code coverage](http://codecov.io/github/JuliaReach/IntervalMatrices.jl/coverage.svg?branch=master)](https://codecov.io/github/JuliaReach/IntervalMatrices.jl?branch=master)
