@@ -8,7 +8,8 @@ makedocs(
     modules = [IntervalMatrices],
     format = Documenter.HTML(
         prettyurls = get(ENV, "CI", nothing) == "true",
-        assets = ["assets/juliareach.css"], sidebar_sitename=true),
+        assets = ["assets/aligned.css"], sidebar_sitename=true),
+    strict = true,
     pages = [
         "Home" => "index.md",
         "Library" => Any[
@@ -16,8 +17,7 @@ makedocs(
         "Methods" => "lib/methods.md"],
         "About" => "about.md",
         "References" => "references.md"
-    ],
-    strict = true
+    ]
 )
 
 deploydocs(
