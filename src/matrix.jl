@@ -184,3 +184,8 @@ function ±(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
 
     return IntervalMatrix(map((x, y) -> x ± y, C, S))
 end
+
+for op in (:Adjoint, :Bidiagonal, :Diagonal, :Hermitian,
+    :SymTridiagonal, :Symmetric, :Transpose, :Tridiagonal, :UpperHessenberg)
+    @eval LinearAlgebra.$op(A::IntervalMatrix) = IntervalMatrix($op(A.mat))
+end
