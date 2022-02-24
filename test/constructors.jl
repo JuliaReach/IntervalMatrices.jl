@@ -40,3 +40,13 @@ end
     @test m2 isa IntervalMatrix{Float64}
     @test eltype(m2) == Complex{Interval{Float64}}
 end
+
+@testset "special matrices" begin
+    A = rand(IntervalMatrix)
+    Aₛ = Symmetric(A)
+
+    @test Aₛ isa IntervalMatrix
+    @test Aₛ.mat isa Symmetric
+
+    @test Matrix(Aₛ) isa Matrix
+end

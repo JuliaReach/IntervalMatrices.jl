@@ -184,3 +184,12 @@ function ±(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
 
     return IntervalMatrix(map((x, y) -> x ± y, C, S))
 end
+
+for op in (:Adjoint, :Bidiagonal, :Diagonal, :Hermitian,
+           :SymTridiagonal, :Symmetric, :Transpose, :Tridiagonal)
+    @eval LinearAlgebra.$op(A::IntervalMatrix) = IntervalMatrix($op(A.mat))
+end
+
+if VERSION >= v"1.3"
+    LinearAlgebra.UpperHessenberg(A::IntervalMatrix) = IntervalMatrix(UpperHessenberg(A.mat))
+end
