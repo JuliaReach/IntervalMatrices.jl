@@ -186,7 +186,7 @@ function ±(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
 end
 
 for op in (:Adjoint, :Bidiagonal, :Diagonal, :Hermitian,
-    :SymTridiagonal, :Symmetric, :Transpose, :Tridiagonal)
+           :SymTridiagonal, :Symmetric, :Transpose, :Tridiagonal)
     @eval LinearAlgebra.$op(A::IntervalMatrix) = IntervalMatrix($op(A.mat))
 end
 
