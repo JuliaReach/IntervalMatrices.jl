@@ -28,19 +28,19 @@ and enter it in Julia's REPL.
 
 To [install the latest release version](https://julialang.github.io/Pkg.jl/v1/managing-packages/#Adding-registered-packages-1):
 
-```julia
+```
 pkg> add IntervalMatrices
 ```
 
 To install the latest development version:
 
-```julia
+```
 pkg> add IntervalMatrices#master
 ```
 
 To [clone the package for development](https://julialang.github.io/Pkg.jl/v1/managing-packages/#Developing-packages-1):
 
-```julia
+```
 pkg> dev IntervalMatrices
 ```
 
