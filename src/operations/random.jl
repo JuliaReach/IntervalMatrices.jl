@@ -1,10 +1,3 @@
-# random interval
-function rand(::Type{Interval}; N::Type{<:Real}=Float64,
-              rng::AbstractRNG=GLOBAL_RNG)::Interval{N}
-    x, y = randn(rng, N), randn(rng, N)
-    return x < y ? Interval(x, y) : Interval(y, x)
-end
-
 # create a random interval for the given numeric type and random-number generator
 @inline function _rand_interval(; N=Float64, rng::AbstractRNG=GLOBAL_RNG)
     x, y = randn(rng, N), randn(rng, N)
