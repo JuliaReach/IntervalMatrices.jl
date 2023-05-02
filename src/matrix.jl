@@ -67,11 +67,11 @@ IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}
 Note that this constructor implicitly uses a dense matrix, `Matrix{Float64}`,
 as the matrix (`mat`) field in the new interval matrix.
 """
-struct IntervalMatrix{T, IT, MT<:AbstractMatrix{IT}} <: AbstractIntervalMatrix{IT}
+struct IntervalMatrix{T,IT,MT<:AbstractMatrix{IT}} <: AbstractIntervalMatrix{IT}
     mat::MT
 end
 
-import Base:size, IndexStyle, getindex, setindex!, copy
+import Base: size, IndexStyle, getindex, setindex!, copy
 
 IndexStyle(::Type{<:IntervalMatrix}) = IndexLinear()
 size(M::IntervalMatrix) = size(M.mat)
@@ -79,12 +79,12 @@ getindex(M::IntervalMatrix, i::Int) = getindex(M.mat, i)
 setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 copy(M::IntervalMatrix) = IntervalMatrix(copy(M.mat))
 
-function IntervalMatrix(A::MT) where {T, IT<:AbstractInterval{T}, MT<:AbstractMatrix{IT}}
-    return IntervalMatrix{T, IT, MT}(A)
+function IntervalMatrix(A::MT) where {T,IT<:AbstractInterval{T},MT<:AbstractMatrix{IT}}
+    return IntervalMatrix{T,IT,MT}(A)
 end
 
-function IntervalMatrix(A::MT) where {T, IT<:Complex{Interval{T}}, MT <:AbstractMatrix{IT}}
-    return IntervalMatrix{T, IT, MT}(A)
+function IntervalMatrix(A::MT) where {T,IT<:Complex{Interval{T}},MT<:AbstractMatrix{IT}}
+    return IntervalMatrix{T,IT,MT}(A)
 end
 
 # constructor from uniform scaling
@@ -139,10 +139,10 @@ julia> IntervalMatrix([1 2; 3 4], [1 2; 4 5])
  [3, 4]  [4, 5]
 ```
 """
-function IntervalMatrix(A::MT, B::MT) where {T, MT<:AbstractMatrix{T}}
+function IntervalMatrix(A::MT, B::MT) where {T,MT<:AbstractMatrix{T}}
     size(A) == size(B) || throw(ArgumentError("the sizes of the lower and upper bound " *
-                                "matrices should match, but they are $(size(A)) " *
-                                "and $(size(B)) respectively"))
+                                              "matrices should match, but they are $(size(A)) " *
+                                              "and $(size(B)) respectively"))
 
     return IntervalMatrix(map((x, y) -> Interval(x, y), A, B))
 end
@@ -177,10 +177,10 @@ julia> [1 2; 3 4] ± [1 2; 4 5]
  [-1, 7]  [-1, 9]
 ```
 """
-function ±(C::MT, S::MT) where {T, MT<:AbstractMatrix{T}}
+function ±(C::MT, S::MT) where {T,MT<:AbstractMatrix{T}}
     size(C) == size(S) || throw(ArgumentError("the sizes of the center matrix and the " *
-                                "radii matrix should match, but they are $(size(C)) " *
-                                "and $(size(S)) respectively"))
+                                              "radii matrix should match, but they are $(size(C)) " *
+                                              "and $(size(S)) respectively"))
 
     return IntervalMatrix(map((x, y) -> x ± y, C, S))
 end

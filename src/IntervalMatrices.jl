@@ -68,5 +68,4 @@ export AffineIntervalMatrix,
 
 set_multiplication_mode(config[:multiplication])
 
-
 end # module

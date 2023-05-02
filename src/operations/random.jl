@@ -1,7 +1,6 @@
 # random interval
 function rand(::Type{Interval}; N::Type{<:Real}=Float64,
               rng::AbstractRNG=GLOBAL_RNG)::Interval{N}
-
     x, y = randn(rng, N), randn(rng, N)
     return x < y ? Interval(x, y) : Interval(y, x)
 end
@@ -36,12 +35,12 @@ If this function is called with only one argument, it creates a square matrix,
 because the number of columns defaults to the number of rows.
 """
 function rand(::Type{IntervalMatrix}, m::Int=2, n::Int=m;
-    N = Float64, rng::AbstractRNG=GLOBAL_RNG)
+              N=Float64, rng::AbstractRNG=GLOBAL_RNG)
     B = Matrix{Interval{N}}(undef, m, n)
 
     for j in 1:n
         for i in 1:m
-            @inbounds B[i, j] = _rand_interval(N=N, rng=rng)
+            @inbounds B[i, j] = _rand_interval(; N=N, rng=rng)
         end
     end
 

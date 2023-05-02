@@ -33,7 +33,7 @@ function set_multiplication_mode(multype)
 
     @eval *(A::IntervalMatrix, B::AbstractMatrix) = *($type, A, B)
 
-    config[:multiplication] = multype
+    return config[:multiplication] = multype
 end
 
 *(::MultiplicationType{:slow}, A::IntervalMatrix, B::IntervalMatrix) = IntervalMatrix(A.mat * B.mat)
@@ -43,7 +43,6 @@ end
 function *(::MultiplicationType{:fast},
            A::AbstractIntervalMatrix{Interval{T}},
            B::AbstractIntervalMatrix{Interval{T}}) where {T}
-
     Ainf = inf(A)
     Asup = sup(A)
     Binf = inf(B)
@@ -63,17 +62,15 @@ function *(::MultiplicationType{:fast},
     end
 
     Cinf = setrounding(T, RoundDown) do
-        mA * mB - R
+        return mA * mB - R
     end
 
     return IntervalMatrix(Interval.(Cinf, Csup))
 end
 
-
 function *(::MultiplicationType{:fast},
-    A::AbstractMatrix{T},
-    B::AbstractIntervalMatrix{Interval{T}}) where {T}
-
+           A::AbstractMatrix{T},
+           B::AbstractIntervalMatrix{Interval{T}}) where {T}
     Binf = inf(B)
     Bsup = sup(B)
 
@@ -89,16 +86,15 @@ function *(::MultiplicationType{:fast},
     end
 
     Cinf = setrounding(T, RoundDown) do
-        A * mB - R
+        return A * mB - R
     end
 
     return IntervalMatrix(Interval.(Cinf, Csup))
 end
 
 function *(::MultiplicationType{:fast},
-    A::AbstractIntervalMatrix{Interval{T}},
-    B::AbstractMatrix{T}) where {T}
-
+           A::AbstractIntervalMatrix{Interval{T}},
+           B::AbstractMatrix{T}) where {T}
     Ainf = inf(A)
     Asup = sup(A)
 
@@ -114,12 +110,11 @@ function *(::MultiplicationType{:fast},
     end
 
     Cinf = setrounding(T, RoundDown) do
-        mA * B - R
+        return mA * B - R
     end
 
     return IntervalMatrix((Interval.(Cinf, Csup)))
 end
-
 
 # function *(::MultiplicationType{:rank1},
 #            A::AbstractMatrix{Interval{T}},
@@ -156,6 +151,5 @@ end
 #     end
 
 #     return Interval.(Cinf, Csup)
-
 
 # end

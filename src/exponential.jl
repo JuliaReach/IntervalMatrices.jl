@@ -5,7 +5,7 @@
 abstract type AbstractExponentiationMethod end
 
 # compute e^{At} using the given algorithm `alg`
-function Base.exp(A::IntervalMatrix{T, Interval{T}}, t=one(T);
+function Base.exp(A::IntervalMatrix{T,Interval{T}}, t=one(T);
                   alg::AbstractExponentiationMethod=ScaleAndSquare(5, 4)) where {T}
     return _exp(alg, A, t)
 end
@@ -91,12 +91,12 @@ function _exp_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     for i in 1:p
         i! *= i
         tⁱ *= t
-        Q += Cⁱ * tⁱ/i!
+        Q += Cⁱ * tⁱ / i!
         Cⁱ *= C
     end
-    M = exp(C*t)
+    M = exp(C * t)
     Y = M - Q
-    Γ = IntervalMatrix(fill(zero(T)±one(T), (n, n)))
+    Γ = IntervalMatrix(fill(zero(T) ± one(T), (n, n)))
     E = Γ * Y
     return E
 end
@@ -109,10 +109,10 @@ function _exp_remainder_series(A::IntervalMatrix{T}, t, p; n=checksquare(A)) whe
     nA = opnorm(A, Inf)
     c = nA * t / (p + 2)
     @assert c < 1 "the remainder of the matrix exponential could not be " *
-        "computed because a convergence condition is not satisfied: $c ≥ 1 " *
-        "but it should be smaller than 1; try choosing a larger order"
-    Γ = IntervalMatrix(fill(zero(T)±one(T), (n , n)))
-    return Γ * ((nA*t)^(p+1) * (1/factorial(p + 1) * 1/(1-c)))
+                  "computed because a convergence condition is not satisfied: $c ≥ 1 " *
+                  "but it should be smaller than 1; try choosing a larger order"
+    Γ = IntervalMatrix(fill(zero(T) ± one(T), (n, n)))
+    return Γ * ((nA * t)^(p + 1) * (1 / factorial(p + 1) * 1 / (1 - c)))
 end
 
 """
@@ -159,7 +159,7 @@ function exp_underapproximation(A::IntervalMatrix{T}, t, p) where {T}
         Z += Aⁱr * fact
     end
 
-    B = IntervalMatrix{T}(undef, n , n)
+    B = IntervalMatrix{T}(undef, n, n)
     @inbounds for j in 1:n
         for i in 1:n
             minYZ = min(Y[i, j], Z[i, j])
@@ -168,7 +168,7 @@ function exp_underapproximation(A::IntervalMatrix{T}, t, p) where {T}
         end
     end
 
-    W = quadratic_expansion(A, t, t^2/2)
+    W = quadratic_expansion(A, t, t^2 / 2)
     res = W + B
 
     # add identity matrix implicitly
@@ -232,7 +232,7 @@ function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
     @inbounds for j in 1:n
         for i in 1:n
             i == j && continue
-            B[i, j] = A[i, j] * (α + β*(A[j, j] + A[i, i]))
+            B[i, j] = A[i, j] * (α + β * (A[j, j] + A[i, i]))
             for k in 1:n
                 (k == i || k == j) && continue
                 B[i, j] += β * (A[i, k] * A[k, j])
@@ -245,7 +245,7 @@ end
 function quadratic_expansion(x::Interval, α::Real, β::Real)
     iszero(β) && return α * x
 
-    return ((2 * β * x + α) ^ 2 - α ^ 2) / (4 * β)
+    return ((2 * β * x + α)^2 - α^2) / (4 * β)
 end
 
 function _truncated_exponential_series(A::IntervalMatrix{T}, t, p::Integer;
@@ -258,7 +258,7 @@ function _truncated_exponential_series(A::IntervalMatrix{T}, t, p::Integer;
         S = A * t
     else
         # indices i = 1 and i = 2
-        S = quadratic_expansion(A, t, t^2/2)
+        S = quadratic_expansion(A, t, t^2 / 2)
     end
 
     # index i = 0, (identity matrix, added implicitly)
@@ -341,8 +341,8 @@ function scale_and_square(A::IntervalMatrix{T}, l::Integer, t, p;
         c = (p + 2) * 2.0^l
         if c <= nA
             throw(ArgumentError("the precondition for the " *
-                "scaling-and-squaring algorithm is not satisfied: $c <= $nA; " *
-                "try choosing a larger order"))
+                                "scaling-and-squaring algorithm is not satisfied: $c <= $nA; " *
+                                "try choosing a larger order"))
         end
     end
 
@@ -372,7 +372,7 @@ struct Horner <: AbstractExponentiationMethod
 end
 
 function _exp(alg::Horner, A::IntervalMatrix{T}, t=one(T)) where {T}
-    At = isone(t) ? A : A*t
+    At = isone(t) ? A : A * t
     return horner(At, alg.K)
 end
 
@@ -402,19 +402,19 @@ function horner(A::IntervalMatrix{T}, K::Integer;
         c = K + 2
         if c <= nA
             throw(ArgumentError("the precondition for the " *
-                "Horner-scheme algorithm is not satisfied: $c <= $nA; " *
-                "try choosing a larger order"))
+                                "Horner-scheme algorithm is not satisfied: $c <= $nA; " *
+                                "try choosing a larger order"))
         end
     end
     if K <= 0
         throw(ArgumentError("the Horner evaluation requires a positive " *
-            "number of expansions but received $K"))
+                            "number of expansions but received $K"))
     end
 
     n = checksquare(A)
     Iₙ = IntervalMatrix(Interval(one(T)) * I, n)
-    H = Iₙ + A/K
-    for i in (K-1):-1:1
+    H = Iₙ + A / K
+    for i in (K - 1):-1:1
         H = Iₙ + A / i * H
     end
 
