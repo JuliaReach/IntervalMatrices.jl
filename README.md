@@ -35,11 +35,10 @@ This package requires Julia v1.0 or later. Refer to the
 [official documentation](https://julialang.org/downloads) on how to install and
 run Julia on your system.
 
-To activate the `pkg` mode, type `]` (and to leave it, type `<backspace>`). To
-install this package, do:
+To install this package, run the following from the Julia REPL:
 
 ```julia
-pkg> add IntervalMatrices
+julia> import Pkg; Pkg.add("IntervalMatrices")
 ```
 
 Other installation options can be found in the manual.
