@@ -71,7 +71,7 @@ function IntervalMatrixPower(M::IntervalMatrix{T}, k::Int;
                              algorithm::String="power") where {T}
     @assert k >= 1 "matrix powers must be positive"
     pow = IntervalMatrixPower(M, M, 1)
-    @inbounds for i in 1:(k-1)
+    @inbounds for i in 1:(k - 1)
         increment!(pow; algorithm=algorithm)
     end
     return pow
@@ -122,7 +122,7 @@ function increment!(pow::IntervalMatrixPower;
         pow.Mᵏ = _eval_intersect(pow)
     else
         throw(ArgumentError("algorithm $algorithm is not available; choose " *
-            "from 'multiply', 'power', 'decompose_binary', 'intersect'"))
+                            "from 'multiply', 'power', 'decompose_binary', 'intersect'"))
     end
     return pow.Mᵏ
 end
@@ -144,7 +144,7 @@ The next matrix power.
 """
 function increment(pow::IntervalMatrixPower;
                    algorithm::String=default_algorithm)
-    return increment!(copy(pow), algorithm=algorithm)
+    return increment!(copy(pow); algorithm=algorithm)
 end
 
 # checks whether a number is a power of 2

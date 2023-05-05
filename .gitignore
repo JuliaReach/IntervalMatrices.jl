@@ -1,9 +1,20 @@
+*.DS_Store
+
 *.jl.cov
 *.jl.*.cov
 *.jl.mem
-*.DS_Store
+
+deps/deps.jl
+deps/build.log
+deps/downloads/
+deps/usr/
+deps/src/
 
 docs/build/
 docs/site/
+
+.ipynb_checkpoints
+
+.vscode
 
 Manifest.toml

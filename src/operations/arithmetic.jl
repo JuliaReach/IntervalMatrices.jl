@@ -22,7 +22,6 @@ import Base: +, -, *, /
 # Multiplication operations
 # =========================
 
-
 *(x::Interval, M::IntervalMatrix) = IntervalMatrix(x .* M.mat)
 *(M::IntervalMatrix, x::Interval) = IntervalMatrix(x .* M.mat)
 
@@ -30,7 +29,6 @@ import Base: +, -, *, /
 *(M::IntervalMatrix, x::Number) = Interval(x) * M
 
 /(M::IntervalMatrix, x::Number) = IntervalMatrix(M ./ x)
-
 
 # =========================
 # Multiplication operations

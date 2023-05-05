@@ -83,7 +83,7 @@ function _correction_loop!(F, A::IntervalMatrix{T}, Aⁱ, t, p) where {T}
     tⁱ = t
     @inbounds for i in 2:p
         tⁱ *= t
-        left = (one(T) / i^(i/(i-1)) - one(T) / i^(1/(i-1))) * tⁱ
+        left = (one(T) / i^(i / (i - 1)) - one(T) / i^(1 / (i - 1))) * tⁱ
         itv = Interval(left, zero(T))
         Aⁱ *= A
         i! *= i

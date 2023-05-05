@@ -82,7 +82,6 @@ function ∩(A::IntervalMatrix, B::IntervalMatrix)
     return IntervalMatrix(map((x, y) -> x ∩ y, A, B))
 end
 
-
 """
     hull(A::IntervalMatrix, B::IntervalMatrix)
 
