@@ -1,5 +1,5 @@
 @testset "Interval matrix construction" begin
-    m1 = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.8..4.2 0.0..0.9])
+    m1 = IntervalMatrix([-1.1..0.9 -4.1 .. -3.9; 3.8..4.2 0.0..0.9])
     m2 = IntervalMatrix{Float64}(undef, 2, 2)
     @test m2 isa IntervalMatrix{Float64} && size(m2) == (2, 2)
     m3 = similar(m1)
@@ -17,7 +17,7 @@
 end
 
 @testset "Interval matrix midpoint_radius" begin
-    m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
+    m = IntervalMatrix([-1.1..0.9 -4.1 .. -3.9; 3.9..4.1 -1.1..0.9])
     c, s = midpoint_radius(m)
     @test c ≈ [-0.1 -4; 4 -0.1]
     @test s ≈ [1 0.1; 0.1 1]
