@@ -1,5 +1,5 @@
 @testset "Interval matrix methods" begin
-    m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.8..4.2 0.0..0.9])
+    m = IntervalMatrix([-1.1..0.9 -4.1 .. -3.9; 3.8..4.2 0.0..0.9])
     @test opnorm(m) == opnorm(m, Inf) ≈ 5.2
     @test opnorm(m, 1) ≈ 5.3
 
@@ -29,7 +29,7 @@
 end
 
 @testset "Interval matrix membership" begin
-    m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
+    m = IntervalMatrix([-1.1..0.9 -4.1 .. -3.9; 3.9..4.1 -1.1..0.9])
     a1 = [0.0 -4; 4 0]
     a2 = [0.0 -3; 4 0]
     @test a1 ∈ m
@@ -37,13 +37,13 @@ end
 end
 
 @testset "Interval matrix inclusion" begin
-    m1 = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
-    m2 = IntervalMatrix([-1.2..1.0 -4.1.. -3.9; 3.9..4.2 -1.2..0.9])
+    m1 = IntervalMatrix([-1.1..0.9 -4.1 .. -3.9; 3.9..4.1 -1.1..0.9])
+    m2 = IntervalMatrix([-1.2..1.0 -4.1 .. -3.9; 3.9..4.2 -1.2..0.9])
     @test m1 ⊆ m2 && !(m2 ⊆ m1)
 end
 
 @testset "Interval matrix rand" begin
-    m = IntervalMatrix([-1.1..0.9 -4.1.. -3.9; 3.9..4.1 -1.1..0.9])
+    m = IntervalMatrix([-1.1..0.9 -4.1 .. -3.9; 3.9..4.1 -1.1..0.9])
     for i in 1:3
         @test rand(m) ∈ m
     end
