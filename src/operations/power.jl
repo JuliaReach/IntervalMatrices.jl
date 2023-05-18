@@ -121,6 +121,7 @@ function increment!(pow::IntervalMatrixPower;
     elseif algorithm == "intersect"
         pow.Mᵏ = _eval_intersect(pow)
     else
+        pow.k -= 1
         throw(ArgumentError("algorithm $algorithm is not available; choose " *
                             "from 'multiply', 'power', 'decompose_binary', 'intersect'"))
     end
