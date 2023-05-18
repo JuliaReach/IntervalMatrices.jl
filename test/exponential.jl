@@ -1,7 +1,11 @@
 using IntervalMatrices: TaylorOverapproximation,
                         TaylorUnderapproximation,
                         ScaleAndSquare,
-                        Horner
+                        Horner,
+                        horner,
+                        scale_and_square,
+                        _truncated_exponential_series,
+                        _exp_remainder_series
 
 @testset "Interval matrix exponential" begin
     @test quadratic_expansion(-3 .. 3, 1.0, 2.0) == Interval(-0.125, 21)
@@ -14,10 +18,15 @@ using IntervalMatrices: TaylorOverapproximation,
 
     overapp1 = exp_overapproximation(M, 1.0, 4)
     overapp2 = horner(M, 10)
+    @test_throws ArgumentError horner(M, 0)
+    @test_throws ArgumentError horner(M, 3)
     overapp3 = scale_and_square(M, 5, 1.0, 4)
+    @test_throws ArgumentError scale_and_square(M, 1, 10.0, 4)
+    overapp4 = _exp_remainder_series(M, 1.0, 5)
     underapp1 = exp_underapproximation(M, 1.0, 4)
 
-    @test all(x -> isa(x, IntervalMatrix), [overapp1, overapp2, overapp3, underapp1])
+    @test all(x -> isa(x, IntervalMatrix),
+              [overapp1, overapp2, overapp3, overapp4, underapp1])
 
     @test exp(M) == exp(M; alg=ScaleAndSquare(5, 4)) # default
     @test overapp1 == exp(M; alg=TaylorOverapproximation(4))
@@ -44,12 +53,32 @@ end
 @testset "Interval matrix power" begin
     m = IntervalMatrix([2.0..2.0 2.0..3.0; 0.0..0.0 -1.0..1.0])
     pow = IntervalMatrixPower(m)
-    increment!(pow)  # power of two
+
+    @test base(pow) === m
+    @test get(pow) === pow.Mᵏ
+    @test index(pow) === 1
+
+    pow2 = copy(pow)
+    @test pow2 isa IntervalMatrixPower && get(pow) == get(pow2)
+
+    pow2 = IntervalMatrixPower(m, 2)
+    pow3 = increment(pow)
+    @test pow3 isa IntervalMatrix && pow3 == get(pow2)
+
+    increment!(pow)  # next step is a power of two
+    @test index(pow) == 2
+    @test_throws ArgumentError increment!(pow; algorithm="foo")
+    @test index(pow) == 2
     increment!(pow; algorithm="multiply")
-    increment!(pow)  # power of two
+    @test index(pow) == 3
+    increment!(pow)  # next step is a power of two
+    @test index(pow) == 4
     increment!(pow; algorithm="power")
+    @test index(pow) == 5
     increment!(pow; algorithm="decompose_binary")
+    @test index(pow) == 6
     increment!(pow; algorithm="intersect")
+    @test index(pow) == 7
 end
 
 @testset "Transmission line model" begin

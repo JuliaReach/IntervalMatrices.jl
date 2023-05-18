@@ -2,6 +2,7 @@
     m = IntervalMatrix([-1.1..0.9 -4.1 .. -3.9; 3.8..4.2 0.0..0.9])
     @test opnorm(m) == opnorm(m, Inf) ≈ 5.2
     @test opnorm(m, 1) ≈ 5.3
+    @test_throws ArgumentError opnorm(m, 2)
 
     l = inf(m)
     r = sup(m)
@@ -45,6 +46,12 @@ end
 @testset "Interval matrix rand" begin
     m = IntervalMatrix([-1.1..0.9 -4.1 .. -3.9; 3.9..4.1 -1.1..0.9])
     for i in 1:3
-        @test rand(m) ∈ m
+        # sample a random interval from the matrix (Base method)
+        mr = rand(m)
+        @test mr ∈ m && mr isa Interval
+
+        # sample a concrete matrix instantiation
+        ms = sample(m)
+        @test ms ∈ m && ms isa Matrix
     end
 end

@@ -28,6 +28,11 @@ end
     B = A - A
     @test B isa IntervalMatrix && B == IntervalMatrix([a₋ b₋; c₋ d₋])
 
+    # arithmetic with an interval or number
+    for x in (0.0 .. 2.0, 2.0)
+        @test A + x == x + A == IntervalMatrix([a+x b+x; c+x d+x])
+    end
+
     # multiply interval and interval matrix
     x = 0.0 .. 2.0
     @test x * A == A * x ==
