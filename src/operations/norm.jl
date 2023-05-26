@@ -24,7 +24,7 @@ function LinearAlgebra.opnorm(A::IntervalMatrix, p::Real=Inf)
     elseif p == 1
         return _opnorm_1(A)
     else
-        error("the interval matrix norm for this value of p=$p is not implemented")
+        throw(ArgumentError("the interval matrix norm for this value of p=$p is not implemented"))
     end
 end
 

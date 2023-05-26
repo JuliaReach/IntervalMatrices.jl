@@ -10,6 +10,9 @@
     P[1, 1] = 2.0
     @test P[1, 1] == interval(2)
 
+    Q = copy(P)
+    @test Q == P && Q isa AffineIntervalMatrix1
+
     # complex interval
     λc = λ + im * λ / 2
     Pc = AffineIntervalMatrix1(A0, A1, λc)
@@ -29,6 +32,9 @@ end
     @test P[1, 2] == interval(0, 2)
     P[1, 1] = 5.0
     @test P[1, 1] == interval(5)
+
+    Q = copy(P)
+    @test Q == P && Q isa AffineIntervalMatrix
 
     # complex interval
     λ1c = λ1 + im * λ1 / 2

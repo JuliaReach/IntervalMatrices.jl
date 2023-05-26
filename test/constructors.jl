@@ -43,10 +43,17 @@ end
 
 @testset "special matrices" begin
     A = rand(IntervalMatrix)
-    Aₛ = Symmetric(A)
+    @test A isa IntervalMatrix
 
+    Aₛ = Symmetric(A)
     @test Aₛ isa IntervalMatrix
     @test Aₛ.mat isa Symmetric
-
     @test Matrix(Aₛ) isa Matrix
+
+    @static if VERSION >= v"1.3"
+        Aₕ = UpperHessenberg(A)
+        @test Aₕ isa IntervalMatrix
+        @test Aₕ.mat isa UpperHessenberg
+        @test Matrix(Aₕ) isa Matrix
+    end
 end

@@ -5,8 +5,8 @@
 end
 
 """
-rand(::Type{IntervalMatrix}, m::Int=2, [n]::Int=m;
-N=Float64, rng::AbstractRNG=GLOBAL_RNG)
+    rand(::Type{IntervalMatrix}, m::Int=2, [n]::Int=m;
+         N=Float64, rng::AbstractRNG=GLOBAL_RNG)
 
 Return a random interval matrix of the given size and numeric type.
 
@@ -41,7 +41,7 @@ function rand(::Type{IntervalMatrix}, m::Int=2, n::Int=m;
 end
 
 """
-sample(A::IntervalMatrix{T}; rng::AbstractRNG=GLOBAL_RNG) where {T}
+    sample(A::IntervalMatrix{T}; rng::AbstractRNG=GLOBAL_RNG) where {T}
 
 Return a sample of the given random interval matrix.
 

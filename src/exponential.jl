@@ -398,17 +398,17 @@ matrices". Reliable Computing. 2014.
 function horner(A::IntervalMatrix{T}, K::Integer;
                 validate::Bool=true) where {T}
     if validate
+        if K <= 0
+            throw(ArgumentError("the Horner evaluation requires a positive " *
+                                "number of expansions but received $K"))
+        end
         nA = opnorm(A, Inf)
         c = K + 2
         if c <= nA
-            throw(ArgumentError("the precondition for the " *
-                                "Horner-scheme algorithm is not satisfied: $c <= $nA; " *
+            throw(ArgumentError("the precondition for the Horner-scheme " *
+                                "algorithm is not satisfied: $c <= $nA; " *
                                 "try choosing a larger order"))
         end
-    end
-    if K <= 0
-        throw(ArgumentError("the Horner evaluation requires a positive " *
-                            "number of expansions but received $K"))
     end
 
     n = checksquare(A)
