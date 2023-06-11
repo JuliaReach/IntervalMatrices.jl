@@ -30,10 +30,6 @@ import Base: +, -, *, /
 
 /(M::IntervalMatrix, x::Number) = IntervalMatrix(M ./ x)
 
-# =========================
-# Multiplication operations
-# =========================
-
 """
     square(A::IntervalMatrix)
 
@@ -105,7 +101,7 @@ function scale(A::IntervalMatrix{T}, α::T) where {T}
 end
 
 """
-    scale(A::IntervalMatrix{T}, α::T) where {T}
+    scale!(A::IntervalMatrix{T}, α::T) where {T}
 
 Modifies the given interval matrix, scaling its entries by the given factor.
 
