@@ -35,13 +35,18 @@ end
 
     # multiply interval and interval matrix
     x = 0.0 .. 2.0
-    @test x * A == A * x ==
-          IntervalMatrix([0.0..2.6 0.0..7.0; -2.0..0.0 -0.2..0.2])
+    Ax = IntervalMatrix([0.0..2.6 0.0..7.0; -2.0..0.0 -0.2..0.2])
+    @test x * A == A * x == Ax
     # multiply scalar and interval matrix
     x = 1.0
     for A2 in [x * A, A * x, A / x]
         @test A2 == A && typeof(A2) == typeof(A)
     end
+
+    # matrix division
+    A2 = IntervalMatrix([1.0 0; 0 2])
+    B = A2 \ A
+    @test typeof(B) == typeof(A) && B == IntervalMatrix([a b; c/2 d/2])
 
     # arithmetic closure using interval matrices and non-interval matrices
     Ainf = inf(A)
@@ -51,6 +56,8 @@ end
     @test Ainf - A isa IntervalMatrix
     @test A * Ainf isa IntervalMatrix
     @test Ainf * A isa IntervalMatrix
+    @test A \ Ainf isa IntervalMatrix
+    @test Ainf \ A isa IntervalMatrix
 end
 
 @testset "Matrix multiplication" begin
