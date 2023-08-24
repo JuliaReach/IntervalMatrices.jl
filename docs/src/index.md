@@ -53,8 +53,8 @@ julia> using IntervalMatrices
 
 julia> A = IntervalMatrix([0..1 1..2; 2..3 -4.. -2])
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
- [0, 1]    [1, 2]
- [2, 3]  [-4, -2]
+ [0.0, 1.0]   [1.0, 2.0]
+ [2.0, 3.0]  [-4.0, -2.0]
 ```
 defines an interval matrix $A$. The type of each coefficient in $A$ is an interval,
 e.g. its coefficient in position $(1, 1)$ is the interval $[0, 1]$ over double-precision
@@ -62,7 +62,7 @@ floating-point numbers:
 
 ```jldoctest quickstart
 julia> A[1, 1]
-[0, 1]
+[0.0, 1.0]
 
 julia> typeof(A[1, 1])
 Interval{Float64}
@@ -75,24 +75,24 @@ of $A$,
 ```jldoctest quickstart
 julia> 2A
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
- [0, 2]    [2, 4]
- [4, 6]  [-8, -4]
+ [0.0, 2.0]   [2.0, 4.0]
+ [4.0, 6.0]  [-8.0, -4.0]
 ```
 Or an interval multiple of $A$,
 
 ```jldoctest quickstart
 julia> (-1.0..1.0) * A
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
- [-1, 1]  [-2, 2]
- [-3, 3]  [-4, 4]
+ [-1.0, 1.0]  [-2.0, 2.0]
+ [-3.0, 3.0]  [-4.0, 4.0]
 ```
 
 Or compute the square of $A$,
 ```jldoctest quickstart
 julia> square(A)
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
-    [2, 7]  [-8, -1]
- [-12, -2]   [6, 22]
+   [2.0, 7.0]   [-8.0, -1.0]
+ [-12.0, -2.0]   [6.0, 22.0]
 ```
 In these cases, the rules of interval arithmetic are used; see the Wikipedia page
 on [interval arithmetic](https://en.wikipedia.org/wiki/Interval_arithmetic) for the
@@ -107,8 +107,8 @@ $e^{At} - I$. Then, at $t = 1.0$,
 ```jldoctest quickstart
 julia> A + 1/2 * A^2
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
-  [0.5, 4.5]  [-3.25, 2.5]
- [-4.25, 3]   [-2.25, 9]
+  [0.5, 4.50001]  [-3.25001, 2.50001]
+ [-4.25001, 3.0]  [-2.25001, 9.0]
 ```
 However, that result is not tight. The computation can be performed exactly via
 single-use expressions implemented in this library:
@@ -116,8 +116,8 @@ single-use expressions implemented in this library:
 ```jldoctest quickstart
 julia> quadratic_expansion(A, 1.0, 0.5)
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
-  [1, 4.5]  [-2, 1]
- [-3, 1.5]   [1, 7]
+  [1.0, 4.50001]  [-2.0, 1.0]
+ [-3.0, 1.50001]   [1.0, 7.0]
 ```
 We now obtain an interval matrix that is strictly included in the one obtained from
 the naive multiplication.

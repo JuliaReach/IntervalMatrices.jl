@@ -24,8 +24,8 @@ parametrized in the number field, the interval type, and the matrix type.
 ```jldoctest
 julia> A = IntervalMatrix([-0.9±0.1 0±0; 0±0 -0.9±0.1])
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
- [-1, -0.799999]   [0, 0]
-  [0, 0]          [-1, -0.799999]
+ [-1.00001, -0.7999999]   [0.0, 0.0]
+  [0.0, 0.0]             [-1.00001, -0.7999999]
 ```
 
 An interval matrix proportional to the identity matrix can be built using the
@@ -36,8 +36,8 @@ julia> using LinearAlgebra
 
 julia> IntervalMatrix(interval(1)*I, 2)
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
- [1, 1]  [0, 0]
- [0, 0]  [1, 1]
+ [1.0, 1.0]  [0.0, 0.0]
+ [0.0, 0.0]  [1.0, 1.0]
 ```
 The number of columns can be specified as a third argument, creating a rectangular
 ``m × n`` matrix such that only the entries in the main diagonal,
@@ -46,14 +46,14 @@ The number of columns can be specified as a third argument, creating a rectangul
 ```jldoctest interval_uniform_scaling
 julia> IntervalMatrix(interval(-1, 1)*I, 2, 3)
 2×3 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
- [-1, 1]   [0, 0]  [0, 0]
-  [0, 0]  [-1, 1]  [0, 0]
+ [-1.0, 1.0]   [0.0, 0.0]  [0.0, 0.0]
+  [0.0, 0.0]  [-1.0, 1.0]  [0.0, 0.0]
 
 julia> IntervalMatrix(interval(-1, 1)*I, 3, 2)
 3×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
- [-1, 1]   [0, 0]
-  [0, 0]  [-1, 1]
-  [0, 0]   [0, 0]
+ [-1.0, 1.0]   [0.0, 0.0]
+  [0.0, 0.0]  [-1.0, 1.0]
+  [0.0, 0.0]   [0.0, 0.0]
 ```
 
 An uninitialized interval matrix can be constructed using `undef`:
@@ -135,8 +135,8 @@ i.e. `B[i, j] ≥ A[i, j]` for each `i` and `j`.
 ```jldoctest
 julia> IntervalMatrix([1 2; 3 4], [1 2; 4 5])
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
- [1, 1]  [2, 2]
- [3, 4]  [4, 5]
+ [1.0, 1.0]  [2.0, 2.0]
+ [3.0, 4.0]  [4.0, 5.0]
 ```
 """
 function IntervalMatrix(A::MT, B::MT) where {T,MT<:AbstractMatrix{T}}
@@ -173,8 +173,8 @@ The radii matrix should be nonnegative, i.e. `S[i, j] ≥ 0` for each `i` and `j
 ```jldoctest
 julia> [1 2; 3 4] ± [1 2; 4 5]
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
-  [0, 2]   [0, 4]
- [-1, 7]  [-1, 9]
+  [0.0, 2.0]   [0.0, 4.0]
+ [-1.0, 7.0]  [-1.0, 9.0]
 ```
 """
 function ±(C::MT, S::MT) where {T,MT<:AbstractMatrix{T}}
