@@ -79,7 +79,7 @@ getindex(M::IntervalMatrix, i::Int) = getindex(M.mat, i)
 setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 copy(M::IntervalMatrix) = IntervalMatrix(copy(M.mat))
 
-function IntervalMatrix(A::MT) where {T,IT<:AbstractInterval{T},MT<:AbstractMatrix{IT}}
+function IntervalMatrix(A::MT) where {T,IT<:Interval{T},MT<:AbstractMatrix{IT}}
     return IntervalMatrix{T,IT,MT}(A)
 end
 
@@ -105,7 +105,7 @@ end
 
 # constructor from a scalar matrix
 function IntervalMatrix(A::AbstractMatrix{T}) where {T<:Number}
-    return IntervalMatrix(map(Interval, A))
+    return IntervalMatrix(map(interval, A))
 end
 
 """

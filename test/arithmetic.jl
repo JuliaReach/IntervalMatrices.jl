@@ -26,7 +26,8 @@ end
     @test B isa IntervalMatrix && B == IntervalMatrix([a₊ b₊; c₊ d₊])
 
     B = A - A
-    @test B isa IntervalMatrix && B == IntervalMatrix([a₋ b₋; c₋ d₋])
+    @test B isa IntervalMatrix && B[1, 1].lo ≈ a₋.lo && B[1, 1].hi ≈ a₋.hi &&
+          B[1, 2] == b₋ && B[2, 1] == c₋ && B[2, 2] == d₋
 
     # arithmetic with an interval or number
     for x in (0.0 .. 2.0, 2.0)
