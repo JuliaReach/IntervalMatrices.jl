@@ -94,7 +94,7 @@ end
 
 # undef initializer, eg. IntervalMatrix{Float64}(undef, 2, 2)
 function IntervalMatrix{T}(u::UndefInitializer, m::Integer, n::Integer=m) where {T}
-    mat = Matrix{Interval{T}}(undef, m, n)
+    mat = Matrix{Interval{T}}(u, m, n)
     return IntervalMatrix(mat)
 end
 
