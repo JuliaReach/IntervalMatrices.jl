@@ -41,7 +41,7 @@ end
     @test eltype(m2) == Complex{Interval{Float64}}
 end
 
-@testset "special matrices" begin
+@testset "Special matrices" begin
     A = rand(IntervalMatrix)
     @test A isa IntervalMatrix
 
