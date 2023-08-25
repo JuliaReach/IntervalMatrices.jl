@@ -1,7 +1,7 @@
 # create a random interval for the given numeric type and random-number generator
 @inline function _rand_interval(; N=Float64, rng::AbstractRNG=GLOBAL_RNG)
     x, y = randn(rng, N), randn(rng, N)
-    return x < y ? Interval(x, y) : Interval(y, x)
+    return x < y ? interval(x, y) : interval(y, x)
 end
 
 """

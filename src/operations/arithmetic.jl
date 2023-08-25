@@ -10,8 +10,8 @@ import Base: +, -, *, /, \
 +(x::Interval, M::IntervalMatrix) = IntervalMatrix(x .+ M.mat)
 +(M::IntervalMatrix, x::Interval) = IntervalMatrix(x .+ M.mat)
 
-+(x::Number, M::IntervalMatrix) = Interval(x) + M
-+(M::IntervalMatrix, x::Number) = Interval(x) + M
++(x::Number, M::IntervalMatrix) = interval(x) + M
++(M::IntervalMatrix, x::Number) = interval(x) + M
 
 +(M1::IntervalMatrix, M2::AbstractMatrix) = IntervalMatrix(M1.mat + M2)
 +(M1::AbstractMatrix, M2::IntervalMatrix) = IntervalMatrix(M1 + M2.mat)
@@ -27,8 +27,8 @@ import Base: +, -, *, /, \
 *(x::Interval, M::IntervalMatrix) = IntervalMatrix(x .* M.mat)
 *(M::IntervalMatrix, x::Interval) = IntervalMatrix(x .* M.mat)
 
-*(x::Number, M::IntervalMatrix) = Interval(x) * M
-*(M::IntervalMatrix, x::Number) = Interval(x) * M
+*(x::Number, M::IntervalMatrix) = interval(x) * M
+*(M::IntervalMatrix, x::Number) = interval(x) * M
 
 /(M::IntervalMatrix, x::Number) = IntervalMatrix(M ./ x)
 

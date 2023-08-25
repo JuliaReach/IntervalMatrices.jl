@@ -5,7 +5,7 @@
     m3 = similar(m1)
     @test m3 isa IntervalMatrix{Float64} && size(m3) == size(m1)
     m = [1.0 2; 3 4]
-    mint = IntervalMatrix([Interval(1) Interval(2); Interval(3) Interval(4)])
+    mint = IntervalMatrix([interval(1) interval(2); interval(3) interval(4)])
     @test IntervalMatrix(m) == mint
 
     A = [1 2; 3 4]
@@ -41,7 +41,7 @@ end
     @test eltype(m2) == Complex{Interval{Float64}}
 end
 
-@testset "special matrices" begin
+@testset "Special matrices" begin
     A = rand(IntervalMatrix)
     @test A isa IntervalMatrix
 

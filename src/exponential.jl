@@ -164,7 +164,7 @@ function exp_underapproximation(A::IntervalMatrix{T}, t, p) where {T}
         for i in 1:n
             minYZ = min(Y[i, j], Z[i, j])
             maxYZ = max(Y[i, j], Z[i, j])
-            B[i, j] = Interval(minYZ, maxYZ)
+            B[i, j] = interval(minYZ, maxYZ)
         end
     end
 
@@ -252,7 +252,7 @@ function _truncated_exponential_series(A::IntervalMatrix{T}, t, p::Integer;
                                        n=checksquare(A)) where {T}
     if p == 0
         # index i = 0 (identity matrix)
-        return IntervalMatrix(Interval(one(T)) * I, n)
+        return IntervalMatrix(interval(one(T)) * I, n)
     elseif p == 1
         # index i = 1
         S = A * t
@@ -346,7 +346,7 @@ function scale_and_square(A::IntervalMatrix{T}, l::Integer, t, p;
         end
     end
 
-    A_scaled = A / Interval(T(2))^l
+    A_scaled = A / interval(T(2))^l
     E = exp_overapproximation(A_scaled, t, p)
     for i in 1:l
         E = square(E)
@@ -412,7 +412,7 @@ function horner(A::IntervalMatrix{T}, K::Integer;
     end
 
     n = checksquare(A)
-    Iₙ = IntervalMatrix(Interval(one(T)) * I, n)
+    Iₙ = IntervalMatrix(interval(one(T)) * I, n)
     H = Iₙ + A / K
     for i in (K - 1):-1:1
         H = Iₙ + A / i * H
