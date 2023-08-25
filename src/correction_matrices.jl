@@ -62,7 +62,7 @@ function input_correction(A::IntervalMatrix{T}, t, p) where {T}
     E = _exp_remainder(A, t, p; n=n)
     F = E / opnorm(A, Inf)
 
-    id = IntervalMatrix(Interval(one(T)) * I, n)
+    id = IntervalMatrix(interval(one(T)) * I, n)
     _correction_loop!(F, A, id, t, p)
 
     return F
@@ -84,7 +84,7 @@ function _correction_loop!(F, A::IntervalMatrix{T}, Aⁱ, t, p) where {T}
     @inbounds for i in 2:p
         tⁱ *= t
         left = (one(T) / i^(i / (i - 1)) - one(T) / i^(1 / (i - 1))) * tⁱ
-        itv = Interval(left, zero(T))
+        itv = interval(left, zero(T))
         Aⁱ *= A
         i! *= i
         F .+= itv * Aⁱ / i!

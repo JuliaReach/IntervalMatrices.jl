@@ -65,7 +65,7 @@ function *(::MultiplicationType{:fast},
         return mA * mB - R
     end
 
-    return IntervalMatrix(Interval.(Cinf, Csup))
+    return IntervalMatrix(interval.(Cinf, Csup))
 end
 
 function *(::MultiplicationType{:fast},
@@ -89,7 +89,7 @@ function *(::MultiplicationType{:fast},
         return A * mB - R
     end
 
-    return IntervalMatrix(Interval.(Cinf, Csup))
+    return IntervalMatrix(interval.(Cinf, Csup))
 end
 
 function *(::MultiplicationType{:fast},
@@ -113,7 +113,7 @@ function *(::MultiplicationType{:fast},
         return mA * B - R
     end
 
-    return IntervalMatrix((Interval.(Cinf, Csup)))
+    return IntervalMatrix((interval.(Cinf, Csup)))
 end
 
 # function *(::MultiplicationType{:rank1},
@@ -150,6 +150,6 @@ end
 #         return Csup
 #     end
 
-#     return Interval.(Cinf, Csup)
+#     return interval.(Cinf, Csup)
 
 # end

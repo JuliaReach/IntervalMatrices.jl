@@ -34,7 +34,7 @@ An interval matrix proportional to the identity matrix can be built using the
 ```jldoctest interval_uniform_scaling
 julia> using LinearAlgebra
 
-julia> IntervalMatrix(Interval(1)*I, 2)
+julia> IntervalMatrix(interval(1)*I, 2)
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [1, 1]  [0, 0]
  [0, 0]  [1, 1]
@@ -44,12 +44,12 @@ The number of columns can be specified as a third argument, creating a rectangul
 ``(1, 1), (2, 2), …,  (k, k)`` are specified, where ``k = \\min(m, n)``:
 
 ```jldoctest interval_uniform_scaling
-julia> IntervalMatrix(Interval(-1, 1)*I, 2, 3)
+julia> IntervalMatrix(interval(-1, 1)*I, 2, 3)
 2×3 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [-1, 1]   [0, 0]  [0, 0]
   [0, 0]  [-1, 1]  [0, 0]
 
-julia> IntervalMatrix(Interval(-1, 1)*I, 3, 2)
+julia> IntervalMatrix(interval(-1, 1)*I, 3, 2)
 3×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [-1, 1]   [0, 0]
   [0, 0]  [-1, 1]
@@ -144,7 +144,7 @@ function IntervalMatrix(A::MT, B::MT) where {T,MT<:AbstractMatrix{T}}
                                               "matrices should match, but they are $(size(A)) " *
                                               "and $(size(B)) respectively"))
 
-    return IntervalMatrix(map((x, y) -> Interval(x, y), A, B))
+    return IntervalMatrix(map((x, y) -> interval(x, y), A, B))
 end
 
 """
