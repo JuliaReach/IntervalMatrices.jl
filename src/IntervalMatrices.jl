@@ -13,6 +13,8 @@ using Reexport
 Base.convert(::Type{Interval{T}}, x::Number) where {T} = interval(T(x))
 Base.convert(::Type{Interval{T}}, x::Interval{T}) where {T} = x
 Base.convert(::Type{Interval{T}}, x::Interval) where {T} = interval(T(inf(x)), T(sup(x)))
+# IntervalArithmetic v0.21 requires interval, but prior versions did not offer this method
+IntervalArithmetic.interval(a::Complex) = complex(interval(real(a)), interval(imag(a)))
 
 # ================================
 # Type defining an interval matrix
