@@ -9,6 +9,10 @@ using Random: AbstractRNG, GLOBAL_RNG, seed!
 
 using Reexport
 @reexport using IntervalArithmetic
+# IntervalArithmetic v0.21 removed convert
+Base.convert(::Type{Interval{T}}, x::Number) where {T} = interval(T(x))
+Base.convert(::Type{Interval{T}}, x::Interval{T}) where {T} = x
+Base.convert(::Type{Interval{T}}, x::Interval) where {T} = interval(T(inf(x)), T(sup(x)))
 
 # ================================
 # Type defining an interval matrix
