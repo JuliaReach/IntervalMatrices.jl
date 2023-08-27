@@ -9,12 +9,21 @@ using Random: AbstractRNG, GLOBAL_RNG, seed!
 
 using Reexport
 @reexport using IntervalArithmetic
-# IntervalArithmetic v0.21 removed convert
-Base.convert(::Type{Interval{T}}, x::Number) where {T} = interval(T(x))
-Base.convert(::Type{Interval{T}}, x::Interval{T}) where {T} = x
-Base.convert(::Type{Interval{T}}, x::Interval) where {T} = interval(T(inf(x)), T(sup(x)))
-# IntervalArithmetic v0.21 requires interval, but prior versions did not offer this method
-IntervalArithmetic.interval(a::Complex) = complex(interval(real(a)), interval(imag(a)))
+@static if VERSION >= v"1.9"
+    vIA = pkgversion(IntervalArithmetic)
+else
+    using PkgVersion
+    vIA = PkgVersion.Version(IntervalArithmetic)
+end
+if vIA >= v"0.21"
+    # IntervalArithmetic v0.21 removed convert
+    Base.convert(::Type{Interval{T}}, x::Number) where {T} = interval(T(x))
+    Base.convert(::Type{Interval{T}}, x::Interval{T}) where {T} = x
+    Base.convert(::Type{Interval{T}}, x::Interval) where {T} = interval(T(inf(x)), T(sup(x)))
+else
+    # IntervalArithmetic v0.21 requires interval, but prior versions did not offer this method
+    IntervalArithmetic.interval(a::Complex) = complex(interval(real(a)), interval(imag(a)))
+end
 
 # ================================
 # Type defining an interval matrix
