@@ -87,13 +87,10 @@ julia> A1 = [1 1; -1 1.]; A2 = [0 1; 1 0];
 
 julia> λ1 = 0 .. 1; λ2 = 2 .. 3;
 
-julia> P = AffineIntervalMatrix(A0, [A1, A2], [λ1, λ1]);
-
-julia> P[1, 1]
-[1.0, 3.0]
-
-julia> P[1, 2]
-[0.0, 2.0]
+julia> P = AffineIntervalMatrix(A0, [A1, A2], [λ1, λ2])
+2×2 AffineIntervalMatrix{Float64, Interval{Float64}, Matrix{Float64}, Matrix{Float64}, Vector{Matrix{Float64}}, Vector{Interval{Float64}}}:
+ [1.0, 2.0]  [2.0, 4.0]
+ [1.0, 3.0]  [1.0, 2.0]
 ```
 """
 struct AffineIntervalMatrix{T,IT,MT0<:AbstractMatrix{T},MT<:AbstractMatrix{T},
