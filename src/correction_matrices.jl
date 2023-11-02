@@ -54,7 +54,7 @@ An interval matrix representing the correction matrix.
 See Proposition 3.4 in [1].
 
 [1] M. Althoff. Reachability analysis and its application to the safety
-assessment of automonous cars. 2010.
+assessment of autonomous cars. 2010.
 """
 function input_correction(A::IntervalMatrix{T}, t, p) where {T}
     n = checksquare(A)
