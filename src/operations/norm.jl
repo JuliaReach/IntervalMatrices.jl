@@ -42,7 +42,7 @@ function _opnorm_inf(A::IntervalMatrix{T}) where {T}
         if acc > res
             res = acc
         end
-    end
+    end  # COV_EXCL_LINE
     return res
 end
 
@@ -60,7 +60,7 @@ function _opnorm_1(A::IntervalMatrix{T}) where {T}
         if acc > res
             res = acc
         end
-    end
+    end  # COV_EXCL_LINE
     return res
 end
 

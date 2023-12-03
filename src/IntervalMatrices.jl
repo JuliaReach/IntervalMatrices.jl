@@ -16,13 +16,16 @@ else
     vIA = PkgVersion.Version(IntervalArithmetic)
 end
 if vIA >= v"0.21"
-    # IntervalArithmetic v0.21 removed convert
+    # IntervalArithmetic v0.21 removed `convert`
     Base.convert(::Type{Interval{T}}, x::Number) where {T} = interval(T(x))
     Base.convert(::Type{Interval{T}}, x::Interval{T}) where {T} = x
     Base.convert(::Type{Interval{T}}, x::Interval) where {T} = interval(T(inf(x)), T(sup(x)))
 else
-    # IntervalArithmetic v0.21 requires interval, but prior versions did not offer this method
+    # COV_EXCL_START
+    # IntervalArithmetic v0.21 requires `interval`, but prior versions did not
+    # offer this method for `Complex` inputs
     IntervalArithmetic.interval(a::Complex) = complex(interval(real(a)), interval(imag(a)))
+    # COV_EXCL_STOP
 end
 
 # ================================

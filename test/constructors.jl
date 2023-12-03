@@ -1,3 +1,15 @@
+@testset "Interval conversion" begin
+    x = interval(1.0)
+
+    y = convert(Interval{Float64}, x)
+    # `===` is not applicable here because it just checks value equivalence
+    # for (immutable) `Interval`s
+    @test y == x && y isa Interval{Float64}
+
+    y = convert(Interval{Float32}, x)
+    @test y == x && y isa Interval{Float32}
+end
+
 @testset "Interval matrix construction" begin
     m1 = IntervalMatrix([-1.1..0.9 -4.1 .. -3.9; 3.8..4.2 0.0..0.9])
     m2 = IntervalMatrix{Float64}(undef, 2, 2)
