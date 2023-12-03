@@ -19,7 +19,9 @@ if vIA >= v"0.21"
     # IntervalArithmetic v0.21 removed `convert`
     Base.convert(::Type{Interval{T}}, x::Number) where {T} = interval(T(x))
     Base.convert(::Type{Interval{T}}, x::Interval{T}) where {T} = x
-    Base.convert(::Type{Interval{T}}, x::Interval) where {T} = interval(T(inf(x)), T(sup(x)))
+    function Base.convert(::Type{Interval{T1}}, x::Interval{T2}) where {T1,T2}
+        return interval(T1(inf(x)), T1(sup(x)))
+    end
 else
     # COV_EXCL_START
     # IntervalArithmetic v0.21 requires `interval`, but prior versions did not
