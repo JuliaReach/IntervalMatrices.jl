@@ -19,7 +19,7 @@ The internal representation (such as the fields) are subject to future changes.
 ### Examples
 
 ```jldoctest
-julia> A = IntervalMatrix([2.0..2.0 2.0..3.0; 0.0..0.0 -1.0..1.0])
+julia> A = IntervalMatrix([interval(2, 2) interval(2, 3); interval(0, 0) interval(-1, 1)])
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [2.0, 2.0]   [2.0, 3.0]
  [0.0, 0.0]  [-1.0, 1.0]

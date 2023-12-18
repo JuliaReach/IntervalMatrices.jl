@@ -51,7 +51,7 @@ An *interval matrix* is a matrix whose coefficients are intervals. For instance,
 ```jldoctest quickstart
 julia> using IntervalMatrices
 
-julia> A = IntervalMatrix([0..1 1..2; 2..3 -4.. -2])
+julia> A = IntervalMatrix([interval(0, 1) interval(1, 2); interval(2, 3) interval(-4, -2)])
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [0.0, 1.0]   [1.0, 2.0]
  [2.0, 3.0]  [-4.0, -2.0]
@@ -81,7 +81,7 @@ julia> 2A
 Or an interval multiple of $A$,
 
 ```jldoctest quickstart
-julia> (-1.0..1.0) * A
+julia> interval(-1, 1) * A
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [-1.0, 1.0]  [-2.0, 2.0]
  [-3.0, 3.0]  [-4.0, 4.0]
