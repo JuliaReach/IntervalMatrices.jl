@@ -1,6 +1,6 @@
 import Base: similar, ∈, ⊆, ∩, ∪, real, imag
 import Random: rand
-import IntervalArithmetic: ±, inf, sup, mid, diam, radius, midpoint_radius, hull
+import IntervalArithmetic: inf, sup, mid, diam, radius, hull
 
 """
     AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}

@@ -1,4 +1,4 @@
-const config = Dict(:multiplication => :fast)
+const config = Dict(:multiplication => :slow)
 
 struct MultiplicationType{T} end
 

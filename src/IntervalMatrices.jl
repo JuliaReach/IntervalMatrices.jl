@@ -24,6 +24,34 @@ else
     # IntervalArithmetic v0.21 requires interval, but prior versions did not offer this method
     IntervalArithmetic.interval(a::Complex) = complex(interval(real(a)), interval(imag(a)))
 end
+if vIA >= v"0.22"
+    import Base: intersect
+    export ±, midpoint_radius
+
+    function ±(x::Number, y::Number)
+        return x + interval(-y, y)
+    end
+
+    function Base.:(==)(A::AbstractMatrix{<:Interval}, B::AbstractMatrix{<:Interval})
+        return size(A) == size(B) && all(map((a, b) -> isequal_interval(a, b), A, B))
+    end
+
+    function intersect(a::Interval{T}, b::Interval{T}) where T
+        lo = max(inf(a), inf(b))
+        hi = min(sup(a), sup(b))
+        if lo > hi
+            return emptyinterval(T)
+        end
+        return interval(lo, hi)
+    end
+    intersect(a::Interval{T}, b::Interval{S}) where {T,S} = intersect(promote(a, b)...)
+
+    Base.in(x::Number, y::Interval) = inf(y) <= x <= sup(y)
+else
+    import IntervalArithmetic: ±, midpoint_radius
+
+    issubset_interval(x::Interval, y::Interval) = issubset(x, y)
+end
 
 # ================================
 # Type defining an interval matrix

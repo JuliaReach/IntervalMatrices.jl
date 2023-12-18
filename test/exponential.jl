@@ -85,7 +85,11 @@ end
     A = Matrix(transmission_line())
     expA = exp(A)
     @test opnorm(expA, Inf) < 1e-6
-    Aint = IntervalMatrix(interval.(A))
-    expA_int = exp_overapproximation(Aint, 1.0, 10)
-    @test opnorm(expA_int, Inf) > 1e122
+
+    @static if PkgVersion.Version(IntervalMatrices.IntervalArithmetic) < v"0.22"
+        # in newer versions, too large numbers lead to empty interval
+        Aint = IntervalMatrix(interval.(A))
+        expA_int = exp_overapproximation(Aint, 1.0, 10)
+        @test opnorm(expA_int, Inf) > 1e122
+    end
 end
