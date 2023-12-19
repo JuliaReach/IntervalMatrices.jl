@@ -107,8 +107,8 @@ $e^{At} - I$. Then, at $t = 1.0$,
 ```jldoctest quickstart
 julia> A + 1/2 * A^2
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
-  [0.5, 4.50001]  [-3.25001, 2.50001]
- [-4.25001, 3.0]  [-2.25001, 9.0]
+  [1.0, 4.50001]  [-3.0, 2.0]
+ [-4.0, 2.50001]  [-1.0, 9.0]
 ```
 However, that result is not tight. The computation can be performed exactly via
 single-use expressions implemented in this library:
