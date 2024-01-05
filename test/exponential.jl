@@ -8,9 +8,9 @@ using IntervalMatrices: TaylorOverapproximation,
                         _exp_remainder_series
 
 @testset "Interval matrix exponential" begin
-    @test quadratic_expansion(-3 .. 3, 1.0, 2.0) == interval(-0.125, 21)
+    @test quadratic_expansion(interval(-3, 3), 1.0, 2.0) == interval(-0.125, 21)
 
-    M = IntervalMatrix([-1.1..0.9 -4.1 .. -3.9; 3.9..4.1 -1.1..0.9])
+    M = IntervalMatrix([interval(-1.1, 0.9) interval(-4.1, -3.9); interval(3.9, 4.1) interval(-1.1, 0.9)])
 
     for i in 0:4
         _truncated_exponential_series(M, 1.0, i)
@@ -36,14 +36,14 @@ using IntervalMatrices: TaylorOverapproximation,
 end
 
 @testset "Interval matrix correction terms" begin
-    m = IntervalMatrix([-1.1..0.9 -4.1 .. -3.9; 3.9..4.1 -1.1..0.9])
+    m = IntervalMatrix([interval(-1.1, 0.9) interval(-4.1, -3.9); interval(3.9, 4.1) interval(-1.1, 0.9)])
     f = correction_hull(m, 1e-3, 5)
     f2 = input_correction(m, 1e-3, 5)
     f = correction_hull(mid(m), 1e-3, 5)
 end
 
 @testset "Interval matrix square" begin
-    m = IntervalMatrix([-1.1..0.9 -4.1 .. -3.9; 3.9..4.1 -1.1..0.9])
+    m = IntervalMatrix([interval(-1.1, 0.9) interval(-4.1, -3.9); interval(3.9, 4.1) interval(-1.1, 0.9)])
 
     a = m * m
     b = square(m)
@@ -51,7 +51,7 @@ end
 end
 
 @testset "Interval matrix power" begin
-    m = IntervalMatrix([2.0..2.0 2.0..3.0; 0.0..0.0 -1.0..1.0])
+    m = IntervalMatrix([interval(2, 2) interval(2, 3); interval(0, 0) interval(-1, 1)])
     pow = IntervalMatrixPower(m)
 
     @test base(pow) === m
@@ -85,7 +85,11 @@ end
     A = Matrix(transmission_line())
     expA = exp(A)
     @test opnorm(expA, Inf) < 1e-6
-    Aint = IntervalMatrix(interval.(A))
-    expA_int = exp_overapproximation(Aint, 1.0, 10)
-    @test opnorm(expA_int, Inf) > 1e122
+
+    @static if PkgVersion.Version(IntervalMatrices.IntervalArithmetic) < v"0.22"
+        # in newer versions, too large numbers lead to empty interval
+        Aint = IntervalMatrix(interval.(A))
+        expA_int = exp_overapproximation(Aint, 1.0, 10)
+        @test opnorm(expA_int, Inf) > 1e122
+    end
 end

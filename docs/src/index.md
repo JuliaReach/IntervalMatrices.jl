@@ -51,7 +51,7 @@ An *interval matrix* is a matrix whose coefficients are intervals. For instance,
 ```jldoctest quickstart
 julia> using IntervalMatrices
 
-julia> A = IntervalMatrix([0..1 1..2; 2..3 -4.. -2])
+julia> A = IntervalMatrix([interval(0, 1) interval(1, 2); interval(2, 3) interval(-4, -2)])
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [0.0, 1.0]   [1.0, 2.0]
  [2.0, 3.0]  [-4.0, -2.0]
@@ -81,7 +81,7 @@ julia> 2A
 Or an interval multiple of $A$,
 
 ```jldoctest quickstart
-julia> (-1.0..1.0) * A
+julia> interval(-1, 1) * A
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [-1.0, 1.0]  [-2.0, 2.0]
  [-3.0, 3.0]  [-4.0, 4.0]
@@ -107,8 +107,8 @@ $e^{At} - I$. Then, at $t = 1.0$,
 ```jldoctest quickstart
 julia> A + 1/2 * A^2
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
-  [0.5, 4.50001]  [-3.25001, 2.50001]
- [-4.25001, 3.0]  [-2.25001, 9.0]
+  [1.0, 4.50001]  [-3.0, 2.0]
+ [-4.0, 2.50001]  [-1.0, 9.0]
 ```
 However, that result is not tight. The computation can be performed exactly via
 single-use expressions implemented in this library:

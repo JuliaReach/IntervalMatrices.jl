@@ -52,7 +52,7 @@ function ⊆(A::AbstractIntervalMatrix, B::AbstractIntervalMatrix)
 
     m, n = size(A)
     @inbounds for j in 1:n, i in 1:m
-        if !(A[i, j] ⊆ B[i, j])
+        if !issubset_interval(A[i, j], B[i, j])
             return false
         end
     end

@@ -1,7 +1,7 @@
 @testset "Affine interval matrix in one interval" begin
     A0 = [1 0; 0 1.0]
     A1 = [0 1; 1 0.0]
-    λ = 0 .. 1
+    λ = interval(0, 1)
     P = AffineIntervalMatrix1(A0, A1, λ)
 
     @test size(P) == (2, 2)
@@ -23,7 +23,7 @@ end
     A0 = [1 0; 0 1.0]
     A1 = [0 1; 1 0.0]
     A2 = copy(A1)
-    λ1 = 0 .. 1
+    λ1 = interval(0, 1)
     λ2 = copy(λ1)
     P = AffineIntervalMatrix(A0, [A1, A2], [λ1, λ2])
 
