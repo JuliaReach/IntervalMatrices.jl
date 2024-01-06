@@ -11,7 +11,8 @@
 end
 
 @testset "Interval matrix construction" begin
-    m1 = IntervalMatrix([interval(-1.1, 0.9) interval(-4.1, -3.9); interval(3.8, 4.2) interval(0, 0.9)])
+    m1 = IntervalMatrix([interval(-1.1, 0.9) interval(-4.1, -3.9);
+                         interval(3.8, 4.2) interval(0, 0.9)])
     m2 = IntervalMatrix{Float64}(undef, 2, 2)
     @test m2 isa IntervalMatrix{Float64} && size(m2) == (2, 2)
     m3 = similar(m1)
@@ -23,20 +24,22 @@ end
     A = [1 2; 3 4]
     B = [1 2; 4 5]
 
-    @test IntervalMatrix(A, B) == IntervalMatrix([interval(1, 1) interval(2, 2); interval(3, 4) interval(4, 5)])
+    @test IntervalMatrix(A, B) ==
+          IntervalMatrix([interval(1, 1) interval(2, 2); interval(3, 4) interval(4, 5)])
 
     @test A ± B == IntervalMatrix([interval(0, 2) interval(0, 4); interval(-1, 7) interval(-1, 9)])
 end
 
 @testset "Interval matrix midpoint_radius" begin
-    m = IntervalMatrix([interval(-1.1, 0.9) interval(-4.1, -3.9); interval(3.9, 4.1) interval(-1.1, 0.9)])
+    m = IntervalMatrix([interval(-1.1, 0.9) interval(-4.1, -3.9);
+                        interval(3.9, 4.1) interval(-1.1, 0.9)])
     c, s = midpoint_radius(m)
     @test c ≈ [-0.1 -4; 4 -0.1]
     @test s ≈ [1 0.1; 0.1 1]
 end
 
 @testset "Complex interval matrices" begin
-    m1 = IntervalMatrix([interval(1, 2) + im * interval(3, 4) 1; 2 3])
+    m1 = IntervalMatrix([interval(1, 2)+im * interval(3, 4) 1; 2 3])
     @test m1 isa IntervalMatrix{Float64}
     @test eltype(m1) == Complex{Interval{Float64}}
 
