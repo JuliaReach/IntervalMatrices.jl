@@ -41,7 +41,7 @@ if vIA >= v"0.22"
         return size(A) == size(B) && all(map((a, b) -> isequal_interval(a, b), A, B))
     end
 
-    function intersect(a::Interval{T}, b::Interval{T}) where T
+    function intersect(a::Interval{T}, b::Interval{T}) where {T}
         lo = max(inf(a), inf(b))
         hi = min(sup(a), sup(b))
         if lo > hi

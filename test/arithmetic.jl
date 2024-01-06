@@ -69,17 +69,23 @@ end
 
     A = IntervalMatrix([interval(2, 4) interval(-2, 1); interval(-1, 2) interval(2, 4)])
     set_multiplication_mode(:slow)
-    @test A * A == IntervalMatrix([interval(0, 18) interval(-16, 8); interval(-8, 16) interval(0, 18)])
-    @test A * mid.(A) == IntervalMatrix([interval(5, 12.5) interval(-8, 2); interval(-2, 8) interval(5, 12.5)])
-    @test mid.(A) * A == IntervalMatrix([interval(5, 12.5) interval(-8, 2); interval(-2, 8) interval(5, 12.5)])
+    @test A * A ==
+          IntervalMatrix([interval(0, 18) interval(-16, 8); interval(-8, 16) interval(0, 18)])
+    @test A * mid.(A) ==
+          IntervalMatrix([interval(5, 12.5) interval(-8, 2); interval(-2, 8) interval(5, 12.5)])
+    @test mid.(A) * A ==
+          IntervalMatrix([interval(5, 12.5) interval(-8, 2); interval(-2, 8) interval(5, 12.5)])
 
     # set_multiplication_mode(:rank1)
     # @test A * A == [interval(0, 18) interval(-16, 8); interval(-8, 16) interval(0, 18)]
 
     @static if PkgVersion.Version(IntervalMatrices.IntervalArithmetic) < v"0.22"
         set_multiplication_mode(:fast)
-        @test A * A == IntervalMatrix([interval(-2, 19.5) interval(-16, 10); interval(-10, 16) interval(-2, 19.5)])
-        @test A * mid.(A) == IntervalMatrix([interval(5, 12.5) interval(-8, 2); interval(-2, 8) interval(5, 12.5)])
-        @test mid.(A) * A == IntervalMatrix([interval(5, 12.5) interval(-8, 2); interval(-2, 8) interval(5, 12.5)])
+        @test A * A == IntervalMatrix([interval(-2, 19.5) interval(-16, 10);
+                                       interval(-10, 16) interval(-2, 19.5)])
+        @test A * mid.(A) ==
+              IntervalMatrix([interval(5, 12.5) interval(-8, 2); interval(-2, 8) interval(5, 12.5)])
+        @test mid.(A) * A ==
+              IntervalMatrix([interval(5, 12.5) interval(-8, 2); interval(-2, 8) interval(5, 12.5)])
     end
 end
