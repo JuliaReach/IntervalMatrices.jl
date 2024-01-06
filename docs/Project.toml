@@ -4,4 +4,4 @@ IntervalArithmetic = "d1acc4aa-44c8-5952-acd4-ba5d80a2a253"
 
 [compat]
 Documenter = "1"
-IntervalArithmetic = "0.21"
+IntervalArithmetic = "0.21, 0.22"
