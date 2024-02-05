@@ -8,7 +8,7 @@ using IntervalMatrices: TaylorOverapproximation,
                         _exp_remainder_series
 
 @testset "Interval matrix exponential" begin
-    @test quadratic_expansion(interval(-3, 3), 1.0, 2.0) == interval(-0.125, 21)
+    @test quadratic_expansion(interval(-3, 3), 1.0, 2.0) ⩵ interval(-0.125, 21)
 
     M = IntervalMatrix([interval(-1.1, 0.9) interval(-4.1, -3.9);
                         interval(3.9, 4.1) interval(-1.1, 0.9)])
@@ -59,7 +59,7 @@ end
 
     @test base(pow) === m
     @test get(pow) === pow.Mᵏ
-    @test index(pow) === 1
+    @test index(pow) == 1
 
     pow2 = copy(pow)
     @test pow2 isa IntervalMatrixPower && get(pow) == get(pow2)
