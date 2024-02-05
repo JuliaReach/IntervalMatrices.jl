@@ -5,10 +5,10 @@
     P = AffineIntervalMatrix1(A0, A1, λ)
 
     @test size(P) == (2, 2)
-    @test P[1, 1] == interval(1)
-    @test P[1, 2] == interval(0, 1)
+    @test P[1, 1] ⩵ interval(1)
+    @test P[1, 2] ⩵ interval(0, 1)
     P[1, 1] = 2.0
-    @test P[1, 1] == interval(2)
+    @test P[1, 1] ⩵ interval(2)
 
     Q = copy(P)
     @test Q == P && Q isa AffineIntervalMatrix1
@@ -28,10 +28,10 @@ end
     P = AffineIntervalMatrix(A0, [A1, A2], [λ1, λ2])
 
     @test size(P) == (2, 2)
-    @test P[1, 1] == interval(1)
-    @test P[1, 2] == interval(0, 2)
+    @test P[1, 1] ⩵ interval(1)
+    @test P[1, 2] ⩵ interval(0, 2)
     P[1, 1] = 5.0
-    @test P[1, 1] == interval(5)
+    @test P[1, 1] ⩵ interval(5)
 
     Q = copy(P)
     @test Q == P && Q isa AffineIntervalMatrix
