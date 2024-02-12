@@ -88,5 +88,7 @@ end
               IntervalMatrix([interval(5, 12.5) interval(-8, 2); interval(-2, 8) interval(5, 12.5)])
         @test mid.(A) * A ==
               IntervalMatrix([interval(5, 12.5) interval(-8, 2); interval(-2, 8) interval(5, 12.5)])
+    else
+        @test_throws ArgumentError set_multiplication_mode(:fast)
     end
 end
