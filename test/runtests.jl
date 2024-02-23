@@ -19,3 +19,5 @@ include("arithmetic.jl")
 include("setops.jl")
 include("exponential.jl")
 include("affine.jl")
+
+include("Aqua.jl")
