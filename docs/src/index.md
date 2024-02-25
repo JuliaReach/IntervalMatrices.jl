@@ -56,8 +56,8 @@ julia> A = IntervalMatrix([interval(0, 1) interval(1, 2); interval(2, 3) interva
  [0.0, 1.0]   [1.0, 2.0]
  [2.0, 3.0]  [-4.0, -2.0]
 ```
-defines an interval matrix $A$. The type of each coefficient in $A$ is an interval,
-e.g. its coefficient in position $(1, 1)$ is the interval $[0, 1]$ over double-precision
+defines an interval matrix ``A``. The type of each coefficient in ``A`` is an interval,
+e.g. its coefficient in position ``(1, 1)`` is the interval ``[0, 1]`` over double-precision
 floating-point numbers:
 
 ```jldoctest quickstart
@@ -70,7 +70,7 @@ Interval{Float64}
 This library uses the interval arithmetic package
 [IntervalArithmetic.jl](https://github.com/JuliaIntervals/IntervalArithmetic.jl)
 to deal with interval computations. For instance, one can compute a multiple
-of $A$,
+of ``A``,
 
 ```jldoctest quickstart
 julia> 2A
@@ -78,7 +78,7 @@ julia> 2A
  [0.0, 2.0]   [2.0, 4.0]
  [4.0, 6.0]  [-8.0, -4.0]
 ```
-Or an interval multiple of $A$,
+Or an interval multiple of ``A``,
 
 ```jldoctest quickstart
 julia> interval(-1, 1) * A
@@ -87,7 +87,7 @@ julia> interval(-1, 1) * A
  [-3.0, 3.0]  [-4.0, 4.0]
 ```
 
-Or compute the square of $A$,
+Or compute the square of ``A``,
 ```jldoctest quickstart
 julia> square(A)
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
@@ -101,8 +101,8 @@ relevant definitions and algebraic rules that apply.
 However, the straightforward application of the rules of interval arithmetic does
 not always give the exact result: in general it only gives an overapproximation
 [^1] [^2]. To illustrate, suppose that we are interested in the quadratic term
-$At + \frac{1}{2}A^2 t^2$, which corresponds to the Taylor-series expansion at order two of
-$e^{At} - I$. Then, at $t = 1.0$,
+``At + \frac{1}{2}A^2 t^2``, which corresponds to the Taylor-series expansion at order two of
+``e^{At} - I``. Then, at ``t = 1.0``,
 
 ```jldoctest quickstart
 julia> A + 1/2 * A^2
@@ -123,7 +123,7 @@ We now obtain an interval matrix that is strictly included in the one obtained f
 the naive multiplication.
 
 An overapproximation and an underapproximation method at a given order for
-$e^{At}$, where $A$ is an interval matrix, are also available. See the [Methods](@ref)
+``e^{At}``, where ``A`` is an interval matrix, are also available. See the [Methods](@ref)
 section for details.
 
 ## Library Outline
