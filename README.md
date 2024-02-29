@@ -2,7 +2,7 @@
 
 | **Documentation** | **Status** | **Community** | **Version-Specific Citation** | **License** |
 |:-----------------:|:----------:|:-------------:|:-----------------------------:|:-----------:|
-| [![docs-dev][dev-img]][dev-url] | [![CI][ci-img]][ci-url] [![codecov][cov-img]][cov-url] [![PkgEval][pkgeval-img]][pkgeval-url] | [![zulip][chat-img]][chat-url] [![JuliaHub][juliahub-img]][juliahub-url] | [![DOI][doi-img]][doi-url] | [![license][lic-img]][lic-url] |
+| [![docs-dev][dev-img]][dev-url] | [![CI][ci-img]][ci-url] [![codecov][cov-img]][cov-url] [![PkgEval][pkgeval-img]][pkgeval-url] [![aqua][aqua-img]][aqua-url] | [![zulip][chat-img]][chat-url] [![JuliaHub][juliahub-img]][juliahub-url] | [![DOI][doi-img]][doi-url] | [![license][lic-img]][lic-url] |
 
 [dev-img]: https://img.shields.io/badge/docs-latest-blue.svg
 [dev-url]: https://juliareach.github.io/IntervalMatrices.jl/dev/
@@ -12,6 +12,8 @@
 [cov-url]: https://app.codecov.io/github/JuliaReach/IntervalMatrices.jl
 [pkgeval-img]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/I/IntervalMatrices.svg
 [pkgeval-url]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/I/IntervalMatrices.html
+[aqua-img]: https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg
+[aqua-url]: https://github.com/JuliaTesting/Aqua.jl
 [chat-img]: https://img.shields.io/badge/zulip-join_chat-brightgreen.svg
 [chat-url]: https://julialang.zulipchat.com/#narrow/stream/278609-juliareach
 [juliahub-img]: https://juliahub.com/docs/General/IntervalMatrices/stable/version.svg
