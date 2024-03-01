@@ -68,7 +68,8 @@ end
     @test get_multiplication_mode() == Dict(:multiplication => :slow)
 
     A = IntervalMatrix([interval(2, 4) interval(-2, 1); interval(-1, 2) interval(2, 4)])
-    set_multiplication_mode(:slow)
+
+    # set_multiplication_mode(:slow)  # not needed because it is the default
     @test A * A ==
           IntervalMatrix([interval(0, 18) interval(-16, 8); interval(-8, 16) interval(0, 18)])
     @test A * mid.(A) ==
