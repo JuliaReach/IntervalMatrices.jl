@@ -75,7 +75,6 @@ A new matrix `C` of the same shape as `A` such that
 `C[i, j] = A[i, j] ∩ B[i, j]` for each `i` and `j`.
 """
 function ∩(A::IntervalMatrix, B::IntervalMatrix)
-    m, n = size(A)
     @assert size(A) == size(B) "incompatible matrix sizes (A: $(size(A)), B: " *
                                "$(size(B)))"
 
