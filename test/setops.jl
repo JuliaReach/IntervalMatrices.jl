@@ -55,7 +55,7 @@ end
     for i in 1:3
         # sample a random interval from the matrix (Base method)
         mr = rand(m)
-        @test mr ∈ m && mr isa Interval
+        @test any(mr ⩵ y for y in m) && mr isa Interval
 
         # sample a concrete matrix instantiation
         ms = sample(m)
