@@ -96,7 +96,7 @@ function _exp_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     end
     M = exp(C * t)
     Y = M - Q
-    Γ = IntervalMatrix(fill(zero(T) ± one(T), (n, n)))
+    Γ = IntervalMatrix(fill(interval(-one(T), one(T)), (n, n)))
     E = Γ * Y
     return E
 end
@@ -111,7 +111,7 @@ function _exp_remainder_series(A::IntervalMatrix{T}, t, p; n=checksquare(A)) whe
     @assert c < 1 "the remainder of the matrix exponential could not be " *
                   "computed because a convergence condition is not satisfied: $c ≥ 1 " *
                   "but it should be smaller than 1; try choosing a larger order"
-    Γ = IntervalMatrix(fill(zero(T) ± one(T), (n, n)))
+    Γ = IntervalMatrix(fill(interval(-one(T), one(T)), (n, n)))
     return Γ * ((nA * t)^(p + 1) * (1 / factorial(p + 1) * 1 / (1 - c)))
 end
 

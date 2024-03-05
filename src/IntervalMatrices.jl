@@ -33,14 +33,9 @@ if vIA >= v"0.22"
     import Base: intersect
     export ±, midpoint_radius
 
-    function ±(x::Number, y::Number)
-        return x + interval(-y, y)
-    end
-
     function Base.:(==)(A::AbstractMatrix{<:Interval}, B::AbstractMatrix{<:Interval})
         return size(A) == size(B) && all(map((a, b) -> isequal_interval(a, b), A, B))
     end
-
 else
     import IntervalArithmetic: ±, midpoint_radius
 
