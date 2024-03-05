@@ -24,7 +24,7 @@ function ∈(M::AbstractMatrix, A::AbstractIntervalMatrix)
     m, n = size(A)
     @inbounds for j in 1:n
         for i in 1:m
-            if M[i, j] ∉ A[i, j]
+            if !in_interval(M[i, j], A[i, j])
                 return false
             end
         end

@@ -51,11 +51,12 @@ if vIA >= v"0.22"
     end
     intersect(a::Interval{T}, b::Interval{S}) where {T,S} = intersect(promote(a, b)...)
 
-    Base.in(x::Number, y::Interval) = inf(y) <= x <= sup(y)
 else
     import IntervalArithmetic: ±, midpoint_radius
 
     issubset_interval(x::Interval, y::Interval) = issubset(x, y)
+
+    in_interval(x::Number, y::Interval) = inf(y) <= x <= sup(y)
 end
 
 # ================================
