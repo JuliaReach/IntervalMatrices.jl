@@ -58,15 +58,15 @@ end
     pow = IntervalMatrixPower(m)
 
     @test base(pow) === m
-    @test get(pow) === pow.Mᵏ
+    @test matrix(pow) === pow.Mᵏ
     @test index(pow) == 1
 
     pow2 = copy(pow)
-    @test pow2 isa IntervalMatrixPower && get(pow) == get(pow2)
+    @test pow2 isa IntervalMatrixPower && matrix(pow) == matrix(pow2)
 
     pow2 = IntervalMatrixPower(m, 2)
     pow3 = increment(pow)
-    @test pow3 isa IntervalMatrix && pow3 == get(pow2)
+    @test pow3 isa IntervalMatrix && pow3 == matrix(pow2)
 
     increment!(pow)  # next step is a power of two
     @test index(pow) == 2
