@@ -1,4 +1,4 @@
-import Base: copy, get
+import Base: copy
 
 """
     IntervalMatrixPower{T}
@@ -36,7 +36,7 @@ julia> increment(pow)
  [8.0, 8.0]  [-1.0, 21.0]
  [0.0, 0.0]  [-1.0, 1.0]
 
-julia> get(pow)
+julia> materialize(pow)
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
  [4.0, 4.0]  [2.0, 9.0]
  [0.0, 0.0]  [0.0, 1.0]
@@ -212,7 +212,7 @@ function base(pow::IntervalMatrixPower)
 end
 
 """
-    get(pow::IntervalMatrixPower)
+    materialize(pow::IntervalMatrixPower)
 
 Return the matrix represented by a wrapper of a matrix power.
 
@@ -224,7 +224,7 @@ Return the matrix represented by a wrapper of a matrix power.
 
 The matrix power represented by the wrapper.
 """
-function get(pow::IntervalMatrixPower)
+function materialize(pow::IntervalMatrixPower)
     return pow.Mᵏ
 end
 

@@ -108,6 +108,7 @@ export inf, sup,
 
 export IntervalMatrixPower,
        increment!, increment,
+       materialize,
        base,
        index
 
