@@ -22,10 +22,10 @@ parametrized in the number field, the interval type, and the matrix type.
 ### Examples
 
 ```jldoctest
-julia> A = IntervalMatrix([-0.9±0.1 0±0; 0±0 -0.9±0.1])
+julia> A = IntervalMatrix([-1 .. -0.8 0 .. 0; 0 .. 0 -1 .. -0.8])
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
- [-1.00001, -0.7999999]   [0.0, 0.0]
-  [0.0, 0.0]             [-1.00001, -0.7999999]
+ [-1.0, -0.7999999]   [0.0, 0.0]
+  [0.0, 0.0]         [-1.0, -0.7999999]
 ```
 
 An interval matrix proportional to the identity matrix can be built using the
@@ -182,7 +182,7 @@ function ±(C::MT, S::MT) where {T,MT<:AbstractMatrix{T}}
                                               "radii matrix should match, but they are $(size(C)) " *
                                               "and $(size(S)) respectively"))
 
-    return IntervalMatrix(map((x, y) -> x ± y, C, S))
+    return IntervalMatrix(map((x, y) -> interval(x - y, x + y), C, S))
 end
 
 for op in (:Adjoint, :Bidiagonal, :Diagonal, :Hermitian,
