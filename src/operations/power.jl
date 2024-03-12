@@ -1,5 +1,3 @@
-import Base: copy, get
-
 """
     IntervalMatrixPower{T}
 
