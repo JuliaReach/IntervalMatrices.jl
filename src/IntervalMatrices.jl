@@ -4,15 +4,21 @@ module IntervalMatrices
 using LinearAlgebra
 using LinearAlgebra: checksquare
 
-import Random
 using Random: AbstractRNG, GLOBAL_RNG, seed!
+import Random: rand
+
+import Base: copy, get,
+             +, -, *, /, \,
+             size, IndexStyle, getindex, setindex!,
+             similar, ∈, ⊆, ∩, ∪, real, imag
 
 using Reexport
 @reexport using IntervalArithmetic
+import IntervalArithmetic: inf, sup, mid, diam, radius, hull
 @static if VERSION >= v"1.9"
     vIA = pkgversion(IntervalArithmetic)
 else
-    using PkgVersion
+    import PkgVersion
     vIA = PkgVersion.Version(IntervalArithmetic)
 end
 if vIA >= v"0.21"
