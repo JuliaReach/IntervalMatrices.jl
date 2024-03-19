@@ -115,14 +115,18 @@ struct AffineIntervalMatrix{T,IT,MT0<:AbstractMatrix{T},MT<:AbstractMatrix{T},
 end
 
 IndexStyle(::Type{<:AffineIntervalMatrix}) = IndexLinear()
+
 size(M::AffineIntervalMatrix) = size(M.A0)
+
 function getindex(M::AffineIntervalMatrix, i::Int)
     return getindex(M.A0, i) + sum(M.λ[k] * getindex(M.A[k], i) for k in eachindex(M.λ))
 end
+
 function setindex!(M::AffineIntervalMatrix{T}, X::T, inds...) where {T}
     setindex!(M.A0, X, inds...)
-    @inbounds for k in 1:length(M.A)
+    @inbounds for k in eachindex(M.A)
         setindex!(M.A[k], zero(T), inds...)
     end
 end
+
 copy(M::AffineIntervalMatrix) = AffineIntervalMatrix(copy(M.A0), copy(M.A), M.λ)
