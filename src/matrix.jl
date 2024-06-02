@@ -1,7 +1,3 @@
-import Base: similar, ∈, ⊆, ∩, ∪, real, imag
-import Random: rand
-import IntervalArithmetic: inf, sup, mid, diam, radius, hull
-
 """
     AbstractIntervalMatrix{IT} <: AbstractMatrix{IT}
 
@@ -70,8 +66,6 @@ as the matrix (`mat`) field in the new interval matrix.
 struct IntervalMatrix{T,IT,MT<:AbstractMatrix{IT}} <: AbstractIntervalMatrix{IT}
     mat::MT
 end
-
-import Base: size, IndexStyle, getindex, setindex!, copy
 
 IndexStyle(::Type{<:IntervalMatrix}) = IndexLinear()
 size(M::IntervalMatrix) = size(M.mat)
