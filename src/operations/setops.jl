@@ -24,7 +24,7 @@ function ∈(M::AbstractMatrix, A::AbstractIntervalMatrix)
     m, n = size(A)
     @inbounds for j in 1:n
         for i in 1:m
-            if M[i, j] ∉ A[i, j]
+            if !in_interval(M[i, j], A[i, j])
                 return false
             end
         end
@@ -78,7 +78,7 @@ function ∩(A::IntervalMatrix, B::IntervalMatrix)
     @assert size(A) == size(B) "incompatible matrix sizes (A: $(size(A)), B: " *
                                "$(size(B)))"
 
-    return IntervalMatrix(map((x, y) -> x ∩ y, A, B))
+    return IntervalMatrix(map((x, y) -> intersect_interval(x, y), A, B))
 end
 
 """
