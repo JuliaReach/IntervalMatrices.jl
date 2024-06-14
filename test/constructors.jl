@@ -4,10 +4,10 @@
     y = convert(Interval{Float64}, x)
     # `===` is not applicable here because it just checks value equivalence
     # for (immutable) `Interval`s
-    @test y == x && y isa Interval{Float64}
+    @test y ⩵ x && y isa Interval{Float64}
 
     y = convert(Interval{Float32}, x)
-    @test y == x && y isa Interval{Float32}
+    @test y ⩵ x && y isa Interval{Float32}
 end
 
 @testset "Interval matrix construction" begin

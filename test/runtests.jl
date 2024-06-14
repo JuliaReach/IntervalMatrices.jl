@@ -7,9 +7,11 @@ using IntervalMatrices: _truncated_exponential_series,
                         correction_hull,
                         input_correction
 
+# IntervalArithmetic removed interval comparison in v0.22
 @static if PkgVersion.Version(IntervalMatrices.IntervalArithmetic) >= v"0.22"
-    # equality test for convenience
-    Base.:(==)(x::Interval, y::Interval) = isequal_interval(x, y)
+    ⩵(x::Interval, y::Interval) = isequal_interval(x, y)
+else
+    ⩵(x::Interval, y::Interval) = ==(x, y)
 end
 
 include("models.jl")
