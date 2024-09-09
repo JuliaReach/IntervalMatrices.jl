@@ -36,9 +36,15 @@ function set_multiplication_mode(multype)
     type = MultiplicationType{multype}()
     @eval *(A::IntervalMatrix, B::IntervalMatrix) = *($type, A, B)
 
-    @eval *(A::AbstractMatrix, B::IntervalMatrix) = *($type, A, B)
-
-    @eval *(A::IntervalMatrix, B::AbstractMatrix) = *($type, A, B)
+    # AbstractMatrix, incl. disambiguations
+    for T in (:AbstractMatrix, :(LinearAlgebra.AbstractTriangular),
+              :(Transpose{T, <:AbstractVector} where T), :Diagonal,
+              :(LinearAlgebra.Adjoint{T, <:AbstractVector} where T))
+        @eval begin
+            *(A::IntervalMatrix, B::$T) = *($type, A, B)
+            *(A::$T, B::IntervalMatrix) = *($type, A, B)
+        end
+    end
 
     return config[:multiplication] = multype
 end
