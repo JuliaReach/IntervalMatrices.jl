@@ -12,10 +12,12 @@ using IntervalMatrices: _truncated_exponential_series,
     ⩵(x::Interval, y::Interval) = isequal_interval(x, y)
 else
     ⩵(x::Interval, y::Interval) = ==(x, y)
+    using IntervalMatrices: issubset_interval
 end
 
 include("models.jl")
 
+include("intervals.jl")
 include("constructors.jl")
 include("arithmetic.jl")
 include("setops.jl")

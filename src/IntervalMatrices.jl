@@ -12,44 +12,11 @@ import Base: copy, get,
              similar, ∈, ⊆, ∩, ∪, real, imag
 
 using Reexport
-@reexport using IntervalArithmetic
-import IntervalArithmetic: inf, sup, mid, diam, radius, hull
-@static if VERSION >= v"1.9"
-    vIA = pkgversion(IntervalArithmetic)
-else
-    import PkgVersion
-    vIA = PkgVersion.Version(IntervalArithmetic)
-end
-if vIA >= v"0.21"
-    # IntervalArithmetic v0.21 removed `convert`
-    Base.convert(::Type{Interval{T}}, x::Number) where {T} = interval(T(x))
-    Base.convert(::Type{Interval{T}}, x::Interval{T}) where {T} = x
-    function Base.convert(::Type{Interval{T1}}, x::Interval{T2}) where {T1,T2}
-        return interval(T1(inf(x)), T1(sup(x)))
-    end
-else
-    # COV_EXCL_START
-    # IntervalArithmetic v0.21 requires `interval`, but prior versions did not
-    # offer this method for `Complex` inputs
-    IntervalArithmetic.interval(a::Complex) = complex(interval(real(a)), interval(imag(a)))
-    # COV_EXCL_STOP
-end
-if vIA >= v"0.22"
-    import Base: intersect
-    export ±, midpoint_radius
 
-    function Base.:(==)(A::AbstractMatrix{<:Interval}, B::AbstractMatrix{<:Interval})
-        return size(A) == size(B) && all(map((a, b) -> isequal_interval(a, b), A, B))
-    end
-else
-    import IntervalArithmetic: ±, midpoint_radius
-
-    issubset_interval(x::Interval, y::Interval) = issubset(x, y)
-
-    in_interval(x::Number, y::Interval) = inf(y) <= x <= sup(y)
-
-    intersect_interval(a::Interval, b::Interval) = intersect(a, b)
-end
+# =================================
+# Interface with IntervalArithmetic
+# =================================
+include("init_IntervalArithmetic.jl")
 
 # ================================
 # Type defining an interval matrix
@@ -57,9 +24,9 @@ end
 include("matrix.jl")
 include("affine.jl")
 
-# =================================
+# ================================
 # Operations for interval matrices
-# =================================
+# ================================
 include("operations/arithmetic.jl")
 include("operations/mult.jl")
 include("operations/norm.jl")
@@ -82,9 +49,9 @@ include("exponential.jl")
 # ==============================================================
 include("correction_matrices.jl")
 
-# ========
+# =======
 # Exports
-# ========
+# =======
 export AbstractIntervalMatrix,
        IntervalMatrix,
        set_multiplication_mode, get_multiplication_mode
@@ -109,4 +76,4 @@ export AffineIntervalMatrix,
 
 set_multiplication_mode(config[:multiplication])
 
-end # module
+end  # module
