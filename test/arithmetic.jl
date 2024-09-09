@@ -1,3 +1,10 @@
+@testset "Equality for interval matrix" begin
+    M = IntervalMatrix([interval(1) interval(2); interval(3) interval(4)])
+    @test M == IntervalMatrix([1 2; 3 4])
+    M = IntervalMatrix([interval(1, 2) interval(2, 3); interval(3, 4) interval(4, 5)])
+    @test M == M
+end
+
 @testset "Interval arithmetic" begin
     a = interval(-2, -1)
     b = interval(-1, 1)

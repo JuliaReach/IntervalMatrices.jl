@@ -16,9 +16,16 @@ import PkgVersion, Aqua
         undefined_exports = false
     end
 
+    # old versions of IntervalArithmetic did not define `interval` for `Complex` inputs
+    @static if PkgVersion.Version(IntervalMatrices.IntervalArithmetic) >= v"0.21"
+        piracies = true
+    else
+        piracies = (broken=true,)
+    end
+
     Aqua.test_all(IntervalMatrices; stale_deps=stale_deps, undefined_exports=undefined_exports,
                   # the ambiguities should be resolved in the future
                   ambiguities=(broken=true,),
                   # the piracies should be resolved in the future
-                  piracies=(broken=true,))
+                  piracies=piracies)
 end

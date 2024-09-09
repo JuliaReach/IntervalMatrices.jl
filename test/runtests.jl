@@ -10,9 +10,15 @@ using IntervalMatrices: _truncated_exponential_series,
 # IntervalArithmetic removed interval comparison in v0.22
 @static if PkgVersion.Version(IntervalMatrices.IntervalArithmetic) >= v"0.22"
     ⩵(x::Interval, y::Interval) = isequal_interval(x, y)
+
+    function ⩵(A::AbstractMatrix{<:Interval}, B::AbstractMatrix{<:Interval})
+        return size(A) == size(B) && all(map((a, b) -> ⩵(a, b), A, B))
+    end
 else
     ⩵(x::Interval, y::Interval) = ==(x, y)
     using IntervalMatrices: issubset_interval
+
+    ⩵(A::AbstractMatrix{<:Interval}, B::AbstractMatrix{<:Interval}) = ==(A, B)
 end
 
 include("models.jl")

@@ -187,3 +187,9 @@ end
 if VERSION >= v"1.3"
     LinearAlgebra.UpperHessenberg(A::IntervalMatrix) = IntervalMatrix(UpperHessenberg(A.mat))
 end
+
+@static if vIA >= v"0.22"
+    function Base.:(==)(A::IntervalMatrix, B::IntervalMatrix)
+        return size(A) == size(B) && all(map((a, b) -> isequal_interval(a, b), A, B))
+    end
+end

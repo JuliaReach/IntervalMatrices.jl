@@ -11,10 +11,6 @@ end
 @static if vIA >= v"0.22"
     import Base: intersect
     export ±, midpoint_radius  # not exported by IntervalArithmetic anymore
-
-    function Base.:(==)(A::AbstractMatrix{<:Interval}, B::AbstractMatrix{<:Interval})
-        return size(A) == size(B) && all(map((a, b) -> isequal_interval(a, b), A, B))
-    end
 else  # vIA < v"0.22"
     # COV_EXCL_START
     import IntervalArithmetic: ±, midpoint_radius
