@@ -11,22 +11,22 @@
     d = diam(m)
     rad = radius(m)
     m2 = copy(m)
-    @test m2 isa IntervalMatrix && m.mat == m2.mat
+    @test m2 isa IntervalMatrix && m.mat ⩵ m2.mat
     @test l == inf.(m) && r == sup.(m) && c == mid.(m)
     @test d ≈ r - l
     @test rad ≈ d / 2
 
     sm = scale(m, 2.0)
-    @test sm == 2.0 .* m
+    @test sm ⩵ 2.0 .* m
     @test sm ≠ m
     scale!(m, 2.0) # in-place
-    @test sm == m
+    @test sm ⩵ m
 
     m3 = IntervalMatrix([interval(-2, 2) interval(-2, 0); interval(0, 2) interval(-1, 1)])
     m4 = IntervalMatrix([interval(-1, 1) interval(-1, 1); interval(-1, 1) interval(-2, 2)])
-    @test m3 ∩ m4 ==
+    @test m3 ∩ m4 ⩵
           IntervalMatrix([interval(-1, 1) interval(-1, 0); interval(0, 1) interval(-1, 1)])
-    @test m3 ∪ m4 ==
+    @test m3 ∪ m4 ⩵
           IntervalMatrix([interval(-2, 2) interval(-2, 1); interval(-1, 2) interval(-2, 2)])
     @test diam_norm(m3) ≈ 6.0 # default diameter p-norm is Inf
     @test diam_norm(m3, 1) ≈ 6.0

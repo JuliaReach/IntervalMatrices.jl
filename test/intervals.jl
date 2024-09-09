@@ -46,13 +46,6 @@ end
     end
 end
 
-@testset "Equality for `Interval` matrix" begin
-    M = [interval(1) interval(2); interval(3) interval(4)]
-    @test M == [1 2; 3 4]
-    M = [interval(1, 2) interval(2, 3); interval(3, 4) interval(4, 5)]
-    @test M == M
-end
-
 @testset "Interval from a complex number" begin
     @test interval(1+2im) isa Complex{Interval{Float64}}
 end

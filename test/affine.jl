@@ -11,7 +11,7 @@
     @test P[1, 1] ⩵ interval(2)
 
     Q = copy(P)
-    @test Q == P && Q isa AffineIntervalMatrix1
+    @test Q ⩵ P && Q isa AffineIntervalMatrix1
 
     # complex interval
     λc = λ + im * λ / 2
@@ -34,7 +34,7 @@ end
     @test P[1, 1] ⩵ interval(5)
 
     Q = copy(P)
-    @test Q == P && Q isa AffineIntervalMatrix
+    @test Q ⩵ P && Q isa AffineIntervalMatrix
 
     # complex interval
     λ1c = λ1 + im * λ1 / 2
