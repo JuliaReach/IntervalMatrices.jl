@@ -1,10 +1,10 @@
 @testset "Interval arithmetic" begin
     a = interval(-2, -1)
     b = interval(-1, 1)
-    @test a + b == interval(-3, 0)
-    @test a * b == interval(-2, 2)
-    @test a * b + a == interval(-4, 1)
-    @test a * (b + 1) == interval(-4, 0)
+    @test a + b ⩵ interval(-3, 0)
+    @test a * b ⩵ interval(-2, 2)
+    @test a * b + a ⩵ interval(-4, 1)
+    @test a * (b + 1) ⩵ interval(-4, 0)
 end
 
 @testset "Interval matrix arithmetic" begin
@@ -27,7 +27,7 @@ end
 
     B = A - A
     @test B isa IntervalMatrix && inf(B[1, 1]) ≈ inf(a₋) && sup(B[1, 1]) ≈ sup(a₋) &&
-          B[1, 2] == b₋ && B[2, 1] == c₋ && B[2, 2] == d₋
+          B[1, 2] ⩵ b₋ && B[2, 1] ⩵ c₋ && B[2, 2] ⩵ d₋
 
     # arithmetic with an interval or number
     for x in (interval(0, 2), 2.0)
