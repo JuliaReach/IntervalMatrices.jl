@@ -33,6 +33,7 @@
 # left-division methods to avoid a stack overflow with the default behavior
 # (there exist more precise approaches but are currently not implemented here)
 \(M1::IntervalMatrix, M2::IntervalMatrix) = IntervalMatrix(M1.mat \ M2.mat)
+# COV_EXCL_START
 for T in (:AbstractMatrix, :Diagonal, :(Union{UpperTriangular,LowerTriangular}),
     :(Union{UnitUpperTriangular,UnitLowerTriangular}), :SymTridiagonal, :Bidiagonal,
     :(LinearAlgebra.HermOrSym), :(LinearAlgebra.AdjOrTrans{<:Any,<:Bidiagonal}))
@@ -41,6 +42,7 @@ for T in (:AbstractMatrix, :Diagonal, :(Union{UpperTriangular,LowerTriangular}),
         \(M1::$T, M2::IntervalMatrix) = IntervalMatrix(M1 \ M2.mat)
     end
 end
+# COV_EXCL_STOP
 
 """
     square(A::IntervalMatrix)
