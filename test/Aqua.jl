@@ -24,8 +24,8 @@ import PkgVersion, Aqua
     end
 
     Aqua.test_all(IntervalMatrices; stale_deps=stale_deps, undefined_exports=undefined_exports,
-                  # the ambiguities should be resolved in the future
-                  ambiguities=(broken=true,),
-                  # the piracies should be resolved in the future
-                  piracies=piracies)
+                  ambiguities=false, piracies=piracies)
+
+    # do not warn about ambiguities in dependencies
+    Aqua.detect_ambiguities(IntervalMatrices)
 end
