@@ -29,7 +29,7 @@ Sets the algorithm used to perform matrix multiplication with interval matrices.
 function set_multiplication_mode(multype)
     multype in (:fast, :slow) || throw(ArgumentError("$multype is not a valid input"))
 
-    @static if vIA >= v"0.22"
+    @static if vIA >= v"0.22"  # COV_EXCL_LINE
         multype == :fast && throw(ArgumentError("$multype is not supported anymore"))
     end
 
