@@ -33,8 +33,14 @@
 # left-division methods to avoid a stack overflow with the default behavior
 # (there exist more precise approaches but are currently not implemented here)
 \(M1::IntervalMatrix, M2::IntervalMatrix) = IntervalMatrix(M1.mat \ M2.mat)
-\(M1::IntervalMatrix, M2::AbstractMatrix) = IntervalMatrix(M1.mat \ M2)
-\(M1::AbstractMatrix, M2::IntervalMatrix) = IntervalMatrix(M1 \ M2.mat)
+for T in (:AbstractMatrix, :Diagonal, :(Union{UpperTriangular,LowerTriangular}),
+    :(Union{UnitUpperTriangular,UnitLowerTriangular}), :SymTridiagonal, :Bidiagonal,
+    :(LinearAlgebra.HermOrSym), :(LinearAlgebra.AdjOrTrans{<:Any,<:Bidiagonal}))
+    @eval begin
+        \(M1::IntervalMatrix, M2::$T) = IntervalMatrix(M1.mat \ M2)
+        \(M1::$T, M2::IntervalMatrix) = IntervalMatrix(M1 \ M2.mat)
+    end
+end
 
 """
     square(A::IntervalMatrix)
