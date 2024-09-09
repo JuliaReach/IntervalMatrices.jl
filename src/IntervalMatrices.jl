@@ -6,7 +6,7 @@ using LinearAlgebra: checksquare
 using Random: AbstractRNG, GLOBAL_RNG, seed!
 import Random: rand
 
-import Base: copy, get,
+import Base: copy,
              +, -, *, /, \,
              size, IndexStyle, getindex, setindex!,
              similar, ∈, ⊆, ∩, ∪, real, imag
@@ -68,6 +68,7 @@ export inf, sup,
 
 export IntervalMatrixPower,
        increment!, increment,
+       matrix,
        base,
        index
 

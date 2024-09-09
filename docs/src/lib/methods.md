@@ -44,7 +44,7 @@ set_multiplication_mode
 ```@docs
 increment!
 increment
-get
+matrix
 base
 index
 ```
