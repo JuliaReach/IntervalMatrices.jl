@@ -35,8 +35,8 @@
 \(M1::IntervalMatrix, M2::IntervalMatrix) = IntervalMatrix(M1.mat \ M2.mat)
 # COV_EXCL_START
 for T in (:AbstractMatrix, :Diagonal, :(Union{UpperTriangular,LowerTriangular}),
-    :(Union{UnitUpperTriangular,UnitLowerTriangular}), :SymTridiagonal, :Bidiagonal,
-    :(LinearAlgebra.HermOrSym), :(LinearAlgebra.AdjOrTrans{<:Any,<:Bidiagonal}))
+          :(Union{UnitUpperTriangular,UnitLowerTriangular}), :SymTridiagonal, :Bidiagonal,
+          :(LinearAlgebra.HermOrSym), :(LinearAlgebra.AdjOrTrans{<:Any,<:Bidiagonal}))
     @eval begin
         \(M1::IntervalMatrix, M2::$T) = IntervalMatrix(M1.mat \ M2)
         \(M1::$T, M2::IntervalMatrix) = IntervalMatrix(M1 \ M2.mat)
