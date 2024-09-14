@@ -17,11 +17,11 @@ end
 
 @testset "Interval operation `intersect_interval`" begin
     x = interval(1, 3)
-    for y in (interval(2, 4), interval(2f0, 4f0))
+    for y in (interval(2, 4), interval(2.0f0, 4.0f0))
         @test intersect_interval(x, y) ⩵ interval(2, 3)
     end
     @test intersect_interval(x, x) ⩵ x
-    for y in (interval(4, 5), interval(4f0, 5f0))
+    for y in (interval(4, 5), interval(4.0f0, 5.0f0))
         @test intersect_interval(x, y) ⩵ emptyinterval(Float64)
     end
 end
@@ -47,5 +47,5 @@ end
 end
 
 @testset "Interval from a complex number" begin
-    @test interval(1+2im) isa Complex{Interval{Float64}}
+    @test interval(1 + 2im) isa Complex{Interval{Float64}}
 end
