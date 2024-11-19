@@ -44,7 +44,19 @@ function set_multiplication_mode(multype)
             *(A::IntervalMatrix, B::$T) = *($type, A, B)
             *(A::$T, B::IntervalMatrix) = *($type, A, B)
         end
+    end  # COV_EXCL_LINE
+
+    # disambiguation with IntervalArithmetic's `RealOrComplexI`
+    # COV_EXCL_START
+    @static if vIA >= v"0.22.17"
+        for T in [:(AbstractMatrix{<:IntervalArithmetic.RealOrComplexI})]
+            @eval begin
+                *(A::IntervalMatrix, B::$T) = *($type, A, B)
+                *(A::$T, B::IntervalMatrix) = *($type, A, B)
+            end
+        end
     end
+    # COV_EXCL_END
 
     return config[:multiplication] = multype
 end
