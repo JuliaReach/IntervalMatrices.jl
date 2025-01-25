@@ -59,10 +59,7 @@ An interval matrix equivalent to `A * A`.
 
 ### Algorithm
 
-We follow [1, Section 6].
-
-[1] Kosheleva, Kreinovich, Mayer, Nguyen. Computing the cube of an interval
-matrix is NP-hard. SAC 2005.
+We follow [KoshelevaKMN05; Section 6](@citet).
 """
 function square(A::IntervalMatrix)
     B = similar(A)

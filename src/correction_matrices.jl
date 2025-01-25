@@ -16,10 +16,7 @@ An interval matrix representing the correction term.
 
 ### Algorithm
 
-See Theorem 3 in [1].
-
-[1] M. Althoff, O. Stursberg, M. Buss. Reachability Analysis of Linear Systems
-with Uncertain Parameters and Inputs. CDC 2007.
+See [AlthoffSB07; Theorem 3](@citet).
 """
 function correction_hull(A::IntervalMatrix{T}, t, p) where {T}
     F = _exp_remainder(A, t, p)
@@ -51,10 +48,7 @@ An interval matrix representing the correction matrix.
 
 ### Algorithm
 
-See Proposition 3.4 in [1].
-
-[1] M. Althoff. Reachability analysis and its application to the safety
-assessment of autonomous cars. 2010.
+See [Althoff10; Proposition 3.4](@citet).
 """
 function input_correction(A::IntervalMatrix{T}, t, p) where {T}
     n = checksquare(A)
