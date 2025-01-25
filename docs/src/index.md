@@ -19,7 +19,7 @@ See the section [Library Outline](@ref) below for details.
 An application of interval matrices is to find the set of states reachable by
 a dynamical system whose coefficients are uncertain. The library
 [ReachabilityAnalysis.jl](http://github.com/JuliaReach/ReachabilityAnalysis.jl)
-implements algorithms that use interval matrices [^3] [^4].
+implements algorithms that use interval matrices [AlthoffKS11, Liou66](@cite).
 
 ## Installing
 
@@ -100,9 +100,10 @@ relevant definitions and algebraic rules that apply.
 
 However, the straightforward application of the rules of interval arithmetic does
 not always give the exact result: in general it only gives an overapproximation
-[^1] [^2]. To illustrate, suppose that we are interested in the quadratic term
-``At + \frac{1}{2}A^2 t^2``, which corresponds to the Taylor-series expansion at order two of
-``e^{At} - I``. Then, at ``t = 1.0``,
+[AlthoffSB08, KoshelevaKMN05](@cite). To illustrate, suppose that we
+are interested in the quadratic term ``At + \frac{1}{2}A^2 t^2``, which
+corresponds to the Taylor-series expansion at order two of ``e^{At} - I``.
+Then, at ``t = 1.0``,
 
 ```jldoctest quickstart
 julia> A + 1/2 * A^2
@@ -138,20 +139,3 @@ Pages = [
 ]
 Depth = 2
 ```
-
-## References
-
-[^1]: Althoff, Matthias, Olaf Stursberg, and Martin Buss. *Reachability analysis
-      of nonlinear systems with uncertain parameters using conservative linearization.*
-      2008 47th IEEE Conference on Decision and Control. IEEE, 2008.
-
-[^2]: Kosheleva, Olga, et al. *Computing the cube of an interval matrix is NP-hard.*
-      Proceedings of the 2005 ACM symposium on Applied computing. ACM, 2005.
-
-[^3]: Althoff, Matthias, Bruce H. Krogh, and Olaf Stursberg. *Analyzing reachability
-      of linear dynamic systems with parametric uncertainties.*
-      Modeling, Design, and Simulation of Systems with Uncertainties.
-      Springer, Berlin, Heidelberg, 2011. 69-94.
-
-[^4]: Liou, M. L. *A novel method of evaluating transient response.*
-      Proceedings of the IEEE 54.1 (1966): 20-23.

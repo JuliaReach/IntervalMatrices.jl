@@ -67,8 +67,7 @@ such that `[exp(A*t)]_{ij} ⊆ m_{ij}`.
 
 ### Algorithm
 
-See Theorem 1 in *Reachability Analysis of Linear Systems with Uncertain
-Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
+See [AlthoffSB07; Theorem 1](@citet).
 """
 function exp_overapproximation(A::IntervalMatrix{T}, t, p) where {T}
     n = checksquare(A)
@@ -77,9 +76,7 @@ function exp_overapproximation(A::IntervalMatrix{T}, t, p) where {T}
     return S + E
 end
 
-# Implementation of Prop. 1 in Althoff, Matthias, Bruce H. Krogh, and Olaf Stursberg.
-# "Analyzing reachability of linear dynamic systems with parametric uncertainties."
-# Modeling, Design, and Simulation of Systems with Uncertainties. Springer, Berlin, Heidelberg, 2011. 69-94.
+# Implementation of [AlthoffKS11; Prop. 1](@citet).
 function _exp_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     C = max.(abs.(inf(A)), abs.(sup(A)))
     # compute Q = I + Ct + (Ct)^2/2! + ... + (Ct)^p/p!
@@ -101,10 +98,8 @@ function _exp_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     return E
 end
 
-# Estimates the sum of the series in the matrix exponential. See Theorem 1
-# in [1] Althoff, Matthias, Olaf Stursberg, and Martin Buss.
-# Reachability analysis of nonlinear systems with uncertain parameters using conservative linearization.
-# 2008 47th IEEE Conference on Decision and Control. IEEE, 2008.
+# Estimates the sum of the series in the matrix exponential. See
+# [AlthoffSB08; Theorem 1](@citet).
 function _exp_remainder_series(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     nA = opnorm(A, Inf)
     c = nA * t / (p + 2)
@@ -134,8 +129,7 @@ such that `m_{ij} ⊆ [exp(A*t)]_{ij}`.
 
 ### Algorithm
 
-See Theorem 2 in *Reachability Analysis of Linear Systems with Uncertain
-Parameters and Inputs* by M. Althoff, O. Stursberg, M. Buss.
+See [AlthoffSB07; Theorem 2](@citet).
 """
 function exp_underapproximation(A::IntervalMatrix{T}, t, p) where {T}
     @assert p > 1 "the order $p < 2 is not supported"
@@ -196,7 +190,7 @@ An interval matrix that encloses ``B := αA + βA^2``.
 
 ### Algorithm
 
-This a variation of the algorithm in [1, Section 6]. If ``A = (aᵢⱼ)`` and
+This a variation of the algorithm in [KoshelevaKMN05; Section 6](@citet). If ``A = (aᵢⱼ)`` and
 ``B := αA + βA^2 = (bᵢⱼ)``, the idea is to compute each ``bᵢⱼ`` by factoring
 out repeated expressions (thus the term *single-use expressions*).
 
@@ -211,9 +205,6 @@ Now consider ``i ≠ j``. Then,
 ```math
 bᵢⱼ = β\\sum_\\{k, k ≠ i, k ≠ j} a_{ik} a_{kj} + (α + βa_{ii} + βa_{jj}) a_{ij}.
 ```
-
-[1] Kosheleva, Kreinovich, Mayer, Nguyen. Computing the cube of an interval
-matrix is NP-hard. SAC 2005.
 """
 function quadratic_expansion(A::IntervalMatrix, α::Real, β::Real)
     B = similar(A)
@@ -323,16 +314,13 @@ Compute the matrix exponential using scaling and squaring.
 
 ### Algorithm
 
-We use the algorithm in [1, Section 4.3], which first scales `A` by factor
+We use the algorithm in [GoldsztejnN14; Section 4.3](@citet), which first scales `A` by factor
 ``2^{-l}``, computes the matrix exponential for the scaled matrix, and then
 squares the result ``l`` times.
 
 ```math
     \\exp(A * 2^{-l})^{2^l}
 ```
-
-[1] Goldsztejn, Alexandre, Arnold Neumaier. "On the exponentiation of interval
-matrices". Reliable Computing. 2014.
 """
 function scale_and_square(A::IntervalMatrix{T}, l::Integer, t, p;
                           validate::Bool=true) where {T}
@@ -390,10 +378,7 @@ Compute the matrix exponential using the Horner scheme.
 
 ### Algorithm
 
-We use the algorithm in [1, Section 4.2].
-
-[1] Goldsztejn, Alexandre, Arnold Neumaier. "On the exponentiation of interval
-matrices". Reliable Computing. 2014.
+We use the algorithm in [GoldsztejnN14; Section 4.2](@citet).
 """
 function horner(A::IntervalMatrix{T}, K::Integer;
                 validate::Bool=true) where {T}
@@ -418,7 +403,7 @@ function horner(A::IntervalMatrix{T}, K::Integer;
         H = Iₙ + A / i * H
     end
 
-    # remainder; ref [1] uses a less precise computation here
+    # remainder; ref [GoldsztejnN14] uses a less precise computation here
     R = _exp_remainder(A, one(T), K)
 
     return H + R
