@@ -36,7 +36,14 @@
 # COV_EXCL_START
 for T in (:AbstractMatrix, :Diagonal, :(Union{UpperTriangular,LowerTriangular}),
           :(Union{UnitUpperTriangular,UnitLowerTriangular}), :SymTridiagonal, :Bidiagonal,
-          :(LinearAlgebra.HermOrSym), :(LinearAlgebra.AdjOrTrans{<:Any,<:Bidiagonal}))
+          :(LinearAlgebra.HermOrSym), :(LinearAlgebra.AdjOrTrans{<:Any,<:Bidiagonal}),
+          :(Union{LinearAlgebra.Adjoint{T,
+                                        S} where {T,
+                  S<:(LinearAlgebra.UpperHessenberg{T,S} where {S<:AbstractMatrix{T}})},
+                  LinearAlgebra.Transpose{T,
+                                          S} where {T,
+                  S<:(LinearAlgebra.UpperHessenberg{T,S} where {S<:AbstractMatrix{T}})},
+                  LinearAlgebra.UpperHessenberg}))
     @eval begin
         \(M1::IntervalMatrix, M2::$T) = IntervalMatrix(M1.mat \ M2)
         \(M1::$T, M2::IntervalMatrix) = IntervalMatrix(M1 \ M2.mat)
