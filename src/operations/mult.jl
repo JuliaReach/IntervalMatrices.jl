@@ -1,6 +1,6 @@
 const config = Dict(:multiplication => :slow)
 
-struct MultiplicationType{T} end
+struct MultiplicationType{T} end  # COV_EXCL_LINE
 
 get_multiplication_mode() = config
 
@@ -33,14 +33,14 @@ function set_multiplication_mode(multype)
         multype == :fast && throw(ArgumentError("$multype is not supported anymore"))
     end
 
-    type = MultiplicationType{multype}()
+    type = MultiplicationType{multype}()  # COV_EXCL_LINE
     @eval *(A::IntervalMatrix, B::IntervalMatrix) = *($type, A, B)
 
     # AbstractMatrix, incl. disambiguations
-    for T in (:AbstractMatrix, :(LinearAlgebra.AbstractTriangular),
+    for T in (:AbstractMatrix, :(LinearAlgebra.AbstractTriangular),  # COV_EXCL_LINE
               :(Transpose{T,<:AbstractVector} where {T}), :Diagonal,
               :(LinearAlgebra.Adjoint{T,<:AbstractVector} where {T}))
-        @eval begin
+        @eval begin  # COV_EXCL_LINE
             *(A::IntervalMatrix, B::$T) = *($type, A, B)
             *(A::$T, B::IntervalMatrix) = *($type, A, B)
         end
