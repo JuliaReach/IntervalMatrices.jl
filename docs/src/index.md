@@ -108,8 +108,8 @@ Then, at ``t = 1.0``,
 ```jldoctest quickstart
 julia> A + 1/2 * A^2
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
-  [1.0, 4.50001]  [-3.0, 2.0]
- [-4.0, 2.50001]  [-1.0, 9.0]
+  [0.5, 4.5]   [-3.25, 2.5]
+ [-4.25, 3.0]  [-2.25, 9.0]
 ```
 However, that result is not tight. The computation can be performed exactly via
 single-use expressions implemented in this library:
@@ -117,8 +117,8 @@ single-use expressions implemented in this library:
 ```jldoctest quickstart
 julia> quadratic_expansion(A, 1.0, 0.5)
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
-  [1.0, 4.50001]  [-2.0, 1.0]
- [-3.0, 1.50001]   [1.0, 7.0]
+  [1.0, 4.5]  [-2.0, 1.0]
+ [-3.0, 1.5]   [1.0, 7.0]
 ```
 We now obtain an interval matrix that is strictly included in the one obtained from
 the naive multiplication.

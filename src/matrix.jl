@@ -18,10 +18,10 @@ parameterized in the number field, the interval type, and the matrix type.
 ### Examples
 
 ```jldoctest
-julia> A = IntervalMatrix([-1 .. -0.8 0 .. 0; 0 .. 0 -1 .. -0.8])
+julia> A = IntervalMatrix([interval(-1, -0.8) interval(0); interval(0) interval(-1, -0.8)])
 2×2 IntervalMatrix{Float64, Interval{Float64}, Matrix{Interval{Float64}}}:
- [-1.0, -0.7999999]   [0.0, 0.0]
-  [0.0, 0.0]         [-1.0, -0.7999999]
+ [-1.0, -0.8]   [0.0, 0.0]
+  [0.0, 0.0]   [-1.0, -0.8]
 ```
 
 An interval matrix proportional to the identity matrix can be built using the
