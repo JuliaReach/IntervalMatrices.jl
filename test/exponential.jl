@@ -60,6 +60,10 @@ end
     a = m * m
     b = square(m)
     @test b ⊆ a
+
+    # correct use of `pown` (#283)
+    m = IntervalMatrix(hcat(interval(-4.0, -2.0)))
+    @test square(m) ⩵ IntervalMatrix(hcat(interval(4.0, 16.0)))
 end
 
 @testset "Interval matrix power" begin
