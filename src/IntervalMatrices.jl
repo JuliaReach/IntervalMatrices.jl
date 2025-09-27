@@ -77,4 +77,11 @@ export AffineIntervalMatrix,
 
 set_multiplication_mode(config[:multiplication])
 
+function __init__()
+    @static if vIA >= v"0.22"
+        # remove interval decorations
+        setdisplay(; decorations=false, ng_flag=false)
+    end
+end
+
 end  # module
