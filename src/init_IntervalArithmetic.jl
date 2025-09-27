@@ -21,6 +21,8 @@ else  # vIA < v"0.22"
 
     intersect_interval(a::Interval, b::Interval) = intersect(a, b)
 
+    pown(x, y) = x^y
+
     if vIA >= v"0.21"
         # `convert` was temporarily removed in IntervalArithmetic v0.21 until v0.22
         Base.convert(::Type{Interval{T}}, x::Number) where {T} = interval(T(x))

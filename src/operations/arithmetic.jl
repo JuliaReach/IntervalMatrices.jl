@@ -83,7 +83,7 @@ function square(A::IntervalMatrix)
 
     # case i == j
     @inbounds for j in 1:n
-        B[j, j] = pow(A[j, j], 2)
+        B[j, j] = pown(A[j, j], 2)
         for k in 1:n
             k == j && continue
             B[j, j] += A[j, k] * A[k, j]
