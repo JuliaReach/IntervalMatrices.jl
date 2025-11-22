@@ -5,6 +5,7 @@ using IntervalMatrices: TaylorOverapproximation,
                         horner,
                         scale_and_square,
                         _truncated_exponential_series,
+                        _exp_remainder,
                         _exp_remainder_series
 
 @testset "Interval matrix exponential" begin
@@ -42,6 +43,14 @@ using IntervalMatrices: TaylorOverapproximation,
     @test overapp2 == exp(M; alg=Horner(10))
     @test overapp3 == exp(M; alg=ScaleAndSquare(5, 4))
     @test underapp1 == exp(M; alg=TaylorUnderapproximation(4))
+end
+
+@testset "Interval matrix exponential remainder" begin
+    M = IntervalMatrix([interval(1.5, 2) interval(0); interval(0) interval(0.5, 1)])
+    E = _exp_remainder(M, 1, 1)
+    e1 = exp(2) - 3
+    e2 = exp(1) - 2
+    @test E ⩵ IntervalMatrix([interval(-e1, e1) interval(0); interval(0) interval(-e2, e2)])
 end
 
 @testset "Interval matrix correction terms" begin
