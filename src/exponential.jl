@@ -92,10 +92,12 @@ function _exp_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
         Cⁱ *= C
     end
     M = exp(C * t)
-    Y = M - Q
-    Γ = IntervalMatrix(fill(interval(-one(T), one(T)), (n, n)))
-    E = Γ * Y
-    return E
+    E = Matrix{Interval{T}}(undef, n, n)
+    @inbounds for i in eachindex(M)
+        y = M[i] - Q[i]
+        E[i] = (y >= zero(T)) ? interval(-y, y) : interval(y, -y)
+    end
+    return IntervalMatrix(E)
 end
 
 # Estimates the sum of the series in the matrix exponential. See
