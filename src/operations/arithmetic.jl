@@ -34,24 +34,26 @@
 # (there exist more precise approaches but are currently not implemented here)
 \(M1::IntervalMatrix, M2::IntervalMatrix) = IntervalMatrix(M1.mat \ M2.mat)
 # COV_EXCL_START
-for T in (:AbstractMatrix, :Diagonal, :(Union{UpperTriangular,LowerTriangular}),
-          :(Union{UnitUpperTriangular,UnitLowerTriangular}), :SymTridiagonal, :Bidiagonal,
-          :(LinearAlgebra.HermOrSym), :(LinearAlgebra.AdjOrTrans{<:Any,<:Bidiagonal}))
+for T in (:AbstractMatrix, :(LinearAlgebra.Diagonal),
+          :(Union{LinearAlgebra.UpperTriangular,LinearAlgebra.LowerTriangular}),
+          :(Union{LinearAlgebra.UnitUpperTriangular,LinearAlgebra.UnitLowerTriangular}),
+          :(LinearAlgebra.SymTridiagonal), :(LinearAlgebra.Bidiagonal), :(LinearAlgebra.HermOrSym),
+          :(LinearAlgebra.AdjOrTrans{<:Any,<:LinearAlgebra.Bidiagonal}))  # NOTE: these are internal functions
     @eval begin
         \(M1::IntervalMatrix, M2::$T) = IntervalMatrix(M1.mat \ M2)
         \(M1::$T, M2::IntervalMatrix) = IntervalMatrix(M1 \ M2.mat)
     end
 end
 @static if VERSION >= v"1.3"
-    for T in [:(Union{LinearAlgebra.Adjoint{T,
-                                            S} where {T,
-                                                      S<:(LinearAlgebra.UpperHessenberg{T,
-                                                                                        S} where {S<:AbstractMatrix{T}})},
-                      LinearAlgebra.Transpose{T,
-                                              S} where {T,
-                                                        S<:(LinearAlgebra.UpperHessenberg{T,
-                                                                                          S} where {S<:AbstractMatrix{T}})},
-                      LinearAlgebra.UpperHessenberg})]
+    for T in [:(LinearAlgebra.Adjoint{T,
+                                      S} where {T,
+                                               S<:(LinearAlgebra.UpperHessenberg{T,
+                                                                                 S} where {S<:AbstractMatrix{T}})}),
+              :(LinearAlgebra.Transpose{T,
+                                        S} where {T,
+                                                 S<:(LinearAlgebra.UpperHessenberg{T,
+                                                                                   S} where {S<:AbstractMatrix{T}})}),
+              :(LinearAlgebra.UpperHessenberg)]
         @eval begin
             \(M1::IntervalMatrix, M2::$T) = IntervalMatrix(M1.mat \ M2)
             \(M1::$T, M2::IntervalMatrix) = IntervalMatrix(M1 \ M2.mat)

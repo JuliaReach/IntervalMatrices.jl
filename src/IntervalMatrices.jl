@@ -1,17 +1,14 @@
 module IntervalMatrices
 
-using LinearAlgebra
-using LinearAlgebra: checksquare
-
-using Random: AbstractRNG, GLOBAL_RNG, seed!
-import Random: rand
-
-import Base: copy,
+import Base: copy, rand,
              +, -, *, /, \,
              size, IndexStyle, getindex, setindex!,
              similar, ∈, ⊆, ∩, ∪, real, imag
 
-using Reexport
+import LinearAlgebra
+using LinearAlgebra: Diagonal, I, UniformScaling, checksquare, opnorm
+using Random: AbstractRNG, GLOBAL_RNG
+using Reexport: @reexport
 
 # =================================
 # Interface with IntervalArithmetic
