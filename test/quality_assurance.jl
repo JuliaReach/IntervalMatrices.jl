@@ -1,6 +1,28 @@
 using IntervalMatrices, Test
 import PkgVersion, Aqua
 
+import Pkg
+@static if VERSION >= v"1.6"  # TODO make explicit test requirement
+    Pkg.add("ExplicitImports")
+    import ExplicitImports
+
+    @testset "ExplicitImports tests" begin
+        ignores = (:GLOBAL_RNG,)
+        @test isnothing(ExplicitImports.check_all_explicit_imports_are_public(IntervalMatrices;
+                                                                              ignore=ignores))
+        @test isnothing(ExplicitImports.check_all_explicit_imports_via_owners(IntervalMatrices))
+        ignores = (:HermOrSym, :AdjOrTrans)
+        @test isnothing(ExplicitImports.check_all_qualified_accesses_are_public(IntervalMatrices;
+                                                                                ignore=ignores))
+        @test isnothing(ExplicitImports.check_all_qualified_accesses_via_owners(IntervalMatrices))
+        ignores = (:IntervalArithmetic, :Interval, :in_interval, :intersect_interval, :interval,
+                   :isequal_interval, :issubset_interval, :setdisplay)  # due to reexporting IntervalArithmetic
+        @test isnothing(ExplicitImports.check_no_implicit_imports(IntervalMatrices; ignore=ignores))
+        @test isnothing(ExplicitImports.check_no_self_qualified_accesses(IntervalMatrices))
+        @test isnothing(ExplicitImports.check_no_stale_explicit_imports(IntervalMatrices))
+    end
+end
+
 @testset "Aqua tests" begin
     # PkgVersion is only used in old versions
     @static if VERSION >= v"1.9"
