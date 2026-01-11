@@ -38,7 +38,7 @@ function set_multiplication_mode(multype)
 
     # AbstractMatrix, incl. disambiguations
     for T in (:AbstractMatrix, :(LinearAlgebra.AbstractTriangular),  # COV_EXCL_LINE
-              :(Transpose{T,<:AbstractVector} where {T}), :Diagonal,
+              :(LinearAlgebra.Transpose{T,<:AbstractVector} where {T}), :Diagonal,
               :(LinearAlgebra.Adjoint{T,<:AbstractVector} where {T}))
         @eval begin  # COV_EXCL_LINE
             *(A::IntervalMatrix, B::$T) = *($type, A, B)

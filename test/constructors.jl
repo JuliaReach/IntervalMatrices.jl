@@ -48,15 +48,15 @@ end
     A = rand(IntervalMatrix)
     @test A isa IntervalMatrix
 
-    Aₛ = Symmetric(A)
+    Aₛ = LinearAlgebra.Symmetric(A)
     @test Aₛ isa IntervalMatrix
-    @test Aₛ.mat isa Symmetric
+    @test Aₛ.mat isa LinearAlgebra.Symmetric
     @test Matrix(Aₛ) isa Matrix
 
     @static if VERSION >= v"1.3"
-        Aₕ = UpperHessenberg(A)
+        Aₕ = LinearAlgebra.UpperHessenberg(A)
         @test Aₕ isa IntervalMatrix
-        @test Aₕ.mat isa UpperHessenberg
+        @test Aₕ.mat isa LinearAlgebra.UpperHessenberg
         @test Matrix(Aₕ) isa Matrix
     end
 end
