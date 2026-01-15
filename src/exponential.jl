@@ -80,7 +80,7 @@ end
 function _exp_remainder(A::IntervalMatrix{T}, t, p; n=checksquare(A)) where {T}
     C = max.(abs.(inf(A)), abs.(sup(A)))
     # compute Q = I + Ct + (Ct)^2/2! + ... + (Ct)^p/p!
-    Q = Matrix(LinearAlgebra.Diagonal(ones(T, n)))
+    Q = Matrix(Diagonal(ones(T, n)))
 
     tⁱ = 1
     i! = 1

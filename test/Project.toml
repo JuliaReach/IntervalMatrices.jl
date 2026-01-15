@@ -1,10 +1,16 @@
 [deps]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 PkgVersion = "eebad327-c553-4316-9ea0-9fa01ccd7688"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
 Aqua = "0.8.9"
+ExplicitImports = "1"
+Pkg = "<0.0.1, 1.2"
 PkgVersion = "0.3.3"
+
+[extras]
+ExplicitImports = "7d51a73a-1435-4ff3-83d9-f097790105c7"

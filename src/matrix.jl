@@ -173,19 +173,20 @@ julia> [1 2; 3 4] ± [1 2; 4 5]
 """
 function ±(C::MT, S::MT) where {T,MT<:AbstractMatrix{T}}
     size(C) == size(S) || throw(ArgumentError("the sizes of the center matrix and the " *
-                                              "radii matrix should match, but they are $(size(C)) " *
-                                              "and $(size(S)) respectively"))
+                                              "radii matrix should match, but they are " *
+                                              "$(size(C)) and $(size(S)) respectively"))
 
     return IntervalMatrix(map((x, y) -> interval(x - y, x + y), C, S))
 end
 
-for op in (:Adjoint, :Bidiagonal, :Diagonal, :Hermitian,
-           :SymTridiagonal, :Symmetric, :Transpose, :Tridiagonal)
-    @eval LinearAlgebra.$op(A::IntervalMatrix) = IntervalMatrix($op(A.mat))
+for op in (:Adjoint, :Bidiagonal, :Diagonal, :Hermitian, :SymTridiagonal, :Symmetric, :Transpose,
+           :Tridiagonal)
+    @eval LinearAlgebra.$op(A::IntervalMatrix) = IntervalMatrix(LinearAlgebra.$op(A.mat))
 end
 
 if VERSION >= v"1.3"
-    LinearAlgebra.UpperHessenberg(A::IntervalMatrix) = IntervalMatrix(UpperHessenberg(A.mat))
+    LinearAlgebra.UpperHessenberg(A::IntervalMatrix) =
+        IntervalMatrix(LinearAlgebra.UpperHessenberg(A.mat))
 end
 
 @static if vIA >= v"0.22"
