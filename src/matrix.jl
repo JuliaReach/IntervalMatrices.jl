@@ -185,8 +185,9 @@ for op in (:Adjoint, :Bidiagonal, :Diagonal, :Hermitian, :SymTridiagonal, :Symme
 end
 
 if VERSION >= v"1.3"
-    LinearAlgebra.UpperHessenberg(A::IntervalMatrix) =
-        IntervalMatrix(LinearAlgebra.UpperHessenberg(A.mat))
+    function LinearAlgebra.UpperHessenberg(A::IntervalMatrix)
+        return IntervalMatrix(LinearAlgebra.UpperHessenberg(A.mat))
+    end
 end
 
 @static if vIA >= v"0.22"
