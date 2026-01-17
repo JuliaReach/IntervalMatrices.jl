@@ -47,12 +47,12 @@ end
 @static if VERSION >= v"1.3"
     for T in [:(LinearAlgebra.Adjoint{T,
                                       S} where {T,
-                                               S<:(LinearAlgebra.UpperHessenberg{T,
-                                                                                 S} where {S<:AbstractMatrix{T}})}),
+                                                S<:(LinearAlgebra.UpperHessenberg{T,
+                                                                                  S} where {S<:AbstractMatrix{T}})}),
               :(LinearAlgebra.Transpose{T,
                                         S} where {T,
-                                                 S<:(LinearAlgebra.UpperHessenberg{T,
-                                                                                   S} where {S<:AbstractMatrix{T}})}),
+                                                  S<:(LinearAlgebra.UpperHessenberg{T,
+                                                                                    S} where {S<:AbstractMatrix{T}})}),
               :(LinearAlgebra.UpperHessenberg)]
         @eval begin
             \(M1::IntervalMatrix, M2::$T) = IntervalMatrix(M1.mat \ M2)
