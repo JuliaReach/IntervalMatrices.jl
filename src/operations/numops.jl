@@ -89,7 +89,7 @@ function diam(A::IntervalMatrix{T}) where {T}
 end
 
 """
-    midpoint_radius(A::IntervalMatrix{T}) where {T}
+    midradius(A::IntervalMatrix{T}) where {T}
 
 Split an interval matrix ``A`` into two scalar matrices ``C`` and ``S``
 such that ``A = C + [-S, S]``.
@@ -103,7 +103,7 @@ such that ``A = C + [-S, S]``.
 A pair `(C, S)` such that the entries of `C` are the central points and the
 entries of `S` are the (nonnegative) radii of the intervals in `A`.
 """
-midpoint_radius(A::IntervalMatrix) = (mid(A), radius(A))
+midradius(A::IntervalMatrix) = (mid(A), radius(A))
 
 real(M::IntervalMatrix) = IntervalMatrix(real(M.mat))
 imag(M::IntervalMatrix) = IntervalMatrix(imag(M.mat))
