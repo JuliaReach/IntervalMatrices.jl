@@ -22,7 +22,6 @@ jobs:
           - '1'
         os:
           - ubuntu-slim
-          - windows-latest
         arch:
           - x64
         include:
