@@ -21,14 +21,13 @@ jobs:
         version:
           - '1'
         os:
-          - ubuntu-latest
-          - windows-latest
+          - ubuntu-slim
         arch:
           - x64
         include:
           - version: '1.2'  # test on oldest supported version
             arch: x64
-            os: ubuntu-latest
+            os: ubuntu-slim
     env:
       JULIA_PKG_SERVER: ''
     steps:
