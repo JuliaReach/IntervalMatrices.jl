@@ -8,12 +8,18 @@ else
     vIA = PkgVersion.Version(IntervalArithmetic)
 end
 
+@static if vIA >= v"0.21.2"
+    import IntervalArithmetic: midradius
+else
+    export midradius
+end
+
 @static if vIA >= v"0.22"
     import Base: intersect
-    export ±, midpoint_radius  # not exported by IntervalArithmetic anymore
+    export ±  # not exported by IntervalArithmetic anymore
 else  # vIA < v"0.22"
     # COV_EXCL_START
-    import IntervalArithmetic: ±, midpoint_radius
+    import IntervalArithmetic: ±
 
     issubset_interval(x::Interval, y::Interval) = issubset(x, y)
 
