@@ -19,7 +19,7 @@ sup
 mid
 diam
 radius
-midpoint_radius
+midradius
 rand
 sample
 ∈
