@@ -18,10 +18,10 @@
     @test A ± B == IntervalMatrix([interval(0, 2) interval(0, 4); interval(-1, 7) interval(-1, 9)])
 end
 
-@testset "Interval matrix midpoint_radius" begin
+@testset "Interval matrix midradius" begin
     m = IntervalMatrix([interval(-1.1, 0.9) interval(-4.1, -3.9);
                         interval(3.9, 4.1) interval(-1.1, 0.9)])
-    c, s = midpoint_radius(m)
+    c, s = midradius(m)
     @test c ≈ [-0.1 -4; 4 -0.1]
     @test s ≈ [1 0.1; 0.1 1]
 end
