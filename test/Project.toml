@@ -11,6 +11,7 @@ Aqua = "0.8.9"
 ExplicitImports = "1"
 Pkg = "<0.0.1, 1.2"
 PkgVersion = "0.3.3"
+Test = "<0.0.1, 1"
 
 [extras]
 ExplicitImports = "7d51a73a-1435-4ff3-83d9-f097790105c7"
