@@ -9,8 +9,11 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 [compat]
 Aqua = "0.8.9"
 ExplicitImports = "1"
-Pkg = "<0.0.1, 1.2"
+LinearAlgebra = "<0.0.1, 1"
+Pkg = "<0.0.1, 1"
 PkgVersion = "0.3.3"
+SparseArrays = "<0.0.1, 1"
+Test = "<0.0.1, 1"
 
 [extras]
 ExplicitImports = "7d51a73a-1435-4ff3-83d9-f097790105c7"
