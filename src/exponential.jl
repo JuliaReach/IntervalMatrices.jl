@@ -295,7 +295,7 @@ struct ScaleAndSquare <: AbstractExponentiationMethod
     p::Int
 end
 
-function _exp(alg::ScaleAndSquare, A, t=one(T))
+function _exp(alg::ScaleAndSquare, A::IntervalMatrix{T}, t=one(T)) where {T}
     return scale_and_square(A, alg.l, t, alg.p)
 end
 
