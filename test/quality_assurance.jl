@@ -23,6 +23,17 @@ import Pkg
     end
 end
 
+@static if VERSION >= v"1.10"
+    # JET v0.9.0 (earliest supported version) requires Julia v1.10
+    Pkg.add("JET")
+    import JET
+
+    @testset "JET tests" begin
+        # false positives for Base functionality
+        JET.test_package(IntervalMatrices; target_modules=(IntervalMatrices,))
+    end
+end
+
 @testset "Aqua tests" begin
     # PkgVersion is only used in old versions
     @static if VERSION >= v"1.9"
