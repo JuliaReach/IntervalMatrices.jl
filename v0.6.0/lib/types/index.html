@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Types · IntervalMatrices.jl</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/documenter.css" rel="stylesheet" type="text/css"/><link href="../../assets/juliareach.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>IntervalMatrices.jl</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../">Home</a></li><li><span class="toctext">Library</span><ul><li class="current"><a class="toctext" href>Types</a><ul class="internal"><li><a class="toctext" href="#Abstract-interval-operators-1">Abstract interval operators</a></li><li><a class="toctext" href="#Interval-matrix-1">Interval matrix</a></li><li><a class="toctext" href="#Interval-matrix-power-wrapper-1">Interval-matrix-power wrapper</a></li></ul></li><li><a class="toctext" href="../methods/">Methods</a></li></ul></li><li><a class="toctext" href="../../about/">About</a></li></ul></nav><article id="docs"><header><nav><ul><li>Library</li><li><a href>Types</a></li></ul><a class="edit-page" href="https://github.com/JuliaReach/IntervalMatrices.jl/blob/master/docs/src/lib/types.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Types</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="Types-1" href="#Types-1">Types</a></h1><p>This section describes systems types implemented in <code>IntervalMatrices.jl</code>.</p><ul><li><a href="#Types-1">Types</a></li><ul><li><a href="#Abstract-interval-operators-1">Abstract interval operators</a></li><li><a href="#Interval-matrix-1">Interval matrix</a></li><li><a href="#Interval-matrix-power-wrapper-1">Interval-matrix-power wrapper</a></li></ul></ul><h2><a class="nav-anchor" id="Abstract-interval-operators-1" href="#Abstract-interval-operators-1">Abstract interval operators</a></h2><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="IntervalMatrices.AbstractIntervalMatrix" href="#IntervalMatrices.AbstractIntervalMatrix"><code>IntervalMatrices.AbstractIntervalMatrix</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-julia">AbstractIntervalMatrix{IT} &lt;: AbstractMatrix{IT}</code></pre><p>Abstract supertype for interval matrix types.</p></div></div><a class="source-link" target="_blank" href="https://github.com/JuliaReach/IntervalMatrices.jl/blob/306b3527c8781ef534428eb53121cff47242a0df/src/matrix.jl#L5-L9">source</a></section><h2><a class="nav-anchor" id="Interval-matrix-1" href="#Interval-matrix-1">Interval matrix</a></h2><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="IntervalMatrices.IntervalMatrix" href="#IntervalMatrices.IntervalMatrix"><code>IntervalMatrices.IntervalMatrix</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-julia">IntervalMatrix{T, IT&lt;:Interval{T}, MT&lt;:AbstractMatrix{IT}} &lt;: AbstractIntervalMatrix{IT}</code></pre><p>An interval matrix i.e. a matrix whose coefficients are intervals. This type is parametrized in the number field, the interval type, and the matrix type.</p><p><strong>Fields</strong></p><ul><li><code>mat</code> – matrix whose entries are intervals</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; A = IntervalMatrix([-0.9±0.1 0±0; 0±0 -0.9±0.1])
+2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+ [-1, -0.799999]   [0, 0]
+  [0, 0]          [-1, -0.799999]</code></pre><p>An interval matrix proportional to the identity matrix can be built using the <code>UniformScaling</code> operator from the standard library <code>LinearAlgebra</code>. For example,</p><pre><code class="language-julia-repl">julia&gt; using LinearAlgebra
+
+julia&gt; IntervalMatrix(Interval(1)*I, 2)
+2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+ [1, 1]  [0, 0]
+ [0, 0]  [1, 1]</code></pre><p>The number of columns can be specified as a third argument, creating a rectangular <span>$m × n$</span> matrix such that only the entries in the main diagonal, <span>$(1, 1), (2, 2), …,  (k, k)$</span> are specified, where <span>$k = \min(m, n)$</span>:</p><pre><code class="language-julia-repl">julia&gt; IntervalMatrix(Interval(-1, 1)*I, 2, 3)
+2×3 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+ [-1, 1]   [0, 0]  [0, 0]
+  [0, 0]  [-1, 1]  [0, 0]
+
+julia&gt; IntervalMatrix(Interval(-1, 1)*I, 3, 2)
+3×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+ [-1, 1]   [0, 0]
+  [0, 0]  [-1, 1]
+  [0, 0]   [0, 0]</code></pre><p>An uninitialized interval matrix can be constructed using <code>undef</code>:</p><pre><code class="language-julia-repl">julia&gt; m = IntervalMatrix{Float64}(undef, 2, 2);
+
+julia&gt; typeof(m)
+IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}</code></pre><p>Note that this constructor implicitly uses a dense matrix, <code>Matrix{Float64}</code>, as the matrix (<code>mat</code>) field in the new interval matrix.</p></div></div><a class="source-link" target="_blank" href="https://github.com/JuliaReach/IntervalMatrices.jl/blob/306b3527c8781ef534428eb53121cff47242a0df/src/matrix.jl#L12-L69">source</a></section><h2><a class="nav-anchor" id="Interval-matrix-power-wrapper-1" href="#Interval-matrix-power-wrapper-1">Interval-matrix-power wrapper</a></h2><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="IntervalMatrices.IntervalMatrixPower" href="#IntervalMatrices.IntervalMatrixPower"><code>IntervalMatrices.IntervalMatrixPower</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-julia">IntervalMatrixPower{T}</code></pre><p>A wrapper for the matrix power that can be incremented.</p><p><strong>Fields</strong></p><ul><li><code>M</code>  – the original matrix</li><li><code>Mᵏ</code> – the current matrix power, i.e., <span>$M^k$</span></li><li><code>k</code>  – the current power index</li></ul><p><strong>Notes</strong></p><p>The wrapper should only be accessed using the interface functions. The internal representation (such as the fields) are subject to future changes.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; A = IntervalMatrix([2.0..2.0 2.0..3.0; 0.0..0.0 -1.0..1.0])
+2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+ [2, 2]   [2, 3]
+ [0, 0]  [-1, 1]
+
+julia&gt; pow = IntervalMatrixPower(A);
+
+julia&gt; increment!(pow)
+2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+ [4, 4]  [2, 9]
+ [0, 0]  [0, 1]
+
+julia&gt; increment(pow)
+2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+ [8, 8]  [-1, 21]
+ [0, 0]   [-1, 1]
+
+julia&gt; get(pow)
+2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+ [4, 4]  [2, 9]
+ [0, 0]  [0, 1]
+
+julia&gt; index(pow)
+2
+
+julia&gt; base(pow)
+2×2 IntervalMatrix{Float64,Interval{Float64},Array{Interval{Float64},2}}:
+ [2, 2]   [2, 3]
+ [0, 0]  [-1, 1]
+</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/JuliaReach/IntervalMatrices.jl/blob/306b3527c8781ef534428eb53121cff47242a0df/src/power.jl#L3-L53">source</a></section><footer><hr/><a class="previous" href="../../"><span class="direction">Previous</span><span class="title">Home</span></a><a class="next" href="../methods/"><span class="direction">Next</span><span class="title">Methods</span></a></footer></article></body></html>
