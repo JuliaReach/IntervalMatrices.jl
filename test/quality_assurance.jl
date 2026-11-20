@@ -59,3 +59,9 @@ end
     Aqua.test_all(IntervalMatrices; stale_deps=stale_deps, undefined_exports=undefined_exports,
                   piracies=piracies)
 end
+
+@testset "No boxed closure captures" begin
+    if isdefined(Test, :detect_closure_boxes)  # Julia >= v"1.14"
+        @test isempty(Test.detect_closure_boxes(IntervalMatrices))
+   end
+end
