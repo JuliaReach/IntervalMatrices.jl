@@ -73,11 +73,13 @@ getindex(M::IntervalMatrix, i::Int) = getindex(M.mat, i)
 setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 copy(M::IntervalMatrix) = IntervalMatrix(copy(M.mat))
 
-function IntervalMatrix(A::MT) where {T,IT<:Interval{T},MT<:AbstractMatrix{IT}}
+function IntervalMatrix(A::MT) where {IT<:Interval,MT<:AbstractMatrix{IT}}
+    T = numtype(IT)
     return IntervalMatrix{T,IT,MT}(A)
 end
 
-function IntervalMatrix(A::MT) where {T,IT<:Complex{Interval{T}},MT<:AbstractMatrix{IT}}
+function IntervalMatrix(A::MT) where {IT<:Complex{<:Interval},MT<:AbstractMatrix{IT}}
+    T = numtype(IT)
     return IntervalMatrix{T,IT,MT}(A)
 end
 
