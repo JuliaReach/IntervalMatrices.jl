@@ -53,10 +53,8 @@ end
     @test Aₛ.mat isa LinearAlgebra.Symmetric
     @test Matrix(Aₛ) isa Matrix
 
-    @static if VERSION >= v"1.3"
-        Aₕ = LinearAlgebra.UpperHessenberg(A)
-        @test Aₕ isa IntervalMatrix
-        @test Aₕ.mat isa LinearAlgebra.UpperHessenberg
-        @test Matrix(Aₕ) isa Matrix
-    end
+    Aₕ = LinearAlgebra.UpperHessenberg(A)
+    @test Aₕ isa IntervalMatrix
+    @test Aₕ.mat isa LinearAlgebra.UpperHessenberg
+    @test Matrix(Aₕ) isa Matrix
 end
