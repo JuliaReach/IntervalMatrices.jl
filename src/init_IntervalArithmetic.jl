@@ -1,5 +1,5 @@
 @reexport using IntervalArithmetic
-import IntervalArithmetic: inf, sup, mid, diam, radius, hull
+import IntervalArithmetic: diam, hull, inf, mid, numtype, radius, sup
 
 @static if VERSION >= v"1.9"
     vIA = pkgversion(IntervalArithmetic)
