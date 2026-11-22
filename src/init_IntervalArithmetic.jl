@@ -1,5 +1,5 @@
 @reexport using IntervalArithmetic
-import IntervalArithmetic: inf, sup, mid, diam, radius, hull
+import IntervalArithmetic: diam, hull, inf, mid, numtype, radius, sup
 
 @static if VERSION >= v"1.9"
     vIA = pkgversion(IntervalArithmetic)
@@ -8,18 +8,14 @@ else
     vIA = PkgVersion.Version(IntervalArithmetic)
 end
 
-@static if vIA >= v"0.21.2"
-    import IntervalArithmetic: midradius
-else
-    export midradius
-end
-
 @static if vIA >= v"0.22"
     import Base: intersect
+    import IntervalArithmetic: midradius
     export ±  # not exported by IntervalArithmetic anymore
 else  # vIA < v"0.22"
     # COV_EXCL_START
     import IntervalArithmetic: ±
+    export midradius
 
     issubset_interval(x::Interval, y::Interval) = issubset(x, y)
 

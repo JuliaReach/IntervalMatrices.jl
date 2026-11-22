@@ -73,12 +73,20 @@ getindex(M::IntervalMatrix, i::Int) = getindex(M.mat, i)
 setindex!(M::IntervalMatrix, X, inds...) = setindex!(M.mat, X, inds...)
 copy(M::IntervalMatrix) = IntervalMatrix(copy(M.mat))
 
-function IntervalMatrix(A::MT) where {T,IT<:Interval{T},MT<:AbstractMatrix{IT}}
+function IntervalMatrix(A::MT) where {IT<:Interval,MT<:AbstractMatrix{IT}}
+    T = numtype(IT)
     return IntervalMatrix{T,IT,MT}(A)
 end
 
-function IntervalMatrix(A::MT) where {T,IT<:Complex{Interval{T}},MT<:AbstractMatrix{IT}}
+function IntervalMatrix(A::MT) where {IT<:Complex{<:Interval},MT<:AbstractMatrix{IT}}
+    T = _numtype(IT)
     return IntervalMatrix{T,IT,MT}(A)
+end
+
+@static if vIA >= v"1"
+    _numtype(IT::Type{Complex{Interval{T}}}) where {T} = numtype(IT)
+else
+    _numtype(IT::Type{Complex{Interval{T}}}) where {T} = T
 end
 
 # constructor from uniform scaling
@@ -184,10 +192,8 @@ for op in (:Adjoint, :Bidiagonal, :Diagonal, :Hermitian, :SymTridiagonal, :Symme
     @eval LinearAlgebra.$op(A::IntervalMatrix) = IntervalMatrix(LinearAlgebra.$op(A.mat))
 end
 
-if VERSION >= v"1.3"
-    function LinearAlgebra.UpperHessenberg(A::IntervalMatrix)
-        return IntervalMatrix(LinearAlgebra.UpperHessenberg(A.mat))
-    end
+function LinearAlgebra.UpperHessenberg(A::IntervalMatrix)
+    return IntervalMatrix(LinearAlgebra.UpperHessenberg(A.mat))
 end
 
 @static if vIA >= v"0.22"
